@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -13,7 +13,7 @@ from django.db import models
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     description = models.CharField(max_length=500)
-    images = models.CharField(max_length=300)
+    pictures = models.CharField(max_length=300)
 
     class Meta:
         verbose_name = "espèce"
@@ -29,7 +29,8 @@ class Observer(models.Model):
     adresse = models.CharField(max_length=80)
     codepostal = models.CharField(max_length=6, verbose_name="code postal")
     nationality = models.CharField(max_length=100, verbose_name="nationalité")
-    telephone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20)
+    user = models.OneToOneField(User)
     is_crea = models.BooleanField(verbose_name="est un membre de crea")
 
     class Meta:
@@ -37,6 +38,7 @@ class Observer(models.Model):
         verbose_name_plural = "observateurs"
 
 
+"""
 #organisme
 class Organization(models.Model):
     city = models.CharField(max_length=100, verbose_name="commune")
@@ -48,6 +50,7 @@ class Organization(models.Model):
     class Meta:
         verbose_name = "organisme"
         verbose_name_plural = "organismes"
+"""
 
 
 #zone:
@@ -60,7 +63,7 @@ class Area(models.Model):
     remark = models.CharField(max_length=100, verbose_name="remarque", blank=True)
     commune = models.CharField(max_length=100, verbose_name="commune")
     observers = models.ManyToManyField(Observer, verbose_name="Observateurs", blank=True)
-    especes = models.ManyToManyField(Species, verbose_name="Espèces", blank=True)
+    species = models.ManyToManyField(Species, blank=True)
 
     class Meta:
         verbose_name = "zone observation"
@@ -71,7 +74,7 @@ class Area(models.Model):
 
 #individu
 class Individual(models.Model):
-    espece = models.ForeignKey(Species, verbose_name="espece")
+    species = models.ForeignKey(Species, verbose_name="espece")
     area = models.ForeignKey(Area, verbose_name="zone")
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
@@ -80,19 +83,6 @@ class Individual(models.Model):
     class Meta:
         verbose_name = "individu"
         verbose_name_plural = "individus"
-
-
-#observation
-class Survey(models.Model):
-    individu = models.ForeignKey(Individual, verbose_name="individu")
-    observer = models.ForeignKey(Observer, verbose_name="observateur")
-    stade = models.CharField(max_length=300, verbose_name="stade développement")
-    date = models.DateTimeField(verbose_name="date saisie")
-    remark = models.CharField(max_length=100, verbose_name="remarque")
-
-    class Meta:
-        verbose_name = "observation"
-        verbose_name_plural = "observations"
 
 
 #enneigement
@@ -107,3 +97,25 @@ class Snowing(models.Model):
     class Meta:
         verbose_name = "enneigement"
         verbose_name_plural = "enneigements"
+
+
+#stades
+class Stage(models.Model):
+    name = models.CharField(max_length=100)
+    species = models.ForeignKey(Species)
+    month_beginning = models.IntegerField()
+    order = models.IntegerField()
+    pictures = models.CharField(max_length=300)
+
+
+#observation
+class Survey(models.Model):
+    individual = models.ForeignKey(Individual, verbose_name="individu")
+    observer = models.ForeignKey(Observer, verbose_name="observateur")
+    stage = models.CharField(max_length=300, verbose_name="stade développement")
+    date = models.DateTimeField(verbose_name="date saisie")
+    remark = models.CharField(max_length=100, verbose_name="remarque")
+
+    class Meta:
+        verbose_name = "observation"
+        verbose_name_plural = "observations"
