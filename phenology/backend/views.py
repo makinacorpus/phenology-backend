@@ -1,8 +1,9 @@
 #from django.shortcuts import render
 from django.http import HttpResponse
-from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from backend.serializers import UserSerializer, GroupSerializer
+from backend import models, serializers as serializers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 # Create your views here.
@@ -10,17 +11,32 @@ def index(request):
     return HttpResponse("Hello, world")
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class ObserverViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows areas to be viewed or edited.
     """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = serializers.ObserverSerializer
+    model = models.Observer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class AreaViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows groups to be viewed or edited.
+    API endpoint that allows areas to be viewed or edited.
     """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    model = models.Area
+
+
+class IndividualViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows areas to be viewed or edited.
+    """
+    serializer_class = serializers.IndividualSerializer
+    model = models.Individual
+
+
+class SpeciesViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows areas to be viewed or edited.
+    """
+    serializer_class = serializers.SpeciesSerializer
+    model = models.Species
