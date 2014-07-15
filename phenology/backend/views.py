@@ -6,9 +6,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-# Create your views here.
-def index(request):
-    return HttpResponse("Hello, world")
+@api_view(['GET'])
+def user_settings(request):
+    serializer = serializers.ObserverSerializer(request.user.observer)
+    return Response(serializer.data)
 
 
 class ObserverViewSet(viewsets.ModelViewSet):
