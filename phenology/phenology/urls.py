@@ -13,7 +13,7 @@ router.register(r'areas', views.AreaViewSet)
 router.register(r'species', views.SpeciesViewSet)
 router.register(r'observers', views.ObserverViewSet)
 router.register(r'individuals', views.IndividualViewSet)
-#router.register(r'user_setting', views.UserSettingsViewSet)
+router.register(r'surveys', views.SurveyViewSet)
 
 urlpatterns = patterns(
     '',

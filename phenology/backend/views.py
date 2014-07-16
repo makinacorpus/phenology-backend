@@ -41,3 +41,11 @@ class SpeciesViewSet(viewsets.ModelViewSet):
     """
     serializer_class = serializers.SpeciesSerializer
     model = models.Species
+
+
+class SurveyViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows areas to be viewed or edited.
+    """
+    serializer_class = serializers.SurveySerializer
+    model = models.Survey

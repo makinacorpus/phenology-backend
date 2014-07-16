@@ -62,20 +62,6 @@ class Observer(models.Model):
     def __str__(self):
         return self.user.username
 
-"""
-#organisme
-class Organization(models.Model):
-    city = models.CharField(max_length=100, verbose_name="commune")
-    activite = models.CharField(max_length=70)
-    adresse = models.CharField(max_length=80)
-    codepostal = models.CharField(max_length=6, verbose_name="code postal")
-    nationality = models.CharField(max_length=100, verbose_name="nationalité")
-
-    class Meta:
-        verbose_name = "organisme"
-        verbose_name_plural = "organismes"
-"""
-
 ##########
 
 

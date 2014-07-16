@@ -18,15 +18,27 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 
-class IndividualSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Individual
-        exclude = ('species', 'observer', 'area')
-
-
 class StageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Stage
+
+
+class SnowingSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Snowing
+
+
+class SurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Survey
+
+
+class IndividualSerializer(serializers.ModelSerializer):
+    surveys = SurveySerializer(source="survey_set")
+
+    class Meta:
+        model = models.Individual
+        exclude = ('species', 'observer', 'area')
 
 
 class SpeciesSerializer(serializers.ModelSerializer):
@@ -37,16 +49,6 @@ class SpeciesSerializer(serializers.ModelSerializer):
         model = models.Species
         fields = ('id', 'name', 'description',
                   'pictures', 'individuals', 'stages')
-
-
-class SnowingSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = models.Snowing
-
-
-class SurveySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = models.Survey
 
 
 class SpeciesNestedSerializer(serializers.ModelSerializer):
