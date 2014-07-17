@@ -44,15 +44,46 @@ class IndividualSerializer(serializers.ModelSerializer):
 
 
 class SpeciesSerializer(serializers.ModelSerializer):
-    individuals = IndividualSerializer(source="individual_set")
+    #individuals = IndividualSerializer(source="individual_set")
     stages = StageSerializer(source="stage_set")
 
     class Meta:
         model = models.Species
         fields = ('id', 'name', 'description',
-                  'pictures', 'individuals', 'stages')
+                  'pictures', 'stages')
 
 
+class SimpleStageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Stage
+        fields = ('id',)
+
+
+# used in observers endpoint
+class IndividualNestedSerializer(serializers.ModelSerializer):
+    stages = serializers.SerializerMethodField('get_stages')
+
+    def get_stages(self, *args, **kwargs):
+        individual = args[0]
+        survey_date_minimum = datetime.date.today() - relativedelta(months=9)
+        # stages that we have surveys for this individual, surveys date can't be lower than today - 9 months
+        indiv_q = models.Stage\
+                        .objects\
+                        .filter(Q(species__individual=individual) &
+                                Q(survey__individual=individual))\
+                        .exclude(survey__date__lt=survey_date_minimum)\
+                        .select_related()
+        serializer = SimpleStageSerializer(instance=indiv_q,
+                                          many=True, context=self.context)
+        return serializer.data
+
+    class Meta:
+        model = models.Individual
+        exclude = ('species', 'observer', 'area')
+
+
+# used in observers endpoint
 class SpeciesNestedSerializer(serializers.ModelSerializer):
     individuals = serializers.SerializerMethodField('get_individuals')
 
@@ -64,18 +95,20 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
                                 & Q(species=species)
                                 & Q(area=self.context["area_target"]))\
                         .select_related()
-        serializer = IndividualSerializer(instance=indiv_q,
+        serializer = IndividualNestedSerializer(instance=indiv_q,
                                           many=True, context=self.context)
         return serializer.data
 
     class Meta:
         model = models.Species
+        exclude = ('name', 'description', 'pictures',)
 
 
+# used in observers endpoint
 class AreaNestedSerializer(serializers.ModelSerializer):
-    species = serializers.SerializerMethodField('get_species')
+    species = serializers.SerializerMethodField('get_species_for_area')
 
-    def get_species(self, *args, **kwargs):
+    def get_species_for_area(self, *args, **kwargs):
         area = args[0]
         species_q = models.Species\
                           .objects\
@@ -93,8 +126,23 @@ class AreaNestedSerializer(serializers.ModelSerializer):
 
 
 class ObserverSerializer(serializers.ModelSerializer):
+    # his user account
     user = UserSerializer(source="user", read_only=True)
+    # his areas
     areas = AreaNestedSerializer(many=True, source="areas", read_only=True)
+    # his list of species related to his individuals found
+    species = serializers.SerializerMethodField('get_species_for_observer')
     
+    def get_species_for_observer(self, *args, **kwargs):
+        observer = args[0]
+        species_q = models.Species\
+                          .objects\
+                          .filter(Q(individual__observer=observer))\
+                          .distinct()
+        serializer = SpeciesSerializer(instance=species_q,
+                                       many=True, context=self.context)
+        return serializer.data
+
     class Meta:
         model = models.Observer
+        

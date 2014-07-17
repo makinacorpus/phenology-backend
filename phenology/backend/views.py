@@ -12,6 +12,14 @@ def user_settings(request):
     return Response(serializer.data)
 
 
+@api_view(['GET', 'POST'])
+def user_surveys(request):
+    surveys = models.Survey.objects.filter(observer__user=request.user)
+    serializer = serializers.SurveySerializer(surveys)
+    return Response(serializer.data)
+
+
+#@api_view(['GET'])
 class ObserverViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows areas to be viewed or edited.
