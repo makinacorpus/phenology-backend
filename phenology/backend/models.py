@@ -102,7 +102,12 @@ class Stage(models.Model):
     species = models.ForeignKey(Species)
     month_beginning = models.IntegerField()
     order = models.IntegerField()
-    pictures = models.CharField(max_length=300)
+    picture_before = models.ImageField(upload_to='.',
+                                       default='no-img.jpg')
+    picture_current = models.ImageField(upload_to='.',
+                                        default='no-img.jpg')
+    picture_after = models.ImageField(upload_to='.',
+                                      default='no-img.jpg')
 
 
 #observation
