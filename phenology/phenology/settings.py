@@ -18,6 +18,8 @@ from django.utils.translation import gettext_lazy as _
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
