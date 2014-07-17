@@ -114,7 +114,9 @@ class Stage(models.Model):
 class Survey(models.Model):
     individual = models.ForeignKey(Individual, verbose_name="individu")
     observer = models.ForeignKey(Observer, verbose_name="observateur")
-    stage = models.CharField(max_length=300, verbose_name="stade développement")
+    stage = models.ForeignKey(Stage, verbose_name="stade de développement")
+
+    answer = models.CharField(max_length=300, verbose_name="reponse")
     date = models.DateTimeField(verbose_name="date saisie")
     remark = models.CharField(max_length=100, verbose_name="remarque")
 
