@@ -67,6 +67,7 @@ class Observer(models.Model):
 
 #individu
 class Individual(models.Model):
+    name = models.CharField(max_length=100, verbose_name="nom")
     species = models.ForeignKey(Species, verbose_name="espece")
     area = models.ForeignKey(Area, verbose_name="zone")
     observer = models.ForeignKey(Observer)
@@ -100,7 +101,12 @@ class Snowing(models.Model):
 class Stage(models.Model):
     name = models.CharField(max_length=100)
     species = models.ForeignKey(Species)
-    month_beginning = models.IntegerField()
+    date_start = models.DateField()
+    month_start = models.IntegerField()
+    day_start = models.IntegerField()
+    date_end = models.DateField()
+    month_end = models.IntegerField()
+    day_end = models.IntegerField()
     order = models.IntegerField()
     picture_before = models.ImageField(upload_to='picture/stages',
                                        default='no-img.jpg')

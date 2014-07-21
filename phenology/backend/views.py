@@ -12,7 +12,7 @@ def user_settings(request):
     return Response(serializer.data)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def user_surveys(request):
     surveys = models.Survey.objects.filter(observer__user=request.user)
     serializer = serializers.SurveySerializer(surveys)
