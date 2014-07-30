@@ -40,6 +40,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'backend',
     'rest_framework',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +81,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     )
 }
-
+DATE_FORMAT = 'iso-8601'
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -91,14 +92,12 @@ LANGUAGES = (
     ('it', _('Italia')),
     ('en', _('English'))
 )
+#AUTH_USER_MODEL = 'backend.Observer'
 
 TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+#USE_I18N = True
+#USE_L10N = True
+#USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
 
