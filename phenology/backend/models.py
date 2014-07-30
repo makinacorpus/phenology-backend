@@ -88,9 +88,9 @@ class Snowing(models.Model):
     area = models.ForeignKey(Area, verbose_name="zone observation")
     observer = models.ForeignKey(Observer, verbose_name="observateur")
     date = models.DateTimeField(verbose_name="date saise")
-    remark = models.CharField(max_length=100, verbose_name="remarque")
+    remark = models.CharField(max_length=100, verbose_name="remarque", default="", blank=True)
     height = models.FloatField(verbose_name="hauteur relevée")
-    temperature = models.FloatField(verbose_name="température relevée")
+    temperature = models.FloatField(verbose_name="température relevée", null=True, blank=True)
 
     class Meta:
         verbose_name = "enneigement"
@@ -101,12 +101,12 @@ class Snowing(models.Model):
 class Stage(models.Model):
     name = models.CharField(max_length=100)
     species = models.ForeignKey(Species)
-    date_start = models.DateField()
-    month_start = models.IntegerField()
-    day_start = models.IntegerField()
-    date_end = models.DateField()
-    month_end = models.IntegerField()
-    day_end = models.IntegerField()
+    date_start = models.DateField(blank=True, null=True)
+    month_start = models.IntegerField(blank=True, null=True)
+    day_start = models.IntegerField(blank=True, null=True)
+    date_end = models.DateField(blank=True, null=True)
+    month_end = models.IntegerField(blank=True, null=True,)
+    day_end = models.IntegerField(blank=True, null=True)
     order = models.IntegerField()
     picture_before = models.ImageField(upload_to='picture/stages',
                                        default='no-img.jpg')
@@ -115,6 +115,9 @@ class Stage(models.Model):
     picture_after = models.ImageField(upload_to='pictures/stages',
                                       default='no-img.jpg')
 
+    def __str__(self):
+        return "%s [%s] %s" % (self.name, self.species, self.order)
+
 
 #observation
 class Survey(models.Model):
@@ -122,9 +125,9 @@ class Survey(models.Model):
     observer = models.ForeignKey(Observer, verbose_name="observateur")
     stage = models.ForeignKey(Stage, verbose_name="stade de développement")
 
-    answer = models.CharField(max_length=300, verbose_name="reponse")
-    date = models.DateTimeField(verbose_name="date saisie")
-    remark = models.CharField(max_length=100, verbose_name="remarque")
+    answer = models.CharField(max_length=300, verbose_name="reponse", blank=True)
+    date = models.DateField(verbose_name="date saisie")
+    remark = models.CharField(max_length=100, verbose_name="remarque", blank=True)
 
     class Meta:
         verbose_name = "observation"
