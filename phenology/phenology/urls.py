@@ -23,7 +23,10 @@ urlpatterns = patterns(
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^user_settings', views.user_settings, name='user_settings'),
-    url(r'^user_surveys', views.user_surveys, name='user_surveys'),
+    url(r'^user_surveys/(?P<pk>\d+)', views.SurveyDetail.as_view(), name='survey-detail'),
+    url(r'^user_surveys', views.UserSurveyList.as_view(), name='user_surveys'),
+    url(r'^user_snowcover/(?P<pk>\d+)', views.SnowCoverDetail.as_view(), name='snowcover-detail'),
+    url(r'^user_snowcover', views.UserSnowCoverList.as_view(), name='user_snowcover'),
     url(r'.*', include('backend.urls'))
 
 ) + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
