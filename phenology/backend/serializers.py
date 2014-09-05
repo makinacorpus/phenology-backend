@@ -4,6 +4,7 @@ from backend import models
 from django.db.models import Q
 import datetime
 from dateutil.relativedelta import relativedelta
+import json
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -62,7 +63,7 @@ class SpeciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Species
         fields = ('id', 'name', 'description',
-                  'pictures', 'stages')
+                  'picture', 'stages')
 
 
 class SimpleStageSerializer(serializers.ModelSerializer):
@@ -116,12 +117,13 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Species
-        exclude = ('name', 'description', 'pictures',)
+        exclude = ('name', 'description', 'picture',)
 
 
 # used in observers endpoint
 class AreaNestedSerializer(serializers.ModelSerializer):
     species = serializers.SerializerMethodField('get_species_for_area')
+    geojson = serializers.SerializerMethodField('get_geojson')
 
     def get_species_for_area(self, *args, **kwargs):
         area = args[0]
@@ -135,6 +137,10 @@ class AreaNestedSerializer(serializers.ModelSerializer):
         serializer = SpeciesNestedSerializer(instance=species_q,
                                              many=True, context=self.context)
         return serializer.data
+
+    def get_geojson(self, *args, **kwargs):
+        area = args[0]
+        return json.loads(area.polygone)
 
     class Meta:
         model = models.Area
