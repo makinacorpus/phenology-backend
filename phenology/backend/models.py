@@ -13,7 +13,8 @@ from django.contrib.auth.models import User
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     description = models.CharField(max_length=500)
-    pictures = models.CharField(max_length=300)
+    picture = models.ImageField(upload_to='picture/species',
+                                       default='no-img.jpg')
 
     class Meta:
         verbose_name = "espèce"
