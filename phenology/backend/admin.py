@@ -8,8 +8,3 @@ admin.site.register(models.Observer)
 admin.site.register(models.Stage)
 admin.site.register(models.Survey)
 admin.site.register(models.Snowing)
-
-
-# Register your models here.
-#class ObserverAdmin(admin.ModelAdmin):
-#    pass

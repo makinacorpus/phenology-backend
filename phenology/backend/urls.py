@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
-from django.conf.urls import url, patterns
-from backend import views
+from django.conf.urls import patterns
 
 urlpatterns = patterns(
     '',
