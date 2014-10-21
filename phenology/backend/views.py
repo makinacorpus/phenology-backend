@@ -70,7 +70,6 @@ class SurveyDetail(generics.RetrieveUpdateDestroyAPIView):
         obj.observer = self.request.user.observer
 
 
-
 def create_sample(request):
     sampledb.create_sample_data()
     return HttpResponse("done")
