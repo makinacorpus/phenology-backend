@@ -32,6 +32,7 @@ class Area(models.Model):
     polygone = models.CharField(max_length=500, verbose_name="polygone sig")
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
+    altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     remark = models.CharField(max_length=100, verbose_name="remarque", blank=True)
     commune = models.CharField(max_length=100, verbose_name="commune")
     species = models.ManyToManyField(Species, blank=True)
@@ -74,6 +75,9 @@ class Individual(models.Model):
     observer = models.ForeignKey(Observer)
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
+    altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
+    circonference = models.FloatField(verbose_name="circonference", null=True, blank=True)
+
     remark = models.CharField(max_length=100, verbose_name="remarque")
 
     class Meta:

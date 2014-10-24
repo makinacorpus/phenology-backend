@@ -140,7 +140,10 @@ class AreaNestedSerializer(serializers.ModelSerializer):
 
     def get_geojson(self, *args, **kwargs):
         area = args[0]
-        return json.loads(area.polygone)
+        if area.polygone:
+            return json.loads(area.polygone)
+        else:
+            return ''
 
     class Meta:
         model = models.Area
