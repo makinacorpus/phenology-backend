@@ -9,8 +9,11 @@ from backend import sampledb
 
 @api_view(['GET'])
 def user_settings(request):
-    serializer = serializers.ObserverSerializer(request.user.observer)
-    return Response(serializer.data)
+    try:
+        serializer = serializers.ObserverSerializer(request.user.observer)
+        return Response(serializer.data)
+    except:
+        return HttpResponse('Observer Not found', status=403)
 
 
 @api_view(['GET', 'POST', 'PUT'])
