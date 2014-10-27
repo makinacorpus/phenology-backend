@@ -11,22 +11,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-from django.utils.translation import gettext_lazy as _
-
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-SITE_ID = 1
+from django.utils.translation import gettext_lazy as _
+
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nnnl-r$97aj3z$0e$%arv7y@uz0%yhz&0%5tlt6)%6in%+kw)n'
+SECRET_KEY = 'c9r!po=exbp_=p%uu&bm6hb*0z8brm#)9b_fy-t0+!=k0(e3mk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,6 +30,9 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Application definition
 
@@ -66,10 +65,10 @@ ROOT_URLCONF = 'phenology.urls'
 
 WSGI_APPLICATION = 'phenology.wsgi.application'
 
-SITE_SUPERUSER_ID = '343'
-SITE_SUPERUSER_USERNAME = 'admin'
-SITE_SUPERUSER_EMAIL = 'myadmin@example.com'
-SITE_SUPERUSER_PASSWORD = 'admin'  # this can be set from a secret file.
+# SITE_SUPERUSER_ID = '343'
+# SITE_SUPERUSER_USERNAME = 'admin'
+# SITE_SUPERUSER_EMAIL = 'myadmin@example.com'
+# SITE_SUPERUSER_PASSWORD = 'admin'  # this can be set from a secret file.
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -153,22 +152,22 @@ LOGGING = {
             'propagate': True,
         },
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },
         'backend': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
             'propagate': False,
         },
         'landez': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
             'propagate': False,
         },
         '': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },
@@ -176,7 +175,7 @@ LOGGING = {
 }
 
 try:
-    from settings_local import *
+    from .settings_local import *
 except ImportError:
     pass
 
