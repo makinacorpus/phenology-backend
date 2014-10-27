@@ -1,0 +1,6 @@
+SITE_ID = 1
+ALLOWED_HOSTS = []
+SECRET_KEY = 'nnnl-r$97aj3z$0e$%arv7y@uz0%yhz&0%5tlt6)%6in%+kw)n'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+TEMPLATE_DEBUG = True
