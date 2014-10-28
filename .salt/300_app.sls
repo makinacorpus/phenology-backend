@@ -66,6 +66,7 @@ user-{{cfg.name}}-{{admin}}:
                 from django.contrib.auth.models import User;User.objects.filter(username='{{admin}}').all()[0]
                 if os.path.isfile("{{data.app_root}}/salt_{{admin}}_check.py"):
                     os.unlink("{{data.app_root}}/salt_{{admin}}_check.py")
+    - template: jinja
     - mode: 700
     - user: {{cfg.user}}
     - group: {{cfg.group}}
@@ -101,6 +102,7 @@ superuser-{{cfg.name}}-{{admin}}:
                 user.save()
                 if os.path.isfile("{{data.app_root}}/salt_{{admin}}_password.py"):
                     os.unlink("{{data.app_root}}/salt_{{admin}}_password.py")
+    - template: jinja
     - mode: 700
     - user: {{cfg.user}}
     - group: {{cfg.group}}
