@@ -12,8 +12,6 @@
 # you can also merge parts of this file
 # with the relevant pillar
 
-{% set name = 'phenology' %}
-
 makina-projects.projectname:
   data:
     PROJECT: phenology
@@ -42,7 +40,7 @@ makina-projects.projectname:
       - foo:
           mail: "{adminmail}"
           password: {{salt['mc_utils.generate_stored_password'](
-                           name+'_web_admin')}}
+                           'phenology_web_admin')}}
     #db:
     #  ENGINE: 'django.db.backends.sqlite3'
     #  NAME: "{data_root}/{PROJECT}.sqlite"
@@ -63,7 +61,7 @@ makina-projects.projectname:
     py: "{py_root}/bin/python"
     USE_X_FORWARDED_HOST: True
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
-                           name+'_web_secret_key', 64)}}"
+                           'phenology_web_secret_key', 64)}}"
     # http_users:
     #   - root: foo
   env_defaults:
