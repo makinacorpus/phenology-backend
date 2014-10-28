@@ -17,6 +17,7 @@ makina-projects.projectname:
     PROJECT: phenology
     SITE_ID: 1
     app_root: "{project_root}/{PROJECT}"
+    periodicity: 0 */1 * * *
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
     domain: "{PROJECT}.mydomain.tld"
