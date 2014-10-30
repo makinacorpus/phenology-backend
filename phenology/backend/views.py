@@ -18,7 +18,8 @@ def user_settings(request):
 
 @api_view(['GET', 'POST', 'PUT'])
 def user_surveys(request):
-    surveys = models.Survey.objects.filter(observer__user=request.user)
+    areas = models.Area.objects.filter(observer__user=request.user)
+    surveys = models.Survey.objects.filter(individual__area=areas)
     serializer = serializers.SurveySerializer(surveys)
     return Response(serializer.data)
 
@@ -53,7 +54,9 @@ class UserSurveyList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return models.Survey.objects.filter(observer__user=user)
+        areas = models.Area.objects.filter(observer__user=user)
+        surveys = models.Survey.objects.filter(individual__area=areas)
+        return surveys
 
     def pre_save(self, obj):
         """

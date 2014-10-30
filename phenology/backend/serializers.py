@@ -39,7 +39,6 @@ class SurveySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Survey
-        exclude = ('observer',)
 
     def get_species(self, obj):
         return obj.individual.species.id
@@ -53,7 +52,7 @@ class IndividualSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Individual
-        exclude = ('species', 'observer', 'area')
+        exclude = ('species', 'area')
 
 
 class SpeciesSerializer(serializers.ModelSerializer):
@@ -106,8 +105,7 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
         species = args[0]
         indiv_q = models.Individual\
                         .objects\
-                        .filter(Q(observer=self.context["user_target"])
-                                & Q(species=species)
+                        .filter(Q(species=species)
                                 & Q(area=self.context["area_target"]))\
                         .select_related()
         serializer = IndividualNestedSerializer(instance=indiv_q,
@@ -129,7 +127,7 @@ class AreaNestedSerializer(serializers.ModelSerializer):
         area = args[0]
         species_q = models.Species\
                           .objects\
-                          .filter(Q(individual__observer=self.parent.object)
+                          .filter(Q(area__observer=self.parent.object)
                                   & Q(individual__area=args[0])
                                   & Q(area=area)).distinct().select_related()
         self.context["user_target"] = self.parent.object
@@ -161,7 +159,7 @@ class ObserverSerializer(serializers.ModelSerializer):
         observer = args[0]
         species_q = models.Species\
                           .objects\
-                          .filter(Q(individual__observer=observer))\
+                          .filter(Q(area__observer=observer))\
                           .distinct()
         serializer = SpeciesSerializer(instance=species_q,
                                        many=True, context=self.context)

@@ -74,7 +74,7 @@ class Individual(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     species = models.ForeignKey(Species, verbose_name="espece")
     area = models.ForeignKey(Area, verbose_name="zone")
-    observer = models.ForeignKey(Observer)
+#    observer = models.ForeignKey(Observer)
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
@@ -129,7 +129,7 @@ class Stage(models.Model):
 #observation
 class Survey(models.Model):
     individual = models.ForeignKey(Individual, verbose_name="individu")
-    observer = models.ForeignKey(Observer, verbose_name="observateur")
+#    observer = models.ForeignKey(Observer, verbose_name="observateur")
     stage = models.ForeignKey(Stage, verbose_name="stade de développement")
 
     answer = models.CharField(max_length=300, verbose_name="reponse", blank=True)
