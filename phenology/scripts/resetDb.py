@@ -6,4 +6,4 @@ def run():
     User.objects.create_superuser(username='admin',
                                   email='admin@admin.fr',
                                   password='admin')
-    create_sample_data()
+    #create_sample_data()
