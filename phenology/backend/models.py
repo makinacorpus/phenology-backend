@@ -55,7 +55,9 @@ class Observer(models.Model):
     nationality = models.CharField(max_length=100, verbose_name="nationalité")
     phone = models.CharField(max_length=20)
     is_crea = models.BooleanField(verbose_name="est un membre de crea")
+    is_active = models.BooleanField(verbose_name="est-il actif?", default=True)
     areas = models.ManyToManyField(Area, verbose_name="Zones", blank=True)
+    date_inscription = models.DateField(blank=True, null=True)
 
     class Meta:
         verbose_name = "observateur"
