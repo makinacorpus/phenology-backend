@@ -74,6 +74,7 @@ class Individual(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     species = models.ForeignKey(Species, verbose_name="espece")
     area = models.ForeignKey(Area, verbose_name="zone")
+    is_dead = models.BooleanField(verbose_name="est-il mort?", default=False)
 #    observer = models.ForeignKey(Observer)
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
@@ -87,7 +88,7 @@ class Individual(models.Model):
         verbose_name_plural = "individus"
 
     def __str__(self):
-        return "%s %s [%s]" % (self.species.name, self.area.name, self.observer)
+        return "%s %s" % (self.species.name, self.area.name)
 
 
 #enneigement
