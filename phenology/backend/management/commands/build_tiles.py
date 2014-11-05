@@ -9,7 +9,7 @@ from landez.sources import DownloadError
 from zipfile import ZipFile
 from phenology.settings import TILES_SETTINGS
 from backend import logger
-from backend.models import Area
+from backend.models import Area, Individual
 
 
 class ZipTilesBuilder(object):
@@ -103,7 +103,16 @@ class Command(BaseCommand):
         for area in Area.objects.all():
             area_file = os.path.join(self.output_folder, 'area_%s.zip' % area.id)
             tmp_area_file = area_file + '.tmp'
-            coords = [(area.lon, area.lat)]
+
+            if not (area.lon and area.lat and not(area.lon != 1 and area.lat != -1)):
+                inds = Individual.objects.filter(area=area)
+                for ind in inds:
+                    if ind.lon and ind.lat and ind.lat != 1:
+                        coords = [(ind.lon, ind.lon)]
+                        break
+            else:
+                coords = [(area.lon, area.lat)]
+
             self._build_tiles_along_coords(tmp_area_file, coords)
             remove_file(area_file)
             os.rename(tmp_area_file, area_file)
