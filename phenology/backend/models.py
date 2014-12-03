@@ -1,24 +1,73 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from backend import logger
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
+from cStringIO import StringIO
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
+import unicodedata
 # Create your models here.
 
 
 #########
 
+def create_thumb(image, size):
+    """Returns the image resized to fit inside a box of the given size"""
+    image.thumbnail(size, Image.ANTIALIAS)
+    temp = StringIO()
+    image.save(temp, 'png')
+    temp.seek(0)
+    return SimpleUploadedFile('temp', temp.read())
+
+
+def has_changed(instance, field, manager='objects'):
+    """Returns true if a field has changed in a model
+
+    May be used in a model.save() method.
+
+    """
+    if not instance.pk:
+        return True
+    manager = getattr(instance.__class__, manager)
+    old = getattr(manager.get(pk=instance.pk), field)
+    return not getattr(instance, field) == old
+
 
 #espece
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
-    description = models.CharField(max_length=500)
+    description = models.TextField(max_length=500)
     picture = models.ImageField(upload_to='picture/species',
                                        default='no-img.jpg')
+
+    def save(self, *args, **kwargs):
+        # Save this photo instance
+        if has_changed(self, 'picture') and self.picture:
+            # on va convertir l'image en jpg
+            #filename = os.path.splitext(os.path.split(self.picture.name)[-1])[0]
+            filename = "%s.png" % unicodedata.normalize('NFD', self.name).lower()
+            if(self.picture.file):
+                image = Image.open(self.picture.file)
+                """
+                if image.mode not in ('L', 'RGB'):
+                    image = image.convert('RGB')
+                """
+                # d'abord la photo elle-même
+                self.picture.save(filename,
+                                  create_thumb(image, (60, 80)),
+                                  save=False)
+        super(Species, self).save()
+
 
     class Meta:
         verbose_name = "espèce"
         verbose_name_plural = "espèces"
+
+    def __unicode__(self):
+        return self.name
 
     def __str__(self):
         return self.name
@@ -54,7 +103,7 @@ class Observer(models.Model):
     codepostal = models.CharField(max_length=6, verbose_name="code postal")
     nationality = models.CharField(max_length=100, verbose_name="nationalité")
     phone = models.CharField(max_length=20)
-    is_crea = models.BooleanField(verbose_name="est un membre de crea")
+    is_crea = models.BooleanField(verbose_name="est un membre de crea", default=False)
     is_active = models.BooleanField(verbose_name="est-il actif?", default=True)
     areas = models.ManyToManyField(Area, verbose_name="Zones", blank=True)
     date_inscription = models.DateField(blank=True, null=True)
@@ -86,6 +135,9 @@ class Individual(models.Model):
     class Meta:
         verbose_name = "individu"
         verbose_name_plural = "individus"
+
+    def __unicode__(self):
+        return "%s %s" % (self.species.name, self.area.name)
 
     def __str__(self):
         return "%s %s" % (self.species.name, self.area.name)
