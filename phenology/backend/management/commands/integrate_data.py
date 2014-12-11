@@ -51,13 +51,13 @@ class Command(BaseCommand):
             users = main_results["codes"][code]["users"]
             observers = []
             for user in users:
-                general_user = user["nom_obs"]
+                general_user = user.get("username", user["nom_obs"])
                 if not models.User.objects.filter(username=general_user):
                     user_tmp = models.User()
                     user_tmp.username = general_user
                     user_tmp.set_password(user["code"])
                     user_tmp.first_name = user["prenom_obs"]
-                    user_tmp.last_name = general_user
+                    user_tmp.last_name = user["nom_obs"]
                     user_tmp.email = user["email_obs"]
                     user_tmp.save()
                 else:
@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     observer.phone = user["tel_obs"]
                     observer.adresse = user["adresse_obs"]
                     observer.date_inscription = user["date_inscription"]
-                    observer.is_crea = True
+                    observer.is_crea = user.get("membre_crea", "non") == "oui"
                     observer.save()
                 else:
                     observer = models.Observer.objects.filter(user=user_tmp).first()
