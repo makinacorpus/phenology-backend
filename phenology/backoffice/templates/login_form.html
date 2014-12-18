@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<form method="post" style="max-width:500px;margin:auto;padding:10px;margin-top:100px;" class="form" action="{% url 'django.contrib.auth.views.login' %}">
+{% csrf_token %}
+
+  {% bootstrap_form form %}
+
+  <input type="hidden" name="next" value="{{ next }}" />
+  {% buttons %}
+    <button type="submit" class="btn btn-success">
+      {% bootstrap_icon "tree-deciduous" %} Se connecter
+    </button>
+  {% endbuttons %}
+  {% buttons %}
+    <button type="submit" class="btn btn-default">
+      S'inscrire
+    </button>
+    <button type="submit" class="btn btn-default">
+      Mot de passe oublié
+    </button>
+  {% endbuttons %}
+</form>
+
+{% endblock %}
