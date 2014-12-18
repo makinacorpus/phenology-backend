@@ -81,7 +81,7 @@ class Area(models.Model):
     lat = models.FloatField(verbose_name="lattitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
-    remark = models.CharField(max_length=100, verbose_name="remarque", blank=True)
+    remark = models.TextField(max_length=100, verbose_name="remarque", blank=True)
     commune = models.CharField(max_length=100, verbose_name="commune")
     species = models.ManyToManyField(Species, blank=True)
 
@@ -93,16 +93,40 @@ class Area(models.Model):
     def __str__(self):
         return "Area : %s [%s]" % (self.name, self.commune)
 
+    def geojson(self, full=False):
+        return {
+            "type": "Point",
+            "coordinates": [self.lon, self.lat],
+            "properties": {
+                "object": "area",
+                "name": self.name,
+                "id": self.id
+            }
+        }
+
+    def getAllGeojson(self):
+        geojson = {
+            "type": "FeatureCollection",
+            "features": []
+        }
+        if(self.lon and self.lat):
+            geojson["features"].append(self.geojson())
+
+        for ind in self.individual_set.all():
+            geojson["features"].append(ind.geojson())
+        return geojson
+
 
 #observateur
 class Observer(models.Model):
     user = models.OneToOneField(User)
     city = models.CharField(max_length=100, verbose_name="commune")
     fonction = models.CharField(max_length=70)
-    adresse = models.CharField(max_length=80)
-    codepostal = models.CharField(max_length=6, verbose_name="code postal")
+    adresse = models.TextField(max_length=80)
+    codepostal = models.IntegerField(verbose_name="code postal")
     nationality = models.CharField(max_length=100, verbose_name="nationalité")
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20, verbose_name="téléphone")
+    mobile = models.CharField(max_length=20, verbose_name="mobile")
     is_crea = models.BooleanField(verbose_name="est un membre de crea", default=False)
     is_active = models.BooleanField(verbose_name="est-il actif?", default=True)
     areas = models.ManyToManyField(Area, verbose_name="Zones", blank=True)
