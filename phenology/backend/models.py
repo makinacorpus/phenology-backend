@@ -63,6 +63,7 @@ class Species(models.Model):
     class Meta:
         verbose_name = "espèce"
         verbose_name_plural = "espèces"
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name
@@ -87,6 +88,7 @@ class Area(models.Model):
     class Meta:
         verbose_name = "zone observation"
         verbose_name_plural = "zones observation"
+        ordering = ['name']
 
     def __str__(self):
         return "Area : %s [%s]" % (self.name, self.commune)
@@ -133,6 +135,7 @@ class Individual(models.Model):
     class Meta:
         verbose_name = "individu"
         verbose_name_plural = "individus"
+        ordering = ['species', 'name']
 
     def __unicode__(self):
         return "%s %s" % (self.species.name, self.area.name)
@@ -190,4 +193,5 @@ class Survey(models.Model):
     class Meta:
         verbose_name = "observation"
         verbose_name_plural = "observations"
+        ordering = ["-date"]
 
