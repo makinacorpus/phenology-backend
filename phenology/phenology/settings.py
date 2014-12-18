@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 """
 Django settings for phenology-backend project.
@@ -35,9 +36,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Application definition
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 
 INSTALLED_APPS = (
     'backend',
+    'backoffice',
+    'registration_defaults',
+    'bootstrap3',
+    'registration',
     'rest_framework',
     'django_extensions',
     'django.contrib.admin',
@@ -60,6 +66,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
+)
+
+# Default settings
+BOOTSTRAP3 = {
+    'horizontal_label_class': 'col-md-3',
+    'horizontal_field_class': 'col-md-8',
+}
 
 ROOT_URLCONF = 'phenology.urls'
 
@@ -108,8 +124,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TILES_SETTINGS = {
     'TILES_RADIUS_LARGE': 0.01,  # ~1 km
