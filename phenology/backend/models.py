@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from backend import logger
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from cStringIO import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
-import os
 import unicodedata
 # Create your models here.
 
@@ -41,7 +39,7 @@ class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     description = models.TextField(max_length=500)
     picture = models.ImageField(upload_to='picture/species',
-                                       default='no-img.jpg')
+                                default='no-img.jpg')
 
     def save(self, *args, **kwargs):
         # Save this photo instance
@@ -125,7 +123,7 @@ class Individual(models.Model):
     area = models.ForeignKey(Area, verbose_name="zone")
     is_dead = models.BooleanField(verbose_name="est-il mort?", default=False)
 #    observer = models.ForeignKey(Observer)
-    lat = models.FloatField(verbose_name="lattitude")
+    lat = models.FloatField(verbose_name="latitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     circonference = models.FloatField(verbose_name="circonference", null=True, blank=True)
