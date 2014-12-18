@@ -139,6 +139,15 @@ class Observer(models.Model):
     def __str__(self):
         return self.user.username
 
+    def getAllGeojson(self):
+        geojson = {
+            "type": "FeatureCollection",
+            "features": [],
+        }
+        for area in self.areas.all():
+            geojson["features"].append(area.getAllGeojson())
+        return geojson
+
 ##########
 
 
@@ -166,6 +175,32 @@ class Individual(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.species.name, self.area.name)
+
+    def geojson(self, draggable=False):
+        return {
+            "type": "Point",
+            "coordinates": [self.lon, self.lat],
+            "properties": {
+                "object": "individual",
+                "name": self.name,
+                "id": self.id,
+                "draggable": draggable
+            }
+        }
+
+    def getAllGeojson(self):
+        geojson = {
+            "type": "FeatureCollection",
+            "features": [],
+        }
+        if self.lat and self.lon:
+            geojson["features"].append(self.geojson(draggable=True))
+        geojson["features"].append(self.area.geojson())
+        return geojson
+
+    def lastSurvey(self):
+        last_survey = self.survey_set.first()
+        return last_survey
 
 
 #enneigement
