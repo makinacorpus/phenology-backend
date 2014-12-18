@@ -13,6 +13,8 @@ print base_path
 urls = patterns(
     '',
     url(r'^$', views.index, name='home'),
+    url(r'^profile', views.user_detail, name='profile'),
+    url(r'^register', views.register_user, name='register'),
     url(r'^password_change',
         'django.contrib.auth.views.password_change',
         {'template_name': base_path + '/templates/generic_form.html'}),

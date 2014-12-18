@@ -16,3 +16,47 @@ from django.contrib import messages
 @login_required(login_url='login/')
 def index(request):
     return render(request, 'board.html')
+
+
+@login_required(login_url='login/')
+def user_detail(request):
+
+    if request.POST:
+        form = AccountForm(request.POST,
+                           instance=request.user.observer)
+        if form.is_valid():
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 'Form is successifully updated')
+            form.save()
+        else:
+            print form.errors
+    else:
+        form = AccountForm(instance=request.user.observer)
+
+    return render_to_response("profile.html", {
+        "form": form,
+    }, RequestContext(request))
+
+
+def register_user(request):
+    if request.user:
+        return redirect(index)
+
+    if request.POST:
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 'Form is successifully updated')
+            form.save()
+        else:
+            print form.errors
+    else:
+        instance = models.Observer()
+        instance.user = User()
+        form = AccountForm(instance=instance)
+
+    return render_to_response("generic_form.html", {
+        "form": form,
+    }, RequestContext(request))

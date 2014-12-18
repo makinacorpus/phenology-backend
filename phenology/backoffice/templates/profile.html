@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block content %}
+<div class="row  table-row">
+
+  <div class="col-md-5  table-col">
+
+    <form method="post" class="form-horizontal" role="form">
+      {% csrf_token %}
+      {% bootstrap_form form layout='horizontal' %}
+      {% buttons %}
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+          Validé
+        </button>
+      {% endbuttons %}
+        <a href="password_change" class="btn btn-link btn-lg">
+          Changer le mot de passe
+        </a>
+    </form>
+
+  </div>
+
+  <div class="col-md-7 table-col">
+    <div id="map"></div>
+
+    <h4><u>Mes zones :</u></h4>
+
+    <table class="table table-striped mytable table-bordered">
+      <tr>
+        <th></th>
+        <th>Nom</th>
+        <th>Commune</th>
+      </tr>
+      {% for area in user.observer.areas.all %}
+        <tr>
+          <td width="10px"> 
+            <a href="{% url 'area-detail' area.id %}" class="btn btn-default">
+              {% bootstrap_icon "pencil" %}
+            </a>
+          </td>
+          <td>{{ area.name }}</td>
+          <td width="40%">{{ area.commune }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% buttons %}
+      <a href="{% url 'area-detail' %}" class="pull-right btn btn-primary">
+        {% bootstrap_icon "plus" %} Ajouter une nouvelle zone d'étude
+      </a>
+    {% endbuttons %}
+    </div>
+ </div>
+
+{% endblock %}
