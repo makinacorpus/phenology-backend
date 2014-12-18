@@ -47,6 +47,55 @@ def area_detail(request, area_id=-1):
 
 
 @login_required(login_url='login/')
+def individual_detail(request, ind_id=-1):
+    individual = models.Individual.objects.filter(id=ind_id).first()
+    if not individual:
+        individual = models.Individual()
+        area_id = request.GET.get("area_id")
+        area = models.Area.objects.get(id=area_id)
+        individual.area = area
+        individual.lat = area.lat
+        individual.lon = area.lon
+
+    surveys = sorted(individual.survey_set.all(),
+                     key=lambda survey: survey.date,
+                     reverse=True)
+    surveys = surveys[:8]
+
+    if individual.id:
+        if request.user.observer in individual.area.observer_set.all():
+            if request.POST:
+                form = IndividualForm(request.POST, instance=individual)
+                if form.is_valid():
+                    messages.add_message(request,
+                                         messages.SUCCESS,
+                                         'Form is successifully updated')
+                    form.save()
+            else:
+                form = IndividualForm(instance=individual)
+        else:
+            messages.add_message(request,
+                                 messages.WARNING,
+                                 'Your are not allowed to see this form')
+            return redirect(index)
+    else:
+        if request.POST:
+            form = CreateIndividualForm(request.POST, instance=individual)
+            if form.is_valid():
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     'Form is successifully updated')
+                form.save()
+        else:
+            form = CreateIndividualForm(instance=individual)
+
+    return render_to_response("profile_individual.html", {
+        "form": form,
+        "surveys": surveys
+    }, RequestContext(request))
+
+
+@login_required(login_url='login/')
 def user_detail(request):
 
     if request.POST:

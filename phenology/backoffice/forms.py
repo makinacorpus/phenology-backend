@@ -45,3 +45,22 @@ class AreaForm(forms.ModelForm):
         widgets = {
           'remark': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+class CreateIndividualForm(forms.ModelForm):
+    class Meta:
+        exclude = ('is_dead',)
+        model = models.Individual
+        widgets = {
+          'remark': forms.Textarea(attrs={'rows': 4}),
+          'area': forms.HiddenInput()
+        }
+
+
+class IndividualForm(CreateIndividualForm):
+    class Meta:
+        exclude = ('area',)
+        model = models.Individual
+        widgets = {
+          'remark': forms.Textarea(attrs={'rows': 4}),
+        }

@@ -28,6 +28,8 @@ urls = patterns(
         name='logout'),
     url(r'^area/create$', views.area_detail, name='area-detail'),
     url(r'^area/(?P<area_id>\d+)', views.area_detail, name='area-detail'),
+    url(r'^individual/create$', views.individual_detail, name='individual-detail'),
+    url(r'^individual/(?P<ind_id>\d+)', views.individual_detail, name='individual-detail'),
     # Examples:
 )
 # vim:set et sts=4 ts=4 tw=80:
