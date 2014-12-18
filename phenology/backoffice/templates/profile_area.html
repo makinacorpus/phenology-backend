@@ -9,7 +9,11 @@
   <div class="row  table-row">
 
     <div class="col-md-5  table-col">
-
+      {% buttons %}
+        <a href="{% url 'profile' %}" class="btn btn-default">
+          Retour sur mon profil
+        </a>
+      {% endbuttons %}
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}

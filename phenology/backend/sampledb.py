@@ -368,7 +368,8 @@ def create_sample_data():
                         stage.get("date_end"), "%Y/%m/%d")
                 stage_tmp.order = stage["order"]
                 stage_tmp.save()
-    species_tmp.save()
+        species_tmp.save()
+
     for area in demo_data["areas"]:
         if not models.Area.objects.filter(name=area["name"]):
             area_tmp = models.Area()

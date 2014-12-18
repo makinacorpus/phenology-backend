@@ -29,7 +29,7 @@ def area_detail(request, area_id=-1):
     if not area:
         area = models.Area()
 
-    if area_id == 1 or request.user.observer in area.observer_set.all():
+    if area_id == -1 or request.user.observer in area.observer_set.all():
         if request.POST:
             form = AreaForm(request.POST, instance=area)
             if form.is_valid():

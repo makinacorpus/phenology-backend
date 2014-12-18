@@ -7,7 +7,11 @@
 {% block content %}
   <div class="row  table-row">
     <div class="col-md-5  table-col">
-
+      {% buttons %}
+        <a href="{% url 'home' %}area/{{ form.instance.area.id }}" class="btn btn-default">
+          Retour sur la zone d'observation
+        </a>
+      {% endbuttons %}
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
