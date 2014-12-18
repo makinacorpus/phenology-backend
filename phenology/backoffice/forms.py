@@ -36,3 +36,12 @@ class AccountForm(forms.ModelForm):
         widgets = {
           'adresse': forms.Textarea(attrs={'rows': 2}),
         }
+
+
+class AreaForm(forms.ModelForm):
+    class Meta:
+        model = models.Area
+        exclude = ('species', 'polygone', 'codezone')
+        widgets = {
+          'remark': forms.Textarea(attrs={'rows': 4}),
+        }

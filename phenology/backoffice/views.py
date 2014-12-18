@@ -19,6 +19,34 @@ def index(request):
 
 
 @login_required(login_url='login/')
+def register(request):
+    return render(request, 'board.html')
+
+
+@login_required(login_url='login/')
+def area_detail(request, area_id=-1):
+    area = models.Area.objects.filter(id=area_id).first()
+    if not area:
+        area = models.Area()
+
+    if area_id == 1 or request.user.observer in area.observer_set.all():
+        if request.POST:
+            form = AreaForm(request.POST, instance=area)
+            if form.is_valid():
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     'Form is successifully updated')
+                form.save()
+        else:
+            form = AreaForm(instance=area)
+        return render_to_response("profile_area.html", {
+            "form": form,
+        }, RequestContext(request))
+    else:
+        return redirect(index)
+
+
+@login_required(login_url='login/')
 def user_detail(request):
 
     if request.POST:

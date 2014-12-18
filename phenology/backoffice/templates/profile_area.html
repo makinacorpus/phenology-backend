@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}{% if not form.instance.id %}Nouvelle {% endif %} Zone {{ form.instance.name }}{% endblock %}
+
+{% block content %}
+
+  <div class="row  table-row">
+
+    <div class="col-md-5  table-col">
+
+      <form method="post" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            Validé
+          </button>
+        {% endbuttons %}
+          <a rel="change_position" class="btn btn-link btn-lg">
+            Changer la position du cercle
+          </a>
+      </form>
+
+    </div>
+
+    <div class="col-md-7 table-col" style="position:relative">
+
+      <div id="map"></div>
+      {% if form.instance.id %}
+        <h4>Individus</h4>
+
+        <table class="table table-striped mytable table-bordered">
+          <tr>
+            <th></th>
+            <th>Nom</th>
+            <th>Espece</th>
+            <th>Dernière saisie</th>
+          </tr>
+
+          {% for individual in form.instance.individual_set.all %}
+            <tr>
+              <td width="10px"> 
+                <a href="{% url 'individual-detail' individual.id %}" class="btn btn-default">
+                  {% bootstrap_icon "pencil" %}
+                </a>
+              </td>
+              <td>{{ individual.name }}</td>
+              <td>{{ individual.species.name }}</td>
+              <td>{% if individual.lastSurvey %}{{ individual.lastSurvey.stage.name }}  -  {{ individual.lastSurvey.date|date:'d M Y' }}{% endif %}</td>
+            </tr>
+          {% endfor %}
+
+        </table>
+
+        {% buttons %}
+          <a href="{% url 'individual-detail' %}?area_id={{ form.instance.id }}" class="pull-right btn btn-primary">
+            {% bootstrap_icon "plus" %} Ajouter un nouvel individu à la zone d'observation
+          </a>
+        {% endbuttons %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
