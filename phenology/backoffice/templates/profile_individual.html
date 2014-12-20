@@ -1,15 +1,21 @@
 {% extends "base.html" %}
-
+{% load i18n %}
 {% load bootstrap3 %}
 
-{% block title %}{% if not form.instance.id %}Nouvel {% endif %} Individu {{ form.instance.name }}{% endblock %}
+{% block title %}
+  {% if not form.instance.id %} 
+    {% trans "New area" %} 
+  {% else %} 
+    {% trans "Individual" %}
+  {% endif %} {{ form.instance.name }}
+{% endblock %}
 
 {% block content %}
   <div class="row  table-row">
     <div class="col-md-5  table-col">
       {% buttons %}
         <a href="{% url 'home' %}area/{{ form.instance.area.id }}" class="btn btn-default">
-          Retour sur la zone d'observation
+          {% trans "Back to the area" %}
         </a>
       {% endbuttons %}
       <form method="post" class="form-horizontal" role="form">
@@ -17,7 +23,7 @@
         {% bootstrap_form form layout='horizontal' %}
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg btn-block">
-            Validé
+            {% trans "Validate" %}
           </button>
           <!--<a data-rel="individual" data-id="{{ formset.instance.id }}" class="change_position btn btn-link btn-lg">
             Changer la position de l'individu
@@ -33,19 +39,19 @@
     
     {% if form.instance.id %}
 
-      <h4><u>Dernières observations :</u></h4>
+      <h4><u>{% trans "Last surveys" %} :</u></h4>
 
       <table class="table table-striped mytable table-bordered">
         <tr>
           <th></th>
-          <th>Nom</th>
-          <th>Espece</th>
+          <th>{% trans "name" %}</th>
+          <th>{% trans "Species" %}</th>
         </tr>
 
         {% for survey in surveys %}
           <tr>
             <td width="10px"> 
-              <a href="change-password" class="btn btn-default">
+              <a href="{% url 'survey-form' survey.id %}" class="btn btn-default">
                 {% bootstrap_icon "pencil" %}
               </a>
             </td>
@@ -58,7 +64,7 @@
 
       {% buttons %}
         <a href="change-password" class="pull-right btn btn-primary">
-          {% bootstrap_icon "plus" %} Ajouter une observation sur cette individu
+          {% bootstrap_icon "plus" %} {% trans "Add a new survey" %}
         </a>
       {% endbuttons %}
 

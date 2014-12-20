@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% load bootstrap3 %}
 
-{% block title %}Mon Profil{% endblock %}
+{% block title %} {% trans 'My profil' %} {% endblock %}
 
 {% block content %}
 <div class="row  table-row">
@@ -14,11 +15,11 @@
       {% bootstrap_form form layout='horizontal' %}
       {% buttons %}
         <button type="submit" class="btn btn-primary btn-lg btn-block">
-          Validé
+          {% trans 'Validate' %}
         </button>
       {% endbuttons %}
         <a href="password_change" class="btn btn-link btn-lg">
-          Changer le mot de passe
+          {% trans 'Change password' %}
         </a>
     </form>
 
@@ -27,13 +28,13 @@
   <div class="col-md-7 table-col">
     <div id="map"></div>
 
-    <h4><u>Mes zones :</u></h4>
+    <h4><u>{% trans "My Areas" %} :</u></h4>
 
     <table class="table table-striped mytable table-bordered">
       <tr>
         <th></th>
-        <th>Nom</th>
-        <th>Commune</th>
+        <th>{% trans "name" %}</th>
+        <th>{% trans "city" %}</th>
       </tr>
       {% for area in user.observer.areas.all %}
         <tr>
@@ -49,7 +50,7 @@
     </table>
     {% buttons %}
       <a href="{% url 'area-detail' %}" class="pull-right btn btn-primary">
-        {% bootstrap_icon "plus" %} Ajouter une nouvelle zone d'étude
+        {% bootstrap_icon "plus" %} {% trans "Add a new area" %}
       </a>
     {% endbuttons %}
     </div>

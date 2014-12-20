@@ -5,7 +5,7 @@
 {% block content %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p>{{ form.erros }}</p>
 {% endif %}
 
 <form method="post" style="max-width:500px;margin:auto;padding:10px;" class="form" action="{% url 'django.contrib.auth.views.password_change' %}">
@@ -14,7 +14,7 @@
   {% bootstrap_form form %}
   {% buttons %}
     <button type="submit" class="btn btn-primary">
-      {% bootstrap_icon "tree-deciduous" %} Validé
+      {% bootstrap_icon "tree-deciduous" %} {% trans 'Validate' % }
     </button>
   {% endbuttons %}
 </form>

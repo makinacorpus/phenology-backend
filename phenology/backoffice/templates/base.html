@@ -2,7 +2,7 @@
 	{% load bootstrap3 %}
   {% load staticfiles %}
   {% load json_filters %}
-
+  {% load i18n %}
 	{# Load CSS and JavaScript #}
 	{% bootstrap_css %}
   {% bootstrap_javascript jquery=1 %}
@@ -16,7 +16,7 @@
         geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
       }
     </script>
-   <body>  
+   <body> 
        {% include "navigation.html" %}
        {% bootstrap_messages messages %}
      <div class="container-fluid">

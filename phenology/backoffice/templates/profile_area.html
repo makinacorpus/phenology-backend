@@ -1,8 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% load bootstrap3 %}
 
-{% block title %}{% if not form.instance.id %}Nouvelle {% endif %} Zone {{ form.instance.name }}{% endblock %}
+{% block title %}
+  {% if not form.instance.id %} 
+    {% trans "New area" %} 
+  {% else %} 
+    {% trans "Area" %}
+  {% endif %} {{ form.instance.name }}
+{% endblock %}
 
 {% block content %}
 
@@ -11,7 +18,7 @@
     <div class="col-md-5  table-col">
       {% buttons %}
         <a href="{% url 'profile' %}" class="btn btn-default">
-          Retour sur mon profil
+          {% trans "Back to my profile" %}
         </a>
       {% endbuttons %}
       <form method="post" class="form-horizontal" role="form">
@@ -19,11 +26,11 @@
         {% bootstrap_form form layout='horizontal' %}
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg btn-block">
-            Validé
+            {% trans "Validate" %}
           </button>
         {% endbuttons %}
           <a rel="change_position" class="btn btn-link btn-lg">
-            Changer la position du cercle
+            {% trans "Change center position" %}
           </a>
       </form>
 
@@ -33,14 +40,14 @@
 
       <div id="map"></div>
       {% if form.instance.id %}
-        <h4>Individus</h4>
+        <h4>{% trans "Indivuals" %}</h4>
 
         <table class="table table-striped mytable table-bordered">
           <tr>
             <th></th>
-            <th>Nom</th>
-            <th>Espece</th>
-            <th>Dernière saisie</th>
+            <th>{% trans "name" %}</th>
+            <th>{% trans "Species" %}</th>
+            <th>{% trans "Last survey" %}</th>
           </tr>
 
           {% for individual in form.instance.individual_set.all %}
@@ -60,7 +67,7 @@
 
         {% buttons %}
           <a href="{% url 'individual-detail' %}?area_id={{ form.instance.id }}" class="pull-right btn btn-primary">
-            {% bootstrap_icon "plus" %} Ajouter un nouvel individu à la zone d'observation
+            {% bootstrap_icon "plus" %} {% trans "Add a new individual" %}
           </a>
         {% endbuttons %}
       {% endif %}
