@@ -41,6 +41,7 @@ ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, us
 INSTALLED_APPS = (
     'backend',
     'backoffice',
+    'phenology',
     'registration_defaults',
     'bootstrap3',
     'registration',
@@ -65,10 +66,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
+    'django.core.context_processors.i18n'
 )
 
 # Default settings
@@ -106,19 +109,29 @@ DATE_FORMAT = 'iso-8601'
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'fr'
+#LANGUAGE_CODE = 'fr'
+
+from django.utils.translation import gettext_lazy as _
 
 LANGUAGES = (
-    ('fr', _('Français')),
-    ('it', _('Italia')),
-    ('en', _('English'))
+    ('fr', _('french')),
+    ('it', _('italian')),
+    ('en', _('english'))
 )
 #AUTH_USER_MODEL = 'backend.Observer'
 
-TIME_ZONE = 'UTC'
-#USE_I18N = True
-#USE_L10N = True
+TIME_ZONE = 'Europe/Paris'
+LANGUAGE_CODE = 'fr'
+SITE_ID = 1
+DEFAULT_LANGUAGE = 1
+USE_I18N = True
+USE_L10N = True
 #USE_TZ = True
+
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 CORS_ORIGIN_ALLOW_ALL = True
 
