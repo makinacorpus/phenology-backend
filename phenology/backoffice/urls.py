@@ -13,23 +13,37 @@ print base_path
 urls = patterns(
     '',
     url(r'^$', views.index, name='home'),
+
     url(r'^profile', views.user_detail, name='profile'),
     url(r'^register', views.register_user, name='register'),
+
     url(r'^password_change',
         'django.contrib.auth.views.password_change',
         {'template_name': base_path + '/templates/generic_form.html'}),
-    url(r'^password_change/done', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
+    url(r'^password_change/done',
+        'django.contrib.auth.views.password_change_done',
+        name='password_change_done'),
+
     url(r'^login',
         'django.contrib.auth.views.login',
-        {'template_name': base_path + '/templates/login_form.html'}, name='login'),
+        {'template_name': base_path + '/templates/login_form.html'},
+        name='login'),
     url(r'^logout',
         'django.contrib.auth.views.logout',
         {"next_page": reverse_lazy('home')},
         name='logout'),
+
     url(r'^area/create$', views.area_detail, name='area-detail'),
     url(r'^area/(?P<area_id>\d+)', views.area_detail, name='area-detail'),
-    url(r'^individual/create$', views.individual_detail, name='individual-detail'),
-    url(r'^individual/(?P<ind_id>\d+)', views.individual_detail, name='individual-detail'),
+
+    url(r'^individual/create$', views.individual_detail,
+        name='individual-detail'),
+    url(r'^individual/(?P<ind_id>\d+)', views.individual_detail,
+        name='individual-detail'),
+
+    url(r'^survey/create$', views.survey_detail, name='survey-form'),
+    url(r'^survey/(?P<survey_id>\d+)', views.survey_detail,
+        name='survey-form'),
     # Examples:
 )
 # vim:set et sts=4 ts=4 tw=80:
