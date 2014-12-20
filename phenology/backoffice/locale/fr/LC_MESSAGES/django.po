@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-20 03:24+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: views.py:38 views.py:72 views.py:87 views.py:111 views.py:132 views.py:153
+msgid "Form is successifully updated"
+msgstr "L'enregistrement s'est bien effectué"
+
+#: views.py:79
+msgid "Your are not allowed to see this form"
+msgstr "Vous n'êtes pas autorisé à voir cette page"
+
+#: templates/login_form.html:10
+msgid "Your username and password didn't match. Please try again."
+msgstr "Votre identifiant et votre mot de passe ne correspondent pas. Réessayez s'il vous plait."
+
+#: templates/login_form.html:21
+msgid "Connect"
+msgstr "Se connecter"
+
+#: templates/login_form.html:26
+msgid "Register"
+msgstr "S'inscrire"
+
+#: templates/login_form.html:29
+msgid "Missed password"
+msgstr "Mot de passe oublié"
+
+#: templates/navigation.html:15
+msgid "My Profil"
+msgstr "Mon profil"
+
+#: templates/navigation.html:18
+msgid "My surveys"
+msgstr "Mes observations"
+
+#: templates/navigation.html:20
+msgid "All surveys"
+msgstr "Toutes les observations"
+
+#: templates/navigation.html:26
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: templates/navigation.html:28
+msgid "Login"
+msgstr "Se connecter"
+
+#: templates/profile.html:6
+msgid "My profil"
+msgstr "Mon profile"
+
+#: templates/profile.html:18 templates/profile_area.html:29
+#: templates/profile_individual.html:26
+msgid "Validate"
+msgstr "Valider"
+
+#: templates/profile.html:22
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+#: templates/profile.html:31
+msgid "My Areas"
+msgstr "Mes zones d'observations"
+
+#: templates/profile.html:36 templates/profile_area.html:48
+#: templates/profile_individual.html:47
+msgid "name"
+msgstr "Nom"
+
+#: templates/profile.html:37
+msgid "city"
+msgstr "commune"
+
+#: templates/profile.html:53
+msgid "Add a new area"
+msgstr "Ajouter une nouvelle zone d'observation"
+
+#: templates/profile_area.html:8 templates/profile_individual.html:7
+msgid "New area"
+msgstr "Nouvelle zone d'observation"
+
+#: templates/profile_area.html:10
+msgid "Area"
+msgstr "Zone d'observation"
+
+#: templates/profile_area.html:21
+msgid "Back to my profile"
+msgstr "Retour sur mon profil"
+
+#: templates/profile_area.html:33
+msgid "Change center position"
+msgstr "Changer le centre de la zone"
+
+#: templates/profile_area.html:43
+msgid "Indivuals"
+msgstr "Individus"
+
+#: templates/profile_area.html:49 templates/profile_individual.html:48
+msgid "Species"
+msgstr "Espèce"
+
+#: templates/profile_area.html:50
+msgid "Last survey"
+msgstr "Dernière observation"
+
+#: templates/profile_area.html:70
+msgid "Add a new individual"
+msgstr "Ajouter un nouvel individu"
+
+#: templates/profile_individual.html:9
+msgid "Individual"
+msgstr "Individu"
+
+#: templates/profile_individual.html:18
+msgid "Back to the area"
+msgstr "Retour sur la zone"
+
+#: templates/profile_individual.html:42
+msgid "Last surveys"
+msgstr "Dernières observations"
+
+#: templates/profile_individual.html:67
+msgid "Add a new survey"
+msgstr "Saisir une nouvelle observation"
