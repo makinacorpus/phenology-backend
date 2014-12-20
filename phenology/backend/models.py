@@ -7,6 +7,8 @@ from PIL import Image
 from cStringIO import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
 import unicodedata
+from django.utils.translation import ugettext_lazy as _
+
 # Create your models here.
 
 
@@ -59,10 +61,9 @@ class Species(models.Model):
                                   save=False)
         super(Species, self).save()
 
-
     class Meta:
-        verbose_name = "espèce"
-        verbose_name_plural = "espèces"
+        verbose_name = _("Species")
+        verbose_name_plural = _("species")
         ordering = ['name']
 
     def __unicode__(self):
@@ -75,19 +76,19 @@ class Species(models.Model):
 
 #zone:
 class Area(models.Model):
-    name = models.CharField(max_length=100, verbose_name="nom")
-    codezone = models.CharField(max_length=20, verbose_name="code zone")
-    polygone = models.CharField(max_length=500, verbose_name="polygone sig")
-    lat = models.FloatField(verbose_name="lattitude")
+    name = models.CharField(max_length=100, verbose_name=_("name"))
+    codezone = models.CharField(max_length=20, verbose_name=_("codezone"))
+    polygone = models.CharField(max_length=500, verbose_name=_("polygon"))
+    lat = models.FloatField(verbose_name="latitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
-    remark = models.TextField(max_length=100, verbose_name="remarque", blank=True)
-    commune = models.CharField(max_length=100, verbose_name="commune")
-    species = models.ManyToManyField(Species, blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
+    commune = models.CharField(max_length=100, verbose_name=_("city"))
+    species = models.ManyToManyField(Species, blank=True, verbose_name=_("species"))
 
     class Meta:
-        verbose_name = "zone observation"
-        verbose_name_plural = "zones observation"
+        verbose_name = _("Area")
+        verbose_name_plural = _("Areas")
         ordering = ['name']
 
     def __str__(self):
@@ -120,21 +121,21 @@ class Area(models.Model):
 #observateur
 class Observer(models.Model):
     user = models.OneToOneField(User)
-    city = models.CharField(max_length=100, verbose_name="commune")
-    fonction = models.CharField(max_length=70)
-    adresse = models.TextField(max_length=80)
-    codepostal = models.IntegerField(verbose_name="code postal")
-    nationality = models.CharField(max_length=100, verbose_name="nationalité")
-    phone = models.CharField(max_length=20, verbose_name="téléphone")
-    mobile = models.CharField(max_length=20, verbose_name="mobile")
-    is_crea = models.BooleanField(verbose_name="est un membre de crea", default=False)
-    is_active = models.BooleanField(verbose_name="est-il actif?", default=True)
-    areas = models.ManyToManyField(Area, verbose_name="Zones", blank=True)
-    date_inscription = models.DateField(blank=True, null=True)
+    city = models.CharField(max_length=100, verbose_name=_("city"))
+    fonction = models.CharField(max_length=70, verbose_name=_("fonction"))
+    adresse = models.TextField(max_length=80, verbose_name=_("adresse"))
+    codepostal = models.IntegerField(verbose_name=_("codepostal"))
+    nationality = models.CharField(max_length=100, verbose_name=_("nationality"))
+    phone = models.CharField(max_length=20, verbose_name=_("phone"))
+    mobile = models.CharField(max_length=20, verbose_name=_("mobile"))
+    is_crea = models.BooleanField(verbose_name=_("is a crea member ?"), default=False)
+    is_active = models.BooleanField(verbose_name=_("is activated?"), default=True)
+    areas = models.ManyToManyField(Area, verbose_name=_("Areas"), blank=True)
+    date_inscription = models.DateField(blank=True, null=True, verbose_name=_("Date joined"))
 
     class Meta:
-        verbose_name = "observateur"
-        verbose_name_plural = "observateurs"
+        verbose_name = _("Observer")
+        verbose_name_plural = _("Observers")
 
     def __str__(self):
         return self.user.username
@@ -153,21 +154,20 @@ class Observer(models.Model):
 
 #individu
 class Individual(models.Model):
-    name = models.CharField(max_length=100, verbose_name="nom")
-    species = models.ForeignKey(Species, verbose_name="espece")
-    area = models.ForeignKey(Area, verbose_name="zone")
-    is_dead = models.BooleanField(verbose_name="est-il mort?", default=False)
-#    observer = models.ForeignKey(Observer)
+    name = models.CharField(max_length=100, verbose_name=_("name"))
+    species = models.ForeignKey(Species, verbose_name=_("Species"))
+    area = models.ForeignKey(Area, verbose_name=_("Area"))
+    is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
     lat = models.FloatField(verbose_name="latitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     circonference = models.FloatField(verbose_name="circonference", null=True, blank=True)
 
-    remark = models.CharField(max_length=100, verbose_name="remarque")
+    remark = models.CharField(max_length=100, verbose_name=_("remark"))
 
     class Meta:
-        verbose_name = "individu"
-        verbose_name_plural = "individus"
+        verbose_name = _("individual")
+        verbose_name_plural = _("individuals")
         ordering = ['species', 'name']
 
     def __unicode__(self):
@@ -205,35 +205,42 @@ class Individual(models.Model):
 
 #enneigement
 class Snowing(models.Model):
-    area = models.ForeignKey(Area, verbose_name="zone observation")
-    observer = models.ForeignKey(Observer, verbose_name="observateur")
-    date = models.DateTimeField(verbose_name="date saise")
-    remark = models.CharField(max_length=100, verbose_name="remarque", default="", blank=True)
-    height = models.FloatField(verbose_name="hauteur relevée")
-    temperature = models.FloatField(verbose_name="température relevée", null=True, blank=True)
+    area = models.ForeignKey(Area, verbose_name=_("Area"))
+    observer = models.ForeignKey(Observer, verbose_name=_("Observer"))
+    date = models.DateTimeField(verbose_name=_("date"))
+    remark = models.CharField(max_length=100, verbose_name=_("remark"), default="", blank=True)
+    height = models.FloatField(verbose_name=_("height"))
+    temperature = models.FloatField(verbose_name=_("temperature"), null=True, blank=True)
 
     class Meta:
-        verbose_name = "enneigement"
-        verbose_name_plural = "enneigements"
+        verbose_name = _("Snowing")
+        verbose_name_plural = _("Snowings")
 
 
 #stades
 class Stage(models.Model):
-    name = models.CharField(max_length=100)
-    species = models.ForeignKey(Species)
-    date_start = models.DateField(blank=True, null=True)
-    month_start = models.IntegerField(blank=True, null=True)
-    day_start = models.IntegerField(blank=True, null=True)
-    date_end = models.DateField(blank=True, null=True)
-    month_end = models.IntegerField(blank=True, null=True,)
-    day_end = models.IntegerField(blank=True, null=True)
-    order = models.IntegerField()
+    name = models.CharField(max_length=100, verbose_name=_("same"))
+    species = models.ForeignKey(Species, verbose_name=_("Species"))
+    date_start = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
+    month_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start month"))
+    day_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start day"))
+    date_end = models.DateField(blank=True, null=True, verbose_name=_("End date"))
+    month_end = models.IntegerField(blank=True, null=True, verbose_name=_("End month"))
+    day_end = models.IntegerField(blank=True, null=True, verbose_name=_("En day"))
+    order = models.IntegerField(verbose_name=_("Order"))
     picture_before = models.ImageField(upload_to='picture/stages',
-                                       default='no-img.jpg')
+                                       default='no-img.jpg',
+                                       verbose_name=_('Before'))
     picture_current = models.ImageField(upload_to='pictures/stages',
-                                        default='no-img.jpg')
+                                        default='no-img.jpg',
+                                        verbose_name=_('Current'))
     picture_after = models.ImageField(upload_to='pictures/stages',
-                                      default='no-img.jpg')
+                                      default='no-img.jpg',
+                                      verbose_name=_('After'))
+
+    class Meta:
+        verbose_name = _("Stage")
+        verbose_name_plural = _("Stages")
 
     def __str__(self):
         return "%s [%s] %s" % (self.name, self.species, self.order)
@@ -241,16 +248,16 @@ class Stage(models.Model):
 
 #observation
 class Survey(models.Model):
-    individual = models.ForeignKey(Individual, verbose_name="individu")
+    individual = models.ForeignKey(Individual)
 #    observer = models.ForeignKey(Observer, verbose_name="observateur")
     stage = models.ForeignKey(Stage, verbose_name="stade de développement")
 
-    answer = models.CharField(max_length=300, verbose_name="reponse", blank=True)
+    answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
     date = models.DateField(verbose_name="date saisie")
-    remark = models.CharField(max_length=100, verbose_name="remarque", blank=True)
+    remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:
-        verbose_name = "observation"
-        verbose_name_plural = "observations"
+        verbose_name = _("Survey")
+        verbose_name_plural = _("Surveys")
         ordering = ["-date"]
 
