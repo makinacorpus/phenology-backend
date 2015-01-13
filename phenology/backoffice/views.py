@@ -31,7 +31,7 @@ def area_detail(request, area_id=-1):
             if form.is_valid():
                 messages.add_message(request,
                                      messages.SUCCESS,
-                                     'Form is successifully updated')
+                                     _('Form is successifully updated'))
                 form.save()
         else:
             form = AreaForm(instance=area)
@@ -65,14 +65,14 @@ def individual_detail(request, ind_id=-1):
                 if form.is_valid():
                     messages.add_message(request,
                                          messages.SUCCESS,
-                                         'Form is successifully updated')
+                                         _('Form is successifully updated'))
                     form.save()
             else:
                 form = IndividualForm(instance=individual)
         else:
             messages.add_message(request,
                                  messages.WARNING,
-                                 'Your are not allowed to see this form')
+                                 _('Your are not allowed to see this form'))
             return redirect(index)
     else:
         if request.POST:
@@ -80,7 +80,7 @@ def individual_detail(request, ind_id=-1):
             if form.is_valid():
                 messages.add_message(request,
                                      messages.SUCCESS,
-                                     'Form is successifully updated')
+                                     _('Form is successifully updated'))
                 form.save()
         else:
             form = CreateIndividualForm(instance=individual)
@@ -100,7 +100,7 @@ def user_detail(request):
         if form.is_valid():
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 'Form is successifully updated')
+                                 _('Form is successifully updated'))
             form.save()
         else:
             print form.errors
@@ -121,7 +121,7 @@ def register_user(request):
         if form.is_valid():
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 'Form is successifully updated')
+                                 _('Form is successifully updated'))
             form.save()
         else:
             print form.errors
