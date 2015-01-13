@@ -39,6 +39,7 @@ MEDIA_URL = '/media/'
 ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 
 INSTALLED_APPS = (
+    'south',
     'backend',
     'backoffice',
     'phenology',
@@ -46,6 +47,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'registration',
     'rest_framework',
+    'modeltranslation',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
