@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-20 02:41+0100\n"
+"POT-Creation-Date: 2015-01-13 10:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,27 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: models.py:65 models.py:158 models.py:223
+#: models.py:66 models.py:158 models.py:224
 msgid "Species"
 msgstr "espèce"
 
-#: models.py:66 models.py:87
+#: models.py:67 models.py:87
 msgid "species"
 msgstr "espèces"
 
-#: models.py:79 models.py:157
+#: models.py:80 models.py:157
 msgid "name"
 msgstr "Nom"
 
-#: models.py:80
+#: models.py:81
 msgid "codezone"
 msgstr "Code de la zone"
 
-#: models.py:81
-msgid "polygon"
-msgstr "Polygone"
-
-#: models.py:85 models.py:166 models.py:211 models.py:257
+#: models.py:85 models.py:166 models.py:211 models.py:262
 msgid "remark"
 msgstr "Remarque"
 
@@ -82,7 +78,7 @@ msgstr "Mobile"
 msgid "is a crea member ?"
 msgstr "Membre de la crea ?"
 
-#: models.py:132
+#: models.py:132 models.py:241
 msgid "is activated?"
 msgstr "Est actif ?"
 
@@ -100,7 +96,7 @@ msgstr "Observateurs"
 
 #: models.py:160
 msgid "is dead?"
-msgstr "Est mort"
+msgstr "Est-il mort ?"
 
 #: models.py:169
 msgid "individual"
@@ -112,7 +108,7 @@ msgstr "Individus"
 
 #: models.py:210
 msgid "date"
-msgstr ""
+msgstr "Date"
 
 #: models.py:212
 msgid "height"
@@ -131,65 +127,72 @@ msgid "Snowings"
 msgstr "Eneigements"
 
 #: models.py:222
-msgid "same"
-msgstr ""
+msgid "Name"
+msgstr "Nom"
 
-#: models.py:224
+#: models.py:225
 msgid "Start date"
 msgstr "Début"
 
-#: models.py:225
+#: models.py:226
 msgid "Start month"
 msgstr "Mois du début"
 
-#: models.py:226
+#: models.py:227
 msgid "Start day"
 msgstr "Jour du début"
 
-#: models.py:227
+#: models.py:228
 msgid "End date"
 msgstr "Jour de fin"
 
-#: models.py:228
+#: models.py:229
 msgid "End month"
 msgstr "Mois de fin"
 
-#: models.py:229
+#: models.py:230
 msgid "En day"
 msgstr "Jour de fin"
 
-#: models.py:230
+#: models.py:231
 msgid "Order"
 msgstr "Ordre"
 
-#: models.py:233
+#: models.py:234
 msgid "Before"
 msgstr "Avant"
 
-#: models.py:236
+#: models.py:237
 msgid "Current"
 msgstr "A observer"
 
-#: models.py:239
+#: models.py:240
 msgid "After"
 msgstr "Après"
 
-#: models.py:242
+#: models.py:244 models.py:258
 msgid "Stage"
 msgstr "Stade de dévelopement"
 
-#: models.py:243
+#: models.py:245
 msgid "Stages"
 msgstr "Stades de dévelopement"
 
-#: models.py:255
+#: models.py:260
 msgid "reponse"
 msgstr "Réponse"
 
-#: models.py:260
+#: models.py:261
+msgid "date saisie"
+msgstr ""
+
+#: models.py:265
 msgid "Survey"
 msgstr "Observation"
 
-#: models.py:261
+#: models.py:266
 msgid "Surveys"
 msgstr "Observations"
+
+#~ msgid "polygon"
+#~ msgstr "Polygone"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-20 03:24+0100\n"
+"POT-Creation-Date: 2015-01-13 10:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: views.py:38 views.py:72 views.py:87 views.py:111 views.py:132 views.py:153
+#: views.py:39 views.py:73 views.py:88 views.py:118 views.py:138 views.py:159
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:79
+#: views.py:80
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
+#: templates/generic_form.html:18 templates/profile.html:18
+#: templates/profile_area.html:29 templates/profile_individual.html:26
+#: templates/survey.html:100
+msgid "Validate"
+msgstr "Valider"
+
 #: templates/login_form.html:10
 msgid "Your username and password didn't match. Please try again."
-msgstr "Votre identifiant et votre mot de passe ne correspondent pas. Réessayez s'il vous plait."
+msgstr ""
+"Votre identifiant et votre mot de passe ne correspondent pas. Réessayez s'il "
+"vous plait."
 
 #: templates/login_form.html:21
 msgid "Connect"
@@ -65,11 +73,6 @@ msgstr "Se connecter"
 #: templates/profile.html:6
 msgid "My profil"
 msgstr "Mon profile"
-
-#: templates/profile.html:18 templates/profile_area.html:29
-#: templates/profile_individual.html:26
-msgid "Validate"
-msgstr "Valider"
 
 #: templates/profile.html:22
 msgid "Change password"
@@ -139,3 +142,27 @@ msgstr "Dernières observations"
 #: templates/profile_individual.html:67
 msgid "Add a new survey"
 msgstr "Saisir une nouvelle observation"
+
+#: templates/survey.html:32
+msgid "Back to the individual"
+msgstr "Retour sur l'individu"
+
+#: templates/survey.html:62
+msgid "Observed today"
+msgstr "Observé aujourd'hui"
+
+#: templates/survey.html:69
+msgid "Observed another day"
+msgstr "Observé un autre jour"
+
+#: templates/survey.html:76
+msgid "Individual lost ord dead"
+msgstr "Individu perdu ou mort"
+
+#: templates/survey.html:83
+msgid "Stage never happened"
+msgstr "Stade absent"
+
+#: templates/survey.html:90
+msgid "Stage already passed"
+msgstr "Stade déjà passé"
