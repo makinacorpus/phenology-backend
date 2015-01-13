@@ -92,6 +92,36 @@ def individual_detail(request, ind_id=-1):
 
 
 @login_required(login_url='login/')
+def survey_detail(request, survey_id=-1):
+    survey = models.Survey.objects.filter(id=survey_id).first()
+    if not survey:
+        survey = models.Survey()
+        ind_id = request.GET.get("ind_id")
+        individual = models.Individual.objects.get(id=ind_id)
+        if individual:
+            survey.individual = individual
+            # TODO : improve how we get stage
+            survey.stage = individual.species.stage_set.all().first()
+
+    if request.POST:
+        form = SurveyForm(request.POST,
+                          instance=survey)
+
+        if form.is_valid():
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _('Form is successifully updated'))
+            form.save()
+        else:
+            print form.errors
+    else:
+        form = SurveyForm(instance=survey)
+    return render_to_response("survey.html", {
+        "form": form,
+    }, RequestContext(request))
+
+
+@login_required(login_url='login/')
 def user_detail(request):
 
     if request.POST:

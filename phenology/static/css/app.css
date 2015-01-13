@@ -60,3 +60,18 @@
 	padding-bottom: 4px;
 	vertical-align: middle;
 }
+
+.preview_pictures img{
+  min-height: 100px;
+  max-height: 150px;
+}
+
+.preview_pictures .current img{
+  min-height: 150px;
+  max-height: 200px;
+}
+
+.preview_pictures{
+  min-height: 200px;
+  max-height: 250px;
+}
