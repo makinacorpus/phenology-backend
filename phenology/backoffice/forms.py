@@ -8,6 +8,7 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'email',)
 
+
 class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # magic
@@ -34,7 +35,7 @@ class AccountForm(forms.ModelForm):
         model = models.Observer
         exclude = ('user', 'is_crea', 'is_active', 'areas', 'date_inscription')
         widgets = {
-          'adresse': forms.Textarea(attrs={'rows': 2}),
+            'adresse': forms.Textarea(attrs={'rows': 2}),
         }
 
 
@@ -43,8 +44,33 @@ class AreaForm(forms.ModelForm):
         model = models.Area
         exclude = ('species', 'polygone', 'codezone')
         widgets = {
-          'remark': forms.Textarea(attrs={'rows': 4}),
+            'remark': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+class SurveyForm(forms.ModelForm):
+    class Meta:
+        exclude = ('is_dead',)
+        model = models.Survey
+        widgets = {
+            'remark': forms.Textarea(attrs={'rows': 4}),
+            'individual': forms.HiddenInput(),
+            'date': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get("instance")
+        self.base_fields['stage'].queryset = instance.\
+            individual.\
+            species.\
+            stage_set.filter(is_active=True).order_by("order")
+        super(SurveyForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if(self.cleaned_data["answer"] in ("today", "before")):
+            self.cleaned_data["answer"] = "isObserved"
+        instance = super(SurveyForm, self).save(commit=False)
+        return instance
 
 
 class CreateIndividualForm(forms.ModelForm):
@@ -52,8 +78,8 @@ class CreateIndividualForm(forms.ModelForm):
         exclude = ('is_dead',)
         model = models.Individual
         widgets = {
-          'remark': forms.Textarea(attrs={'rows': 4}),
-          'area': forms.HiddenInput()
+            'remark': forms.Textarea(attrs={'rows': 4}),
+            'area': forms.HiddenInput()
         }
 
 
@@ -62,5 +88,5 @@ class IndividualForm(CreateIndividualForm):
         exclude = ('area',)
         model = models.Individual
         widgets = {
-          'remark': forms.Textarea(attrs={'rows': 4}),
+            'remark': forms.Textarea(attrs={'rows': 4}),
         }

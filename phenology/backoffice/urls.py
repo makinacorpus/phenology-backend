@@ -41,9 +41,9 @@ urls = patterns(
     url(r'^individual/(?P<ind_id>\d+)', views.individual_detail,
         name='individual-detail'),
 
-    url(r'^survey/create$', views.survey_detail, name='survey-form'),
+    url(r'^survey/create$', views.survey_detail, name='survey-detail'),
     url(r'^survey/(?P<survey_id>\d+)', views.survey_detail,
-        name='survey-form'),
+        name='survey-detail'),
     # Examples:
 )
 # vim:set et sts=4 ts=4 tw=80:
