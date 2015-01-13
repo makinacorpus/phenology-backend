@@ -51,7 +51,7 @@
         {% for survey in surveys %}
           <tr>
             <td width="10px"> 
-              <a href="{% url 'survey-form' survey.id %}" class="btn btn-default">
+              <a href="{% url 'survey-detail' survey.id %}" class="btn btn-default">
                 {% bootstrap_icon "pencil" %}
               </a>
             </td>
@@ -63,7 +63,7 @@
       </table>
 
       {% buttons %}
-        <a href="change-password" class="pull-right btn btn-primary">
+        <a href="{% url 'survey-detail' %}?ind_id={{ form.instance.id }}" class="pull-right btn btn-primary">
           {% bootstrap_icon "plus" %} {% trans "Add a new survey" %}
         </a>
       {% endbuttons %}
