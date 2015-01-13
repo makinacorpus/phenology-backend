@@ -39,6 +39,7 @@ def has_changed(instance, field, manager='objects'):
 #espece
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
+    #name_fr = models.CharField(max_length=100, verbose_name="nom")
     description = models.TextField(max_length=500)
     picture = models.ImageField(upload_to='picture/species',
                                 default='no-img.jpg')
@@ -78,7 +79,6 @@ class Species(models.Model):
 class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"))
     codezone = models.CharField(max_length=20, verbose_name=_("codezone"))
-    polygone = models.CharField(max_length=500, verbose_name=_("polygon"))
     lat = models.FloatField(verbose_name="latitude")
     lon = models.FloatField(verbose_name="longitude")
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
@@ -219,7 +219,8 @@ class Snowing(models.Model):
 
 #stades
 class Stage(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("same"))
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    #name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     date_start = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
     month_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start month"))
@@ -237,23 +238,27 @@ class Stage(models.Model):
     picture_after = models.ImageField(upload_to='pictures/stages',
                                       default='no-img.jpg',
                                       verbose_name=_('After'))
+    is_active = models.BooleanField(verbose_name=_("is activated?"), default=True)
 
     class Meta:
         verbose_name = _("Stage")
         verbose_name_plural = _("Stages")
 
     def __str__(self):
-        return "%s [%s] %s" % (self.name, self.species, self.order)
+        return u"%s" % self.name
+
+    def __unicode__(self):
+        return self.name
 
 
 #observation
 class Survey(models.Model):
     individual = models.ForeignKey(Individual)
 #    observer = models.ForeignKey(Observer, verbose_name="observateur")
-    stage = models.ForeignKey(Stage, verbose_name="stade de développement")
+    stage = models.ForeignKey(Stage, verbose_name=_("Stage"))
 
     answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
-    date = models.DateField(verbose_name="date saisie")
+    date = models.DateField(verbose_name=_("date saisie"))
     remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:
