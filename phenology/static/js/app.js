@@ -87,5 +87,7 @@ phenoclim.map = function(options){
 
 $( document ).ready(function() {
 	phenoclim.session = {}
-	phenoclim.session.map = new phenoclim.map(phenoclim.options);
+	if($("#map").length > 0){
+		phenoclim.session.map = new phenoclim.map(phenoclim.options);
+	}
 });
