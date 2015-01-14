@@ -255,11 +255,11 @@ class Stage(models.Model):
 #observation
 class Survey(models.Model):
     individual = models.ForeignKey(Individual)
-    observer = models.ForeignKey(Observer, verbose_name="observateur", blank=True, null=True)
+    observer = models.ForeignKey(Observer, verbose_name=_("observer"), blank=True, null=True)
     stage = models.ForeignKey(Stage, verbose_name=_("Stage"))
 
     answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
-    date = models.DateField(verbose_name=_("date saisie"))
+    date = models.DateField(verbose_name=_("survey date"))
     remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:

@@ -1,7 +1,7 @@
 from django import forms
 from backend import models
 from django.contrib.auth.models import User
-
+from django.utils.translation import ugettext_lazy as _
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -64,12 +64,14 @@ class SurveyForm(forms.ModelForm):
             individual.\
             species.\
             stage_set.filter(is_active=True).order_by("order")
+        self.base_fields['stage'].label = _("Change stage")
         super(SurveyForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         if(self.cleaned_data["answer"] in ("today", "before")):
             self.cleaned_data["answer"] = "isObserved"
         instance = super(SurveyForm, self).save(commit=False)
+        instance.save()
         return instance
 
 
