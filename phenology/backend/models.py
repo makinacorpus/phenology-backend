@@ -78,9 +78,9 @@ class Species(models.Model):
 #zone:
 class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"))
-    codezone = models.CharField(max_length=20, verbose_name=_("codezone"))
-    lat = models.FloatField(verbose_name="latitude")
-    lon = models.FloatField(verbose_name="longitude")
+    codezone = models.CharField(max_length=20, verbose_name=_("codezone"), blank=True)
+    lat = models.FloatField(verbose_name="latitude", default=-1.00)
+    lon = models.FloatField(verbose_name="longitude", default=1.00)
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
     commune = models.CharField(max_length=100, verbose_name=_("city"))
@@ -92,7 +92,7 @@ class Area(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return "Area : %s [%s]" % (self.name, self.commune)
+        return "%s" % (self.name)
 
     def geojson(self, full=False):
         return {
@@ -138,6 +138,9 @@ class Observer(models.Model):
         verbose_name_plural = _("Observers")
 
     def __str__(self):
+        return u"%s" % self.user.username
+
+    def __unicode__(self):
         return self.user.username
 
     def getAllGeojson(self):
@@ -163,7 +166,7 @@ class Individual(models.Model):
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     circonference = models.FloatField(verbose_name="circonference", null=True, blank=True)
 
-    remark = models.CharField(max_length=100, verbose_name=_("remark"))
+    remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:
         verbose_name = _("individual")
@@ -171,10 +174,10 @@ class Individual(models.Model):
         ordering = ['species', 'name']
 
     def __unicode__(self):
-        return "%s %s" % (self.species.name, self.area.name)
+        return "%s" % (self.name)
 
     def __str__(self):
-        return "%s %s" % (self.species.name, self.area.name)
+        return "%s" % (self.name)
 
     def geojson(self, draggable=False):
         return {
@@ -222,12 +225,10 @@ class Stage(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     #name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
     species = models.ForeignKey(Species, verbose_name=_("Species"))
-    date_start = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
-    month_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start month"))
     day_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start day"))
-    date_end = models.DateField(blank=True, null=True, verbose_name=_("End date"))
-    month_end = models.IntegerField(blank=True, null=True, verbose_name=_("End month"))
+    month_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start month"))
     day_end = models.IntegerField(blank=True, null=True, verbose_name=_("En day"))
+    month_end = models.IntegerField(blank=True, null=True, verbose_name=_("End month"))
     order = models.IntegerField(verbose_name=_("Order"))
     picture_before = models.ImageField(upload_to='picture/stages',
                                        default='no-img.jpg',
@@ -254,7 +255,7 @@ class Stage(models.Model):
 #observation
 class Survey(models.Model):
     individual = models.ForeignKey(Individual)
-#    observer = models.ForeignKey(Observer, verbose_name="observateur")
+    observer = models.ForeignKey(Observer, verbose_name="observateur", blank=True, null=True)
     stage = models.ForeignKey(Stage, verbose_name=_("Stage"))
 
     answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
