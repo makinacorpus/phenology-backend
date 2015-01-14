@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-13 10:52+0100\n"
+"POT-Creation-Date: 2015-01-14 16:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: views.py:39 views.py:73 views.py:88 views.py:118 views.py:138 views.py:159
+#: forms.py:68
+msgid "Change stage"
+msgstr "changer stade de développement"
+
+#: views.py:34 views.py:68 views.py:83 views.py:114 views.py:134 views.py:155
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:80
+#: views.py:75
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
 #: templates/generic_form.html:18 templates/profile.html:18
 #: templates/profile_area.html:29 templates/profile_individual.html:26
-#: templates/survey.html:100
+#: templates/survey.html:84
 msgid "Validate"
 msgstr "Valider"
 
@@ -143,26 +147,41 @@ msgstr "Dernières observations"
 msgid "Add a new survey"
 msgstr "Saisir une nouvelle observation"
 
-#: templates/survey.html:32
+#: templates/survey.html:14
 msgid "Back to the individual"
 msgstr "Retour sur l'individu"
 
-#: templates/survey.html:62
+#: templates/survey.html:25
+msgid "before"
+msgstr "avant"
+
+#: templates/survey.html:29
+msgid "current"
+msgstr "à observer"
+
+#: templates/survey.html:33
+msgid "after"
+msgstr "après"
+
+#: templates/survey.html:45
 msgid "Observed today"
 msgstr "Observé aujourd'hui"
 
-#: templates/survey.html:69
-msgid "Observed another day"
-msgstr "Observé un autre jour"
+#: templates/survey.html:53
+msgid "Observed"
+msgstr "Observé"
 
-#: templates/survey.html:76
+#: templates/survey.html:60
 msgid "Individual lost ord dead"
 msgstr "Individu perdu ou mort"
 
-#: templates/survey.html:83
+#: templates/survey.html:67
 msgid "Stage never happened"
 msgstr "Stade absent"
 
-#: templates/survey.html:90
+#: templates/survey.html:74
 msgid "Stage already passed"
 msgstr "Stade déjà passé"
+
+#~ msgid "Observed another day"
+#~ msgstr "Observé un autre jour"
