@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-
+import datetime
 
 @login_required(login_url='login/')
 def index(request):
@@ -100,8 +100,9 @@ def survey_detail(request, survey_id=-1):
         individual = models.Individual.objects.get(id=ind_id)
         if individual:
             survey.individual = individual
+            survey.date = datetime.date.today()
             # TODO : improve how we get stage
-            survey.stage = individual.species.stage_set.all().first()
+            survey.stage = individual.species.stage_set.filter(is_active=True).all().first()
 
     if request.POST:
         form = SurveyForm(request.POST,
