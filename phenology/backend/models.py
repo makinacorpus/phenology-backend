@@ -8,7 +8,7 @@ from cStringIO import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
 import unicodedata
 from django.utils.translation import ugettext_lazy as _
-
+from select2 import fields as select2_fields
 # Create your models here.
 
 
@@ -84,7 +84,7 @@ class Area(models.Model):
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
     commune = models.CharField(max_length=100, verbose_name=_("city"))
-    species = models.ManyToManyField(Species, blank=True, verbose_name=_("species"))
+    species = select2_fields.ManyToManyField(Species, blank=True, verbose_name=_("species"))
 
     class Meta:
         verbose_name = _("Area")
@@ -130,7 +130,7 @@ class Observer(models.Model):
     mobile = models.CharField(max_length=20, verbose_name=_("mobile"))
     is_crea = models.BooleanField(verbose_name=_("is a crea member ?"), default=False)
     is_active = models.BooleanField(verbose_name=_("is activated?"), default=True)
-    areas = models.ManyToManyField(Area, verbose_name=_("Areas"), blank=True)
+    areas = select2_fields.ManyToManyField(Area, verbose_name=_("Areas"), blank=True)
     date_inscription = models.DateField(blank=True, null=True, verbose_name=_("Date joined"))
 
     class Meta:

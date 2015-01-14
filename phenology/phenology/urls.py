@@ -31,6 +31,7 @@ urlpatterns = patterns(
     url(r'^user_snowcover/(?P<pk>\d+)', views.SnowCoverDetail.as_view(), name='snowcover-detail'),
     url(r'^user_snowcover', views.UserSnowCoverList.as_view(), name='user_snowcover'),
     url(r'^portail/', include(backoffice_urls)),
+    url(r'^select2/', include('select2.urls')),
 )
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -36,19 +36,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Application definition
-ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
+ACCOUNT_ACTIVATION_DAYS = 7
+# One-week activation window; you may, of course, use a different value.
 
 INSTALLED_APPS = (
-    'south',
-    'backend',
-    'backoffice',
-    'phenology',
-    'registration_defaults',
-    'bootstrap3',
+    'south',  # improve migration
+    'backend',  # backend with model + rest
+    'backoffice',  # backoffice with forms
+    'phenology',  # settings
+    'bootstrap3',  # boostrap3 integration
+    'select2',  # allow to use select2 field at model level
+    'modeltranslation',  # allow to translate model field
+    'rest_framework',  # Rest api
     'registration',
-    'rest_framework',
-    'modeltranslation',
-    'django_extensions',
+    'registration_defaults',
+    'corsheaders',  # server headers required for Cross-Origin Resource Sharing
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,7 +59,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,8 +113,6 @@ DATE_FORMAT = 'iso-8601'
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 #LANGUAGE_CODE = 'fr'
-
-from django.utils.translation import gettext_lazy as _
 
 LANGUAGES = (
     ('fr', _('french')),
