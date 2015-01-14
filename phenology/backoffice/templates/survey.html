@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 
 {% block title %}{{ form.instance.name }}{% endblock %}
 
@@ -21,21 +22,22 @@
       <div class="row preview_pictures">
         <div class="col-xs-4 text-center">
           <img src="/media/{{ form.instance.stage.picture_before }}"></img>
-          <div>before</div>
+          <div>{% trans 'before' %}</div>
         </div>
         <div class="col-xs-4 text-center current">
           <img src="/media/{{ form.instance.stage.picture_current }}"></img>
-          <div>current</div>
+          <div>{% trans 'current' %}</div>
         </div>
         <div class="col-xs-4 text-center">
           <img src="/media/{{ form.instance.stage.picture_after }}"></img>
-          <div>after</div>
+          <div>{% trans 'after' %}</div>
         </div>
       </div>
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         {{ form.errors }}
         <div class="form_group answer">
+        <!--
         <div class="btn btn-block btn-lg btn-default radio">
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="today" 
@@ -43,11 +45,12 @@
             {% trans "Observed today" %}
           </label>
         </div>
+        -->
         <div class="btn btn-block btn-lg btn-default radio left-block">
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="before"
             {% if form.instance.answer == 'before' %}checked{% endif %}>
-            {% trans "Observed another day" %}
+            {% trans "Observed" %}
           </label>
         </div>
         <div class="btn btn-block btn-lg btn-default radio">
@@ -100,6 +103,22 @@
   }
   return false;
  });
+</script>
+
+<script src="{% static 'vendor/pickadate.js/lib/picker.js' %}"></script>
+<script src="{% static 'vendor/pickadate.js/lib/picker.date.js' %}"></script>
+<script src="{% static 'vendor/pickadate.js/lib/picker.time.js' %}"></script>
+<link rel="stylesheet" href="{% static 'vendor/pickadate.js/lib/themes/default.css' %}"></link>
+<link rel="stylesheet" href="{% static 'vendor/pickadate.js/lib/themes/default.date.css' %}"></link>
+{% with lang=LANGUAGE_CODE %}
+  {% if lang != "en" %}
+      <script src="{% static 'vendor/pickadate.js/lib/translations/' %}{{lang}}_{{lang|upper}}.js"></script>
+  {% endif %}
+{% endwith %}
+<script type="text/javascript">
+$( document ).ready(function() {
+  $('#id_date').pickadate({format: 'dd/mm/yyyy', formatSubmit: 'dd/mm/yyyy', max: true})
+});
 </script>
 
 {% endblock %}
