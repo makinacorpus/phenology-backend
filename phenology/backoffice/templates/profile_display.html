@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block title %}{{ form.instance.name }}{% endblock %}
+
+{% block content %}
+	  <style>
+	  	.missed{ 
+	  		color:red;
+	  	}
+	  	.found{
+	  		color:green;
+	  	}
+	  </style>
+	  {% for area in user.observer.areas.all %}
+	    <ul>
+	      <li> 
+	        <a href="{% url 'area-detail' area.id %}">
+	        {{ area }}
+	        </a>
+	        <ul>{% regroup area.individual_set.all by species as area_species %}
+	        	{% for individuals_by_species in area_species %}
+	        	<li>
+	        		<a href="{% url 'species-detail' individuals_by_species.grouper.id %}">
+	        		{{ individuals_by_species.grouper }}
+	        		</a>
+	        		<ul>
+		        	{% for individual in individuals_by_species.list %}
+		        		<li>
+		        		<a href="{% url 'individual-detail' individual.id %}">
+		        		{{ individual }}
+		        		</a>
+		        		<ul>
+			        	{% for stage, dates, survey in individual.get_tasks %}
+			        		<li>
+			        		<a class="
+			        		{% if survey %}
+			        			found
+			        		{% else %}
+			        			missed
+			        		{% endif %}"
+			        			href="
+			        		{% if survey %}
+			        			{% url 'survey-detail' survey.id %}
+			        		{% else %}
+			        			{% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
+			        		{% endif %}">
+			  				{{ stage }} [{{ dates.0.year}}] - {{survey.date}}
+			  				</a>
+			        		</li>
+			        	{% endfor %}
+		        		</ul>
+		        		</li>
+		        	{% endfor %}
+	        		</ul>
+	        		</li>
+	        	{% endfor %}
+	        </ul>
+	      </li>
+	    </ul>
+	      
+	  {% endfor %}
+{% endblock %}
