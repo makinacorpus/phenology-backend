@@ -9,6 +9,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import unicodedata
 from django.utils.translation import ugettext_lazy as _
 from select2 import fields as select2_fields
+import datetime
+from dateutil.relativedelta import relativedelta
+
 # Create your models here.
 
 
@@ -93,6 +96,13 @@ class Area(models.Model):
 
     def __str__(self):
         return "%s" % (self.name)
+
+    def get_data(self):
+        results = {}
+        for individual in self.individual_set.all():
+            results.setdefault(individual.species, [])
+            results[individual.species].append(individual)
+        return results
 
     def geojson(self, full=False):
         return {
@@ -204,6 +214,26 @@ class Individual(models.Model):
     def lastSurvey(self):
         last_survey = self.survey_set.first()
         return last_survey
+
+    def get_tasks(self):
+        last_stages = []
+        next_stages = []
+        date_referer = datetime.date.today()
+        previous_date = date_referer + relativedelta(months=-4)
+        next_date = date_referer + relativedelta(months=+4)
+        for stage in self.species.stage_set.all().filter(is_active=True):
+            date_start = datetime.date(next_date.year, stage.month_start, stage.day_start)
+            date_end = datetime.date(previous_date.year, stage.month_end, stage.day_end)
+            if( date_referer <= date_start < next_date ):
+                last_stages.append((stage, (date_start, datetime.date(date_start.year, stage.month_end, stage.day_end))))
+            if( date_referer >= date_end > previous_date):
+                next_stages.append((stage, (datetime.date(date_end.year, stage.month_start, stage.day_start), date_end)))
+        print "###################"
+        #print "sfsfsfsdfs"
+        all_stages = last_stages + next_stages
+        all_stages = [ (stage, dates, self.survey_set.filter(stage=stage, date__year=dates[0].year).first()) for (stage, dates) in all_stages ]
+        all_stages = sorted(all_stages, key=lambda stage: stage[1][0])
+        return all_stages
 
 
 #enneigement
