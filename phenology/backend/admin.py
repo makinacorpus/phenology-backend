@@ -1,21 +1,63 @@
 from django.contrib import admin
 from backend import models
 from django.contrib.auth.admin import UserAdmin
-from modeltranslation.admin import TranslationAdmin
+from django.utils.translation import ugettext_lazy as _
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
-admin.site.register(models.Area)
-admin.site.register(models.Species, TranslationAdmin)
-admin.site.register(models.Individual)
 admin.site.register(models.Observer)
-admin.site.register(models.Survey)
 admin.site.register(models.Snowing)
 
 
-class StageAdmin(TranslationAdmin):
+class TabAdmin(TranslationAdmin):
+    class Media:
+        js = (
+            '/static/modeltranslation/js/force_jquery.js',
+            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js',
+            '/static/modeltranslation/js/tabbed_translation_fields.js',
+        )
+        css = {
+            'screen': ('/static/modeltranslation/css/tabbed_translation_fields.css',),
+        }
+
+
+
+class StageAdmin(TabAdmin):
     list_display = ('name', 'species', 'order', 'is_active', )
+    search_fields = ['name', 'species__name']
     ordering = ('species', 'order', 'name')
 
-admin.site.register(models.Stage, StageAdmin)
+
+class SurveyAdmin(admin.ModelAdmin):
+    list_display = ('individual', 'species_name', 'stage', 'answer', 'remark', 'area_name')
+
+    def species_name(self, obj):
+        return ("%s" % (obj.individual.species.name))
+    species_name.short_description = _('Species')
+
+    def area_name(self, obj):
+        return ("%s" % (obj.individual.area.name))
+
+    def stage_name(self, obj):
+        return ("%s" % (obj.observer))
+admin.site.register(models.Survey, SurveyAdmin)
+
+
+class IndividualAdmin(admin.ModelAdmin):
+    list_display = ('name', 'species', 'area',)
+    search_fields = ['name', 'species__name', 'area__name', 'area__codezone']
+    ordering = ('area', 'species', 'name',)
+
+admin.site.register(models.Individual, IndividualAdmin)
+
+
+class AreaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'observers',)
+    search_fields = ['name', 'observer__user__username']
+
+    def observers(self, obj):
+        return [str(o.user.username) for o in obj.observer_set.all()]
+
+admin.site.register(models.Area, AreaAdmin)
 
 
 # Define an inline admin descriptor for Employee model
@@ -26,10 +68,21 @@ class EmployeeInline(admin.StackedInline):
     verbose_name_plural = 'observer'
 
 
+class StageInline(TranslationTabularInline):
+    model = models.Stage
+    extra = 0
+
+
 # Define a new User admin
 class UserAdmin(UserAdmin):
     inlines = (EmployeeInline, )
 
+
+class SpeciesAdmin(TabAdmin):
+    inlines = (StageInline, )
 # Re-register UserAdmin
-admin.site.unregister(models.User)
+#admin.site.unregister(models.User)
 admin.site.register(models.User, UserAdmin)
+
+admin.site.register(models.Stage, StageAdmin)
+admin.site.register(models.Species, SpeciesAdmin)
