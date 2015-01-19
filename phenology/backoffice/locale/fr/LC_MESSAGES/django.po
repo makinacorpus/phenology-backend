@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-14 16:06+0100\n"
+"POT-Creation-Date: 2015-01-19 12:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:68
+#: forms.py:69
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: views.py:34 views.py:68 views.py:83 views.py:114 views.py:134 views.py:155
+#: views.py:36 views.py:70 views.py:85 views.py:119 views.py:142 views.py:163
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:75
+#: views.py:77
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
@@ -58,25 +58,25 @@ msgstr "Mot de passe oublié"
 msgid "My Profil"
 msgstr "Mon profil"
 
-#: templates/navigation.html:18
+#: templates/navigation.html:22
 msgid "My surveys"
 msgstr "Mes observations"
 
-#: templates/navigation.html:20
+#: templates/navigation.html:25
 msgid "All surveys"
 msgstr "Toutes les observations"
 
-#: templates/navigation.html:26
+#: templates/navigation.html:31
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/navigation.html:28
+#: templates/navigation.html:33
 msgid "Login"
 msgstr "Se connecter"
 
 #: templates/profile.html:6
 msgid "My profil"
-msgstr "Mon profile"
+msgstr "Mon profil"
 
 #: templates/profile.html:22
 msgid "Change password"
@@ -148,8 +148,8 @@ msgid "Add a new survey"
 msgstr "Saisir une nouvelle observation"
 
 #: templates/survey.html:14
-msgid "Back to the individual"
-msgstr "Retour sur l'individu"
+msgid "Back"
+msgstr ""
 
 #: templates/survey.html:25
 msgid "before"
@@ -182,6 +182,9 @@ msgstr "Stade absent"
 #: templates/survey.html:74
 msgid "Stage already passed"
 msgstr "Stade déjà passé"
+
+#~ msgid "Back to the individual"
+#~ msgstr "Retour sur l'individu"
 
 #~ msgid "Observed another day"
 #~ msgstr "Observé un autre jour"
