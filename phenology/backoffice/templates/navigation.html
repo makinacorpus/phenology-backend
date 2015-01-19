@@ -15,7 +15,12 @@
           <a href="{% url 'profile' %}">{% trans "My Profil" %}</a>
         </li>
 
-        <li><a href="#">{% trans "My surveys" %}</a></li>
+        <li
+          {% if 'mysurveys' in request.get_full_path or 'survey' in request.get_full_path%}
+          class="active"
+          {% endif %}
+          ><a href="{% url 'my-surveys' %}">{% trans "My surveys" %}</a>
+        </li>
 
         <li><a href="#">{% trans "All surveys" %}</a></li>
 
