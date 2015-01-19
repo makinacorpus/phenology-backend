@@ -3,6 +3,7 @@ from backend import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -55,7 +56,8 @@ class SurveyForm(forms.ModelForm):
         widgets = {
             'remark': forms.Textarea(attrs={'rows': 4}),
             'individual': forms.HiddenInput(),
-            'date': forms.HiddenInput(),
+            #'date': forms.DateInput(format="%d %B %Y"),
+            #'date': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
