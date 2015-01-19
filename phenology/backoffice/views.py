@@ -2,12 +2,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response, redirect
 from backend import models
-from backoffice.forms import AccountForm, AreaForm, IndividualForm, CreateIndividualForm, SurveyForm
+from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
+    CreateIndividualForm, SurveyForm
 from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 import datetime
+
 
 @login_required(login_url='login/')
 def index(request):
@@ -87,7 +89,6 @@ def individual_detail(request, ind_id=-1):
 
     return render_to_response("profile_individual.html", {
         "form": form,
-        "surveys": surveys
     }, RequestContext(request))
 
 
@@ -102,7 +103,11 @@ def survey_detail(request, survey_id=-1):
             survey.individual = individual
             survey.date = datetime.date.today()
             # TODO : improve how we get stage
-            survey.stage = individual.species.stage_set.filter(is_active=True).all().first()
+            stage = models.Stage.objects.get(id=request.GET.get("stage_id"))
+            if not stage:
+                stage = individual.species.stage_set.\
+                    filter(is_active=True).all().first()
+            survey.stage = stage
 
     if request.POST:
         form = SurveyForm(request.POST,
