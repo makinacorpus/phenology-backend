@@ -169,3 +169,7 @@ def register_user(request):
     return render_to_response("generic_form.html", {
         "form": form,
     }, RequestContext(request))
+
+
+def profile_display(request):
+    return render_to_response("profile_display.html", RequestContext(request))
