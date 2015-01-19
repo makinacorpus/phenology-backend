@@ -10,8 +10,8 @@
 
     <div class="col-md-12  table-col">
       {% buttons %}
-        <a href="{% url 'individual-detail' form.instance.individual.id %}" class="btn btn-default">
-          {% trans "Back to the individual" %}
+        <a href="{% url 'my-surveys' %}" class="btn btn-default">
+          {% trans "Back" %}
         </a>
       {% endbuttons %}
       <div class="row">
@@ -84,7 +84,6 @@
             {% bootstrap_icon "tree-deciduous" %} {% trans 'Validate' %}
           </button>
         {% endbuttons %}
-        {% bootstrap_field form.stage %}
       </form>
 
     </div>
