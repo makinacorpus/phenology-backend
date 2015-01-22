@@ -26,6 +26,7 @@ def area_detail(request, area_id=-1):
     area = models.Area.objects.filter(id=area_id).first()
     if not area:
         area = models.Area()
+        area.observer = request.user.observer
 
     if area_id == -1 or request.user.observer in area.observer_set.all():
         if request.POST:
