@@ -56,8 +56,7 @@ class SurveyForm(forms.ModelForm):
         widgets = {
             'remark': forms.Textarea(attrs={'rows': 4}),
             'individual': forms.HiddenInput(),
-            #'date': forms.DateInput(format="%d %B %Y"),
-            #'date': forms.HiddenInput(),
+            'stage': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
