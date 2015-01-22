@@ -37,18 +37,9 @@
         {% csrf_token %}
         {{ form.errors }}
         <div class="form_group answer">
-        <!--
-        <div class="btn btn-block btn-lg btn-default radio">
-          <label>
-            <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="today" 
-            {% if not form.instance.answer or form.instance.answer == 'today' %}checked{% endif %}>
-            {% trans "Observed today" %}
-          </label>
-        </div>
-        -->
         <div class="btn btn-block btn-lg btn-default radio left-block">
           <label>
-            <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="before"
+            <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isObserved"
             {% if form.instance.answer == 'before' %}checked{% endif %}>
             {% trans "Observed" %}
           </label>
@@ -79,6 +70,7 @@
         {% bootstrap_field form.remark layout='inline' %}
         {% bootstrap_field form.individual %}
         {% bootstrap_field form.date %}
+        {% bootstrap_field form.stage %}
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg btn-block">
             {% bootstrap_icon "tree-deciduous" %} {% trans 'Validate' %}
@@ -96,7 +88,7 @@
   var input_value = $input.val();
   if(input_value=="today"){
     console.log("today");
-  } 
+  }
   else if(input_value=="before"){
     console.log("before");
   }
