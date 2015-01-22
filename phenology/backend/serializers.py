@@ -4,7 +4,26 @@ from backend import models
 from django.db.models import Q
 import datetime
 from dateutil.relativedelta import relativedelta
-import json
+from django.db import models as django_db_models
+from django import forms
+from rest_framework import serializers as rest_fields
+
+
+class TranslatedModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        pass
+
+    def get_field(self, model_field):
+        kwargs = {}
+        #print model_field
+        #print dir(self)
+        if issubclass(
+                model_field.__class__, (django_db_models.CharField, django_db_models.TextField)):
+            if model_field.null:
+                kwargs['allow_none'] = True
+            kwargs['max_length'] = getattr(model_field, 'max_length')
+            return rest_fields.CharField(**kwargs)
+        return super(TranslatedModelSerializer, self).get_field(model_field)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,9 +40,15 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 
-class StageSerializer(serializers.ModelSerializer):
+class StageSerializer(TranslatedModelSerializer):
     class Meta:
         model = models.Stage
+        fields = ("id", "name", "species",
+                  "day_start", "month_start",
+                  "day_end", "month_end",
+                  "order", "picture_before",
+                  "picture_current", "picture_after",
+                  "is_active")
 
 
 class SnowingSerializer(serializers.ModelSerializer):
@@ -55,7 +80,7 @@ class IndividualSerializer(serializers.ModelSerializer):
         exclude = ('species', 'area')
 
 
-class SpeciesSerializer(serializers.ModelSerializer):
+class SpeciesSerializer(TranslatedModelSerializer):
     #individuals = IndividualSerializer(source="individual_set")
     stages = StageSerializer(source="stage_set")
 
@@ -115,13 +140,12 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Species
-        exclude = ('name', 'description', 'picture',)
+        fields = ('id', 'individuals',)
 
 
 # used in observers endpoint
 class AreaNestedSerializer(serializers.ModelSerializer):
     species = serializers.SerializerMethodField('get_species_for_area')
-    geojson = serializers.SerializerMethodField('get_geojson')
 
     def get_species_for_area(self, *args, **kwargs):
         area = args[0]
@@ -138,10 +162,7 @@ class AreaNestedSerializer(serializers.ModelSerializer):
 
     def get_geojson(self, *args, **kwargs):
         area = args[0]
-        if area.polygone:
-            return json.loads(area.polygone)
-        else:
-            return ''
+        return area.geojson
 
     class Meta:
         model = models.Area
@@ -154,7 +175,7 @@ class ObserverSerializer(serializers.ModelSerializer):
     areas = AreaNestedSerializer(many=True, source="areas", read_only=True)
     # his list of species related to his individuals found
     species = serializers.SerializerMethodField('get_species_for_observer')
-    
+
     def get_species_for_observer(self, *args, **kwargs):
         observer = args[0]
         species_q = models.Species\
@@ -167,4 +188,3 @@ class ObserverSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Observer
-        
