@@ -1,4 +1,4 @@
 from django.template import Library
-from backoffice.templatetags.jsonify_filter import jsonify
+from backoffice.templatetags.json_filters import jsonify
 
 register = Library()
