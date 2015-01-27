@@ -4,9 +4,9 @@
 {% load bootstrap3 %}
 
 {% block title %}
-  {% if not form.instance.id %} 
-    {% trans "New area" %} 
-  {% else %} 
+  {% if not form.instance.id %}
+    {% trans "New area" %}
+  {% else %}
     {% trans "Area" %}
   {% endif %} {{ form.instance.name }}
 {% endblock %}
@@ -52,7 +52,7 @@
 
           {% for individual in form.instance.individual_set.all %}
             <tr>
-              <td width="10px"> 
+              <td width="10px">
                 <a href="{% url 'individual-detail' individual.id %}" class="btn btn-default">
                   {% bootstrap_icon "pencil" %}
                 </a>
@@ -73,4 +73,5 @@
       {% endif %}
     </div>
   </div>
+
 {% endblock %}
