@@ -38,7 +38,7 @@
       </tr>
       {% for area in user.observer.areas.all %}
         <tr>
-          <td width="10px"> 
+          <td width="10px">
             <a href="{% url 'area-detail' area.id %}" class="btn btn-default">
               {% bootstrap_icon "pencil" %}
             </a>

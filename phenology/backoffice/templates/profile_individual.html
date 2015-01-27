@@ -3,9 +3,9 @@
 {% load bootstrap3 %}
 
 {% block title %}
-  {% if not form.instance.id %} 
-    {% trans "New area" %} 
-  {% else %} 
+  {% if not form.instance.id %}
+    {% trans "New area" %}
+  {% else %}
     {% trans "Individual" %}
   {% endif %} {{ form.instance.name }}
 {% endblock %}
@@ -34,9 +34,9 @@
     </div>
 
     <div class="col-md-7 table-col">
-    
+
     <div id="map"></div>
-    
+
     {% if form.instance.id and surveys %}
 
       <h4><u>{% trans "Last surveys" %} :</u></h4>
@@ -50,7 +50,7 @@
 
         {% for survey in surveys %}
           <tr>
-            <td width="10px"> 
+            <td width="10px">
               <a href="{% url 'survey-detail' survey.id %}" class="btn btn-default">
                 {% bootstrap_icon "pencil" %}
               </a>

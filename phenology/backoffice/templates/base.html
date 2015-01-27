@@ -1,24 +1,24 @@
 <html>
-	{% load bootstrap3 %}
+  {% load bootstrap3 %}
   {% load staticfiles %}
   {% load json_filters %}
   {% load i18n %}
-	{# Load CSS and JavaScript #}
-	{% bootstrap_css %}
+  {# Load CSS and JavaScript #}
+  {% bootstrap_css %}
   {% bootstrap_javascript jquery=1 %}
 
     <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}" />
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
-		<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
-		<link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/media/css/jquery.dataTables.css' %}">
-		    <script type="text/javascript">
+    <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/media/css/jquery.dataTables.css' %}">
+        <script type="text/javascript">
       var phenoclim = phenoclim || {};
-			{% if form %}
-	      phenoclim.options = {
-	        geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
-	      }
-			{% endif %}
+      {% if form %}
+        phenoclim.options = {
+          geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
+        }
+      {% endif %}
     </script>
    <body>
        {% include "navigation.html" %}
