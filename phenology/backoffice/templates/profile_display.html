@@ -2,64 +2,98 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load json_filters %}
 
 {% block title %}{{ form.instance.name }}{% endblock %}
 
 {% block content %}
-	  <style>
-	  	.missed{ 
-	  		color:red;
-	  	}
-	  	.found{
-	  		color:green;
-	  	}
-	  </style>
-	  {% for area in user.observer.areas.all %}
-	    <ul>
-	      <li> 
-	        <a href="{% url 'area-detail' area.id %}">
-	        {{ area }}
-	        </a>
-	        <ul>{% regroup area.individual_set.all by species as area_species %}
-	        	{% for individuals_by_species in area_species %}
-	        	<li>
-	        		<a href="{% url 'species-detail' individuals_by_species.grouper.id %}">
-	        		{{ individuals_by_species.grouper }}
-	        		</a>
-	        		<ul>
-		        	{% for individual in individuals_by_species.list %}
-		        		<li>
-		        		<a href="{% url 'individual-detail' individual.id %}">
-		        		{{ individual }}
-		        		</a>
-		        		<ul>
-			        	{% for stage, dates, survey in individual.get_tasks %}
-			        		<li>
-			        		<a class="
-			        		{% if survey %}
-			        			found
-			        		{% else %}
-			        			missed
-			        		{% endif %}"
-			        			href="
-			        		{% if survey %}
-			        			{% url 'survey-detail' survey.id %}
-			        		{% else %}
-			        			{% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
-			        		{% endif %}">
-			  				{{ stage }} [{{ dates.0.year}}] - {{survey.date}}
-			  				</a>
-			        		</li>
-			        	{% endfor %}
-		        		</ul>
-		        		</li>
-		        	{% endfor %}
-	        		</ul>
-	        		</li>
-	        	{% endfor %}
-	        </ul>
-	      </li>
-	    </ul>
-	      
-	  {% endfor %}
+    <style>
+      .missed{
+        color:red;
+      }
+      .found{
+        color:green;
+      }
+    </style>
+    <script type="text/javascript">
+    phenoclim.options = {
+      geojson: {{ user.observer.getAllGeojson|jsonify|safe }},
+    }
+    </script>
+    <div class="row  table-row">
+
+      <div class="col-md-5  table-col">
+        {% for area in user.observer.areas.all %}
+          <ul class="display__accordeon">
+            <li class="display__area">
+              <a href="{% url 'area-detail' area.id %}">
+                {{ area }}
+              </a>
+              <ul>{% regroup area.individual_set.all by species as area_species %}
+                {% for individuals_by_species in area_species %}
+                <li class="display__species">
+                  <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">
+                    {{ individuals_by_species.grouper }}
+                  </a>
+                  <ul>
+                    {% for individual in individuals_by_species.list %}
+                    <li class="display__individual" rel="{{ individual.id }}">
+                      <a href="" rel="{% url 'individual-detail' individual.id %}">
+                        {{ individual }}
+                      </a>
+                      <ul>
+                        {% for stage, dates, survey in individual.get_tasks %}
+                        <li class="display__stage">
+                          <a class="
+                          {% if survey %}
+                          found
+                          {% else %}
+                          missed
+                          {% endif %}"
+                          href="
+                          {% if survey %}
+                          {% url 'survey-detail' survey.id %}
+                          {% else %}
+                          {% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
+                          {% endif %}">
+                          {{ stage }} [{{ dates.0.year}}] - {{survey.date}} - {{stage.month_start}} {{stage.month_end}}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-md-7 table-col" style="position:relative">
+        <div id="map"></div>
+      </div>
+    </div>
+      <script type="text/javascript">
+        $( document ).ready(function(){
+          $("#map").height($("#map").parent().height() - 100);
+        });
+        $(".display__stage").hide();
+        $(".display__area a").on("click", function(event){
+          var li = $(this).parent("li");
+          var children = $(li).children("ul").children("li");
+          var is_hidden = children.filter(":hidden").length > 0;
+          if ($(children).length > 0){
+            if(is_hidden === false){
+              children.hide();
+            }
+            else{
+              children.show();
+            }
+            return false;
+          }
+        });
+      </script>
+    {% endfor %}
 {% endblock %}
