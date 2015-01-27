@@ -81,7 +81,7 @@ class UserAdmin(UserAdmin):
 class SpeciesAdmin(TabAdmin):
     inlines = (StageInline, )
 # Re-register UserAdmin
-#admin.site.unregister(models.User)
+admin.site.unregister(models.User)
 admin.site.register(models.User, UserAdmin)
 
 admin.site.register(models.Stage, StageAdmin)
