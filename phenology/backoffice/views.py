@@ -184,10 +184,12 @@ def register_user(request):
     }, RequestContext(request))
 
 
+@login_required(login_url='login/')
 def dashboard(request):
     return render_to_response("profile_display.html", RequestContext(request))
 
 
+@login_required(login_url='login/')
 def all_surveys(request):
     surveys = models.Survey.objects.all()[:100]
     return render_to_response("all_surveys.html", {
