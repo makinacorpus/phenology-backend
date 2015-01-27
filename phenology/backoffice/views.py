@@ -1,18 +1,21 @@
 #from django.shortcuts import render
+import datetime
+import json
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.db.models import Q
+from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
+from django.utils.translation import ugettext_lazy as _
+from django.http import HttpResponse
+
+from querystring_parser import parser
+
 from backend import models
 from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm
-from django.contrib.auth.models import User
-from django.template import RequestContext
-from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
-import datetime
-from django.http import HttpResponse
-from django.db.models import Q
-from querystring_parser import parser
-import json
 
 
 @login_required(login_url='login/')
