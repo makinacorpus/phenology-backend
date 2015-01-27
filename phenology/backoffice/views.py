@@ -9,6 +9,10 @@ from django.template import RequestContext
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 import datetime
+from django.http import HttpResponse
+from django.db.models import Q
+from querystring_parser import parser
+import json
 
 
 @login_required(login_url='login/')
@@ -178,3 +182,58 @@ def register_user(request):
 
 def profile_display(request):
     return render_to_response("profile_display.html", RequestContext(request))
+
+
+def all_surveys(request):
+    surveys = models.Survey.objects.all()[:100]
+    return render_to_response("all_surveys.html", {
+        "surveys": surveys
+        }, RequestContext(request))
+
+
+def get_surveys(request):
+    mapping = {
+        "id": "id",
+        "observer": "observer",
+        "date": "date",
+        "species": "individual__species__name",
+        "individual": "individual__name",
+        "area": "individual__area__name",
+        "stage": "stage__name",
+        "answer": "answer"
+    }
+    parsed = parser.parse(request.GET.urlencode())
+    start = int(request.GET.get("start", 0))
+    length = int(request.GET.get("length", 10))
+    search = request.GET.get("search[value]", "")
+    draw = request.GET.get("draw", 1)
+    query = models.Survey.objects
+    query = query.filter(Q(individual__name__icontains=search)
+                         | Q(individual__area__name__icontains=search)
+                         | Q(individual__species__name__icontains=search)
+                         | Q(individual__species__name__icontains=search))
+
+    for ord in parsed["order"].values():
+        col = parsed["columns"][ord["column"]]["data"]
+        query_1 = mapping.get(col, col)
+        if ord["dir"] == "desc":
+            query_1 = "-" + query_1
+        query = query.order_by(query_1)
+
+    filtered_total = query.count()
+    filtered_data = query.all()[start: start + length]
+    response_data = {
+        "draw": int(draw),
+        "data": [{"id": o.id,
+                  "date": str(o.date),
+                  "area": o.individual.area.name,
+                  "species": o.individual.species.name,
+                  "individual": o.individual.name,
+                  "observer": o.observer,
+                  "stage": o.stage.name,
+                  "answer": o.answer} for o in filtered_data],
+        "recordsTotal": models.Survey.objects.count(),
+        "recordsFiltered": filtered_total
+    }
+    return HttpResponse(json.dumps(response_data),
+                        content_type="application/json")

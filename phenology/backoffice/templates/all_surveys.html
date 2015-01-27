@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block title %}{{ form.instance.name }}{% endblock %}
+
+{% block content %}
+
+{% load i18n %}
+
+<div class="row  table-row">
+
+  <table class="mytable">
+    <thead>
+      <tr>
+        <th>
+          id
+        </th>
+        <th>
+          {% trans "date" %}
+        </th>
+        <th>
+          {% trans "Area" %}
+        </th>
+        <th>
+          {% trans "Species" %}
+        </th>
+        <th>
+          {% trans "Individual" %}
+        </th>
+        <th>
+          {% trans "Observer" %}
+        </th>
+        <th>
+          {% trans "Stage" %}
+        </th>
+        <th>
+          {% trans "Answer" %}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <script type="text/javascript">
+
+    $( document ).ready(function(){
+      $(".mytable").dataTable({
+        "serverSide": true,
+        "ajax": {
+          "url": "{% url 'get-surveys' %}",
+        },
+        "language": {
+          "url": "{% static 'vendor/datatables/extensions/i18n/' %}{{ request.LANGUAGE_CODE }}.json"
+        },
+        "processing": true,
+        "pageLength": 20,
+        "columns": [
+          { "data": "id",
+            "visible": false },
+          { "data": "date" },
+          { "data": "area" },
+          { "data": "species" },
+          { "data": "individual" },
+        { "data": "observer",
+        "visible": false },
+          { "data": "stage" },
+          { "data": "answer" },
+        ]
+      });
+    });
+  </script>
+{% endblock %}

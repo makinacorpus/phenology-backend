@@ -1,4 +1,4 @@
-<html> 
+<html>
 	{% load bootstrap3 %}
   {% load staticfiles %}
   {% load json_filters %}
@@ -10,13 +10,17 @@
     <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}" />
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
-    <script type="text/javascript">
+		<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/media/css/jquery.dataTables.css' %}">
+		    <script type="text/javascript">
       var phenoclim = phenoclim || {};
-      phenoclim.options = {
-        geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
-      }
+			{% if form %}
+	      phenoclim.options = {
+	        geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
+	      }
+			{% endif %}
     </script>
-   <body> 
+   <body>
        {% include "navigation.html" %}
        {% bootstrap_messages messages %}
      <div class="container-fluid">
