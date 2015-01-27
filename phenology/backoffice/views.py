@@ -36,6 +36,7 @@ def area_detail(request, area_id=-1):
                                      messages.SUCCESS,
                                      _('Form is successifully updated'))
                 form.save()
+                return redirect('area-detail', area_id=form.instance.id)
         else:
             form = AreaForm(instance=area)
         return render_to_response("profile_area.html", {
@@ -85,6 +86,8 @@ def individual_detail(request, ind_id=-1):
                                      messages.SUCCESS,
                                      _('Form is successifully updated'))
                 form.save()
+                return redirect('individual-detail', ind_id=form.instance.id)
+
         else:
             form = CreateIndividualForm(instance=individual)
 
@@ -119,6 +122,7 @@ def survey_detail(request, survey_id=-1):
                                  messages.SUCCESS,
                                  _('Form is successifully updated'))
             form.save()
+            return redirect('survey-detail', survey_id=form.instance.id)
         else:
             print form.errors
     else:
