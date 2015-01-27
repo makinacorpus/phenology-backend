@@ -17,7 +17,8 @@ import json
 
 @login_required(login_url='login/')
 def index(request):
-    return render(request, 'board.html')
+    return redirect('my-surveys')
+    #return render(request, 'board.html')
 
 
 @login_required(login_url='login/')
@@ -180,7 +181,7 @@ def register_user(request):
     }, RequestContext(request))
 
 
-def profile_display(request):
+def dashboard(request):
     return render_to_response("profile_display.html", RequestContext(request))
 
 

@@ -45,7 +45,7 @@ urls = patterns(
     url(r'^survey/(?P<survey_id>\d+)', views.survey_detail,
         name='survey-detail'),
 
-    url(r'^mysurveys$', views.profile_display, name='my-surveys'),
+    url(r'^mysurveys$', views.dashboard, name='my-surveys'),
     url(r'^allsurveys$', views.all_surveys, name='all-surveys'),
     url(r'^getsurveys$', views.get_surveys, name='get-surveys'),
     # Examples:
