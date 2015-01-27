@@ -219,10 +219,12 @@ class Individual(models.Model):
         last_stages = []
         next_stages = []
         date_referer = datetime.date.today()
-        previous_date = date_referer + relativedelta(months=-4)
+        previous_date = date_referer + relativedelta(months=-2)
         next_date = date_referer + relativedelta(months=+4)
         for stage in self.species.stage_set.all().filter(is_active=True):
             date_start = datetime.date(next_date.year, stage.month_start, stage.day_start)
+            #if (stage.month_start > stage.month_start):
+            #    year_start = date_refer.
             date_end = datetime.date(previous_date.year, stage.month_end, stage.day_end)
             if( date_referer <= date_start < next_date ):
                 last_stages.append((stage, (date_start, datetime.date(date_start.year, stage.month_end, stage.day_end))))
