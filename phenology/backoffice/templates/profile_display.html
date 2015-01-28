@@ -18,11 +18,12 @@
     <script type="text/javascript">
     phenoclim.options = {
       geojson: {{ user.observer.getAllGeojson|jsonify|safe }},
+      isLinked: true,
     }
     </script>
     <div class="row  table-row">
 
-      <div class="col-md-5  table-col">
+      <div class=" col-xs-6 col-md-5  table-col">
         {% for area in user.observer.areas.all %}
           <ul class="display__accordeon">
             <li class="display__area">
@@ -37,7 +38,7 @@
                   </a>
                   <ul>
                     {% for individual in individuals_by_species.list %}
-                    <li class="display__individual" rel="{{ individual.id }}">
+                    <li class="display__individual" data-id="{{ individual.id }}">
                       <a href="" rel="{% url 'individual-detail' individual.id %}">
                         {{ individual }}
                       </a>
@@ -71,7 +72,7 @@
         </ul>
       </div>
 
-      <div class="col-md-7 table-col" style="position:relative">
+      <div class="col-xs-6 col-md-7 table-col" style="position:relative">
         <div id="map"></div>
       </div>
     </div>
