@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from select2 import fields as select2_fields
 import datetime
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 
 # Create your models here.
 
@@ -190,6 +191,12 @@ class Individual(models.Model):
         return "%s" % (self.name)
 
     def geojson(self, draggable=False):
+        picture = self.species.picture
+        if(not str(picture)):
+            filename = picture.field.default
+        else:
+            filename = "/".join([picture.field.upload_to, str(picture)])
+        picture_url = settings.MEDIA_URL + filename
         return {
             "type": "Point",
             "coordinates": [self.lon, self.lat],
@@ -197,7 +204,9 @@ class Individual(models.Model):
                 "object": "individual",
                 "name": self.name,
                 "id": self.id,
-                "draggable": draggable
+                "draggable": draggable,
+                "species": self.species.name,
+                "picture": picture_url
             }
         }
 
@@ -298,4 +307,3 @@ class Survey(models.Model):
         verbose_name = _("Survey")
         verbose_name_plural = _("Surveys")
         ordering = ["-date"]
-
