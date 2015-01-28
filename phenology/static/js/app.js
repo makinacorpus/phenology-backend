@@ -7,6 +7,7 @@ var geojsonMarkerOptions = {
     color: "#000",
     weight: 1,
     opacity: 1,
+    clickable: false,
     fillOpacity: 0.3
 };
 
