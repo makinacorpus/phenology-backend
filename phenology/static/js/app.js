@@ -10,7 +10,10 @@ var geojsonMarkerOptions = {
     clickable: false,
     fillOpacity: 0.3
 };
-
+var phenoMarker = L.AwesomeMarkers.icon({
+  icon: 'tree-deciduous',
+  markerColor: 'green'
+});
 
 phenoclim.map = function(options){
 	self = this;
@@ -42,31 +45,31 @@ phenoclim.map = function(options){
     L.control.scale({ imperial : false }).addTo(self._map);
     console.log("sfds")
     var bounds2 = [[46.38, -1.51],[42.71, 7.95]];
-	if(options.geojson && options.geojson.features && options.geojson.features.length > 0){
-		self.geojson = L.geoJson(options.geojson,{
-		    pointToLayer: function (feature, latlng) {
-		    	console.log("sss");
-		    	var ftype = feature.properties.object
-		    	console.log("toto")
-		    	if(ftype)
-		    	{
-		    		if(ftype == "individual"){
-		        		return L.marker(latlng);
-		    		}
-		    		else{
-		        		return L.circle(latlng, 500, geojsonMarkerOptions);
-		    		}
-		    	}
-		    },
-		    onEachFeature: onEachFeature
-		}
-		).addTo(self._map); 
-		var bounds = self.geojson.getBounds();
-		self._map.fitBounds(bounds, { maxZoom: 18, padding: [10, 10] });
-	}
-	else{
-		self._map.fitBounds(bounds2);
-	}
+    if(options.geojson && options.geojson.features && options.geojson.features.length > 0){
+      self.geojson = L.geoJson(options.geojson,{
+          pointToLayer: function (feature, latlng) {
+            var ftype = feature.properties.object
+            console.log(feature.properties)
+            if(ftype)
+            {
+              if(ftype == "individual"){
+                  return L.marker(latlng, {icon: phenoMarker});
+              }
+              else{
+                  return L.circle(latlng, 500, geojsonMarkerOptions);
+              }
+            }
+          },
+          onEachFeature: onEachFeature
+      }
+      ).addTo(self._map);
+      var bounds = self.geojson.getBounds();
+      self._map.fitBounds(bounds, { maxZoom: 18, padding: [10, 10] });
+    }
+    else{
+      self._map.fitBounds(bounds2);
+    }
+
      $(".change_position").on("click",function(event){
      	var rel = $(this).attr("data-rel");
      	var id = $(this).attr("data-id");
