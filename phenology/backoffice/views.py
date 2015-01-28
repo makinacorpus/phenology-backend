@@ -12,10 +12,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
 
 from querystring_parser import parser
-
+from .utils import as_workbook
 from backend import models
 from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm
+from django.db.models import Max, Min
 
 
 @login_required(login_url='login/')
@@ -27,6 +28,29 @@ def index(request):
 @login_required(login_url='login/')
 def register(request):
     return render(request, 'board.html')
+
+
+def export_surveys(request):
+    columns = ['stage', 'date', 'individual.species',
+               'individual.area.commune', 'answer']
+    if(request.GET.get("id")):
+        observer = models.Observer.objects.get(id=int(request.GET.get("id")))
+    else:
+        observer = request.user.observer
+    queryset = models.Survey.objects.\
+        filter(individual__area__observer=observer).all()
+    years = queryset.aggregate(Min('date'), Max('date'))
+    min_year = years["date__min"].year
+    max_year = years["date__max"].year
+    workbook = None
+    for year in range(min_year, max_year+1):
+        queryset_tmp = queryset.filter(date__year=year)
+        workbook = as_workbook(queryset_tmp, columns,
+                               workbook=workbook, sheet_name=str(year))
+    response = HttpResponse(mimetype='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="export.xls"'
+    workbook.save(response)
+    return response
 
 
 @login_required(login_url='login/')

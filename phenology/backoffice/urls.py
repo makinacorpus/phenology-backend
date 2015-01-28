@@ -32,7 +32,7 @@ urls = patterns(
         'django.contrib.auth.views.logout',
         {"next_page": reverse_lazy('home')},
         name='logout'),
-
+    url(r'^export_surveys', views.export_surveys, name="export-survey"),
     url(r'^area/create$', views.area_detail, name='area-detail'),
     url(r'^area/(?P<area_id>\d+)', views.area_detail, name='area-detail'),
 
