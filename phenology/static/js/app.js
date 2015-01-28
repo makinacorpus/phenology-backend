@@ -16,21 +16,21 @@ var phenoMarker = L.AwesomeMarkers.icon({
 });
 
 phenoclim.map = function(options){
-	self = this;
-	
-	function onEachFeature(feature, layer) {
-	    // does this feature have a property named popupContent?
-	    if (feature.properties && feature.properties.draggable === true) {
-	        layer.options.draggable = true;
-    		layer.on("dragend", function(e){
-    			var latlng = e.target.getLatLng();
-    			$("[name=lat]").val(latlng.lat);
-    			$("[name=lon]").val(latlng.lng);
-    		});
-	    }
-	}
+  self = this;
 
-	// initialize the map on the "map" div with a given center and zoom
+  function onEachFeature(feature, layer) {
+      // does this feature have a property named popupContent?
+      if (feature.properties && feature.properties.draggable === true) {
+          layer.options.draggable = true;
+        layer.on("dragend", function(e){
+          var latlng = e.target.getLatLng();
+          $("[name=lat]").val(latlng.lat);
+          $("[name=lon]").val(latlng.lng);
+        });
+      }
+  }
+
+  // initialize the map on the "map" div with a given center and zoom
     this._map = L.map('map', {
         center: [51.505, -0.09],
         zoom: 11,
@@ -38,10 +38,10 @@ phenoclim.map = function(options){
     });
     this.geojson = undefined;
     // add an OpenStreetMap tile layer
-	L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
-	    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-	}).addTo(this._map);
-    
+    L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this._map);
+
     L.control.scale({ imperial : false }).addTo(self._map);
     console.log("sfds")
     var bounds2 = [[46.38, -1.51],[42.71, 7.95]];
@@ -71,27 +71,49 @@ phenoclim.map = function(options){
     }
 
      $(".change_position").on("click",function(event){
-     	var rel = $(this).attr("data-rel");
-     	var id = $(this).attr("data-id");
-     	var layers = self.geojson.getLayers();
+       var rel = $(this).attr("data-rel");
+       var id = $(this).attr("data-id");
+       var layers = self.geojson.getLayers();
         for (var i = 0; i < layers.length; i++) {
-        	var properties = layers[i].feature.geometry.properties;
-        	if(properties.object == rel && properties.id == id){
-        		layers[i].dragging.enable();
-        		layers[i].on("dragend", function(e){
-        			var latlng = e.target.getLatLng();
-        			$("[name=lat]").val(latlng.lat);
-        			$("[name=lon]").val(latlng.lng);
-        		});
-        	}
+          var properties = layers[i].feature.geometry.properties;
+          if(properties.object == rel && properties.id == id){
+            layers[i].dragging.enable();
+            layers[i].on("dragend", function(e){
+              var latlng = e.target.getLatLng();
+              $("[name=lat]").val(latlng.lat);
+              $("[name=lon]").val(latlng.lng);
+            });
+          }
 
         };
     });
+
+    if(options.isLinked == true){
+      self.geojson.eachLayer(function(layer){
+        layer.on("click", function(event){
+          var prop = event.target.feature.geometry.properties;
+          if(prop.object=="individual" && prop.id){
+            setTimeout(function(){ $(".display__individual[data-id=" + prop.id + "]>a").click(); }, 10);
+            };
+        });
+      });
+      $(".display__individual>a").on("click", function(event){
+        var id=$(this).parent().attr("data-id");
+        self.geojson.eachLayer(function(layer){
+          var prop =layer.feature.geometry.properties;
+          if(prop.object=="individual" && id==prop.id){
+            layer.bindPopup("<div><img class='popup__picture' src='" + prop.picture + "'/><p class='text-center'>"+prop.name+"</p>");
+            layer.openPopup();
+            return false;
+          }
+        });
+      });
+    }
 }
 
 $( document ).ready(function() {
-	phenoclim.session = {}
-	if($("#map").length > 0){
-		phenoclim.session.map = new phenoclim.map(phenoclim.options);
-	}
+  phenoclim.session = {}
+  if($("#map").length > 0){
+    phenoclim.session.map = new phenoclim.map(phenoclim.options);
+  }
 });
