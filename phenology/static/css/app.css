@@ -1,11 +1,11 @@
 #map {
-	width: 100%;
-	min-height: 400px;
+  width: 100%;
+  min-height: 400px;
 }
 
 .navbar li.active{
-	color: #555;
-	background-color: #e7e7e7;
+  color: #555;
+  background-color: #e7e7e7;
 }
 
 .table-container {
@@ -26,39 +26,41 @@
 }
 
 .table-row form{
-	margin: auto;
-	padding: 10px;
+  margin: auto;
+  padding: 10px;
 }
 
 .mynav .navbar-btn {
-	margin-bottom: 2px;
-	margin-top: 2px;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .mynav .nav-justified{
-	float:left;
-	margin-top:3px;
+  float:left;
+  margin-top:3px;
 }
 
 .mynav.navbar.navbar-default{
-	min-height: 40px;
-	margin-bottom: 0px;
+  min-height: 40px;
+  margin-bottom: 0px;
 }
 
 .mynav .nav > li > a {
-	padding: 7px 18px;
+  padding: 7px 18px;
 }
 
 .mynav .navbar-right{
-	position:absolute;
-	right:0;
-	margin-right: 0px;
+  position:absolute;
+  right:0;
+  margin-right: 0px;
 }
 
 .mytable>tbody>tr>td{
-	padding-top: 4px;
-	padding-bottom: 4px;
-	vertical-align: middle;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  vertical-align: middle;
 }
 
 .preview_pictures img{
@@ -74,4 +76,8 @@
 .preview_pictures{
   min-height: 200px;
   max-height: 250px;
+}
+
+.popup__picture{
+  width: 100px;
 }
