@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-19 12:26+0100\n"
+"POT-Creation-Date: 2015-01-28 23:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:69
+#: forms.py:68
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: views.py:36 views.py:70 views.py:85 views.py:119 views.py:142 views.py:163
+#: views.py:69 views.py:104 views.py:119 views.py:155 views.py:179
+#: views.py:200
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:77
+#: views.py:111
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
+#: templates/all_surveys.html:22
+#, fuzzy
+msgid "date"
+msgstr "Valider"
+
+#: templates/all_surveys.html:25 templates/profile_area.html:10
+msgid "Area"
+msgstr "Zone d'observation"
+
+#: templates/all_surveys.html:28 templates/profile_area.html:49
+#: templates/profile_individual.html:48
+msgid "Species"
+msgstr "Espèce"
+
+#: templates/all_surveys.html:31 templates/profile_individual.html:9
+msgid "Individual"
+msgstr "Individu"
+
+#: templates/all_surveys.html:34
+#, fuzzy
+msgid "Observer"
+msgstr "Observé"
+
+#: templates/all_surveys.html:37
+msgid "Stage"
+msgstr ""
+
+#: templates/all_surveys.html:40
+msgid "Answer"
+msgstr ""
+
 #: templates/generic_form.html:18 templates/profile.html:18
 #: templates/profile_area.html:29 templates/profile_individual.html:26
-#: templates/survey.html:84
+#: templates/survey.html:76
 msgid "Validate"
 msgstr "Valider"
 
@@ -62,15 +94,15 @@ msgstr "Mon profil"
 msgid "My surveys"
 msgstr "Mes observations"
 
-#: templates/navigation.html:25
+#: templates/navigation.html:29
 msgid "All surveys"
 msgstr "Toutes les observations"
 
-#: templates/navigation.html:31
+#: templates/navigation.html:36
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/navigation.html:33
+#: templates/navigation.html:38
 msgid "Login"
 msgstr "Se connecter"
 
@@ -103,10 +135,6 @@ msgstr "Ajouter une nouvelle zone d'observation"
 msgid "New area"
 msgstr "Nouvelle zone d'observation"
 
-#: templates/profile_area.html:10
-msgid "Area"
-msgstr "Zone d'observation"
-
 #: templates/profile_area.html:21
 msgid "Back to my profile"
 msgstr "Retour sur mon profil"
@@ -119,10 +147,6 @@ msgstr "Changer le centre de la zone"
 msgid "Indivuals"
 msgstr "Individus"
 
-#: templates/profile_area.html:49 templates/profile_individual.html:48
-msgid "Species"
-msgstr "Espèce"
-
 #: templates/profile_area.html:50
 msgid "Last survey"
 msgstr "Dernière observation"
@@ -130,10 +154,6 @@ msgstr "Dernière observation"
 #: templates/profile_area.html:70
 msgid "Add a new individual"
 msgstr "Ajouter un nouvel individu"
-
-#: templates/profile_individual.html:9
-msgid "Individual"
-msgstr "Individu"
 
 #: templates/profile_individual.html:18
 msgid "Back to the area"
@@ -163,25 +183,24 @@ msgstr "à observer"
 msgid "after"
 msgstr "après"
 
-#: templates/survey.html:45
-msgid "Observed today"
-msgstr "Observé aujourd'hui"
-
-#: templates/survey.html:53
+#: templates/survey.html:44
 msgid "Observed"
 msgstr "Observé"
 
-#: templates/survey.html:60
+#: templates/survey.html:51
 msgid "Individual lost ord dead"
 msgstr "Individu perdu ou mort"
 
-#: templates/survey.html:67
+#: templates/survey.html:58
 msgid "Stage never happened"
 msgstr "Stade absent"
 
-#: templates/survey.html:74
+#: templates/survey.html:65
 msgid "Stage already passed"
 msgstr "Stade déjà passé"
+
+#~ msgid "Observed today"
+#~ msgstr "Observé aujourd'hui"
 
 #~ msgid "Back to the individual"
 #~ msgstr "Retour sur l'individu"
