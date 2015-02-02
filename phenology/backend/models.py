@@ -202,6 +202,26 @@ class Observer(models.Model):
 
 ##########
 
+MILIEU_CHOICES = (
+    ('champ', _('champ')),
+    ('foret', _('foret')),
+    ('jardin', _('jardin')),
+    ('zoneurbaine', _('zoneurbaine')),
+    ('autres', _('autres'))
+)
+
+EXPOSITION_CHOICES = (
+    ('aucune', _('aucune')),
+    ('est', _('est')),
+    ('nord', _('nord')),
+    ('nordest', _('nordest')),
+    ('nordouest', _('nordouest')),
+    ('sudest', _('sudest')),
+    ('sudouest', _('sudouest')),
+    ('sud', _('sud')),
+    ('ouest', _('ouest'))
+)
+
 
 #individu
 class Individual(models.Model):
@@ -209,12 +229,22 @@ class Individual(models.Model):
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
-    lat = models.FloatField(verbose_name="latitude")
-    lon = models.FloatField(verbose_name="longitude")
-    altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
-    circonference = models.FloatField(verbose_name="circonference", null=True, blank=True)
-
-    remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
+    lat = models.FloatField(verbose_name=_("latitude"))
+    lon = models.FloatField(verbose_name=_("longitude"))
+    altitude = models.FloatField(verbose_name=_("altitude"),
+                                 null=True, blank=True)
+    circonference = models.FloatField(verbose_name=_("circonference"),
+                                      null=True, blank=True)
+    milieu = models.CharField(max_length=100,
+                              verbose_name=_("milieu"),
+                              choices=MILIEU_CHOICES,
+                              null=True, blank=True)
+    pente = models.FloatField(verbose_name=_("pente"), null=True, blank=True)
+    exposition = models.CharField(max_length=100,
+                                  verbose_name=_("exposition"),
+                                  choices=EXPOSITION_CHOICES,
+                                  null=True, blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:
         verbose_name = _("individual")
