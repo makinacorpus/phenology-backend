@@ -41,6 +41,13 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class StageSerializer(TranslatedModelSerializer):
+    picture_before = rest_fields.CharField(source="thumbnail_before",
+                                           read_only=True)
+    picture_current = rest_fields.CharField(source="thumbnail_current",
+                                            read_only=True)
+    picture_after = rest_fields.CharField(source="thumbnail_after",
+                                          read_only=True)
+
     class Meta:
         model = models.Stage
         fields = ("id", "name", "species",
@@ -83,6 +90,7 @@ class IndividualSerializer(serializers.ModelSerializer):
 class SpeciesSerializer(TranslatedModelSerializer):
     #individuals = IndividualSerializer(source="individual_set")
     stages = StageSerializer(source="stage_set")
+    picture = rest_fields.CharField(source="thumbnail", read_only=True)
 
     class Meta:
         model = models.Species
