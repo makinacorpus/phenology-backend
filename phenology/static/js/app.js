@@ -38,6 +38,8 @@ phenoclim.map = function(options){
     });
     this.geojson = undefined;
     // add an OpenStreetMap tile layer
+    // 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+    // 'http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png'
     L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this._map);
