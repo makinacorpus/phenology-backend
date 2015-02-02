@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load thumbnail %}
 
 {% block title %}{{ form.instance.name }}{% endblock %}
 
@@ -21,15 +22,15 @@
       </div>
       <div class="row preview_pictures">
         <div class="col-xs-4 text-center">
-          <img src="/media/{{ form.instance.stage.picture_before }}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_before 200x200 %}"></img>
           <div>{% trans 'before' %}</div>
         </div>
         <div class="col-xs-4 text-center current">
-          <img src="/media/{{ form.instance.stage.picture_current }}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_current 200x200 %}"></img>
           <div>{% trans 'current' %}</div>
         </div>
         <div class="col-xs-4 text-center">
-          <img src="/media/{{ form.instance.stage.picture_after }}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_after 200x200 %}"></img>
           <div>{% trans 'after' %}</div>
         </div>
       </div>
