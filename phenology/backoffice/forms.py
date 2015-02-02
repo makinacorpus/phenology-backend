@@ -23,9 +23,9 @@ class AccountForm(forms.ModelForm):
 
         self.fields.update(self.uf.fields)
         self.initial.update(self.uf.initial)
-        self.fields.keyOrder = ['last_name', 'first_name', 'email',
+        self.fields.keyOrder = ['last_name', 'first_name', 'organism', 'email',
                                 'fonction', 'adresse', 'codepostal',
-                                'city', 'phone', 'mobile', 'nationality']
+                                'city', 'phone', 'mobile', 'category', 'nationality']
 
     def save(self, *args, **kwargs):
         # save both forms
