@@ -315,7 +315,7 @@ class Snowing(models.Model):
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     observer = models.ForeignKey(Observer, verbose_name=_("Observer"))
     date = models.DateTimeField(verbose_name=_("date"))
-    remark = models.CharField(max_length=100, verbose_name=_("remark"), default="", blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"), default="", blank=True)
     height = models.FloatField(verbose_name=_("height"))
     temperature = models.FloatField(verbose_name=_("temperature"), null=True, blank=True)
 
@@ -376,10 +376,11 @@ class Survey(models.Model):
     individual = models.ForeignKey(Individual)
     observer = models.ForeignKey(Observer, verbose_name=_("observer"), blank=True, null=True)
     stage = models.ForeignKey(Stage, verbose_name=_("Stage"))
-
+    name_obs = models.CharField(max_length=100, verbose_name=_("name"), blank=True)
+    firstname_obs = models.CharField(max_length=100, verbose_name=_("firstname"), blank=True)
     answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
-    date = models.DateField(verbose_name=_("survey date"))
-    remark = models.CharField(max_length=100, verbose_name=_("remark"), blank=True)
+    date = models.DateField(verbose_name=_("survey date"), db_index=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
 
     class Meta:
         verbose_name = _("Survey")
