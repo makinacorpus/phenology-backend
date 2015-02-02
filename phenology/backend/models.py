@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from easy_thumbnails.files import get_thumbnailer
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -12,6 +12,7 @@ from select2 import fields as select2_fields
 import datetime
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from easy_thumbnails.fields import ThumbnailerImageField
 
 # Create your models here.
 
@@ -40,13 +41,20 @@ def has_changed(instance, field, manager='objects'):
     return not getattr(instance, field) == old
 
 
+def get_thumbnail(picture):
+    if picture:
+        options = {'size': (100, 100)}
+        return ".." + get_thumbnailer(picture).get_thumbnail(options).url
+    return picture.field.default
+
+
 #espece
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom")
     #name_fr = models.CharField(max_length=100, verbose_name="nom")
     description = models.TextField(max_length=500)
-    picture = models.ImageField(upload_to='picture/species',
-                                default='no-img.jpg')
+    picture = ThumbnailerImageField(upload_to='picture/species',
+                                    default='no-img.jpg')
 
     def save(self, *args, **kwargs):
         # Save this photo instance
@@ -55,14 +63,13 @@ class Species(models.Model):
             #filename = os.path.splitext(os.path.split(self.picture.name)[-1])[0]
             filename = "%s.png" % unicodedata.normalize('NFD', self.name).lower()
             if(self.picture.file):
-                image = Image.open(self.picture.file)
                 """
                 if image.mode not in ('L', 'RGB'):
                     image = image.convert('RGB')
                 """
                 # d'abord la photo elle-même
                 self.picture.save(filename,
-                                  create_thumb(image, (60, 80)),
+                                  self.picture.file,
                                   save=False)
         super(Species, self).save()
 
@@ -76,6 +83,10 @@ class Species(models.Model):
 
     def __str__(self):
         return self.name
+
+    def thumbnail(self):
+        return get_thumbnail(self.picture)
+
 ###########
 
 
@@ -191,12 +202,8 @@ class Individual(models.Model):
         return "%s" % (self.name)
 
     def geojson(self, draggable=False):
-        picture = self.species.picture
-        if(not str(picture)):
-            filename = picture.field.default
-        else:
-            filename = "/".join([picture.field.upload_to, str(picture)])
-        picture_url = settings.MEDIA_URL + filename
+        filename = settings.MEDIA_URL + get_thumbnail(self.species.picture)
+        picture_url = filename
         return {
             "type": "Point",
             "coordinates": [self.lon, self.lat],
@@ -263,28 +270,43 @@ class Snowing(models.Model):
 
 #stades
 class Stage(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("Name"))
-    #name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
-    species = models.ForeignKey(Species, verbose_name=_("Species"))
-    day_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start day"))
-    month_start = models.IntegerField(blank=True, null=True, verbose_name=_("Start month"))
-    day_end = models.IntegerField(blank=True, null=True, verbose_name=_("En day"))
-    month_end = models.IntegerField(blank=True, null=True, verbose_name=_("End month"))
-    order = models.IntegerField(verbose_name=_("Order"))
-    picture_before = models.ImageField(upload_to='picture/stages',
-                                       default='no-img.jpg',
-                                       verbose_name=_('Before'))
-    picture_current = models.ImageField(upload_to='pictures/stages',
-                                        default='no-img.jpg',
-                                        verbose_name=_('Current'))
-    picture_after = models.ImageField(upload_to='pictures/stages',
-                                      default='no-img.jpg',
-                                      verbose_name=_('After'))
-    is_active = models.BooleanField(verbose_name=_("is activated?"), default=True)
 
     class Meta:
         verbose_name = _("Stage")
         verbose_name_plural = _("Stages")
+
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    #name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
+    species = models.ForeignKey(Species, verbose_name=_("Species"))
+    day_start = models.IntegerField(blank=True, null=True,
+                                    verbose_name=_("Start day"))
+    month_start = models.IntegerField(blank=True, null=True,
+                                      verbose_name=_("Start month"))
+    day_end = models.IntegerField(blank=True, null=True,
+                                  verbose_name=_("En day"))
+    month_end = models.IntegerField(blank=True, null=True,
+                                    verbose_name=_("End month"))
+    order = models.IntegerField(verbose_name=_("Order"))
+    picture_before = ThumbnailerImageField(upload_to='picture/stages',
+                                           default='no-img.jpg',
+                                           verbose_name=_('Before'))
+    picture_current = ThumbnailerImageField(upload_to='pictures/stages',
+                                            default='no-img.jpg',
+                                            verbose_name=_('Current'))
+    picture_after = ThumbnailerImageField(upload_to='pictures/stages',
+                                          default='no-img.jpg',
+                                          verbose_name=_('After'))
+    is_active = models.BooleanField(verbose_name=_("is activated?"),
+                                    default=True)
+
+    def thumbnail_before(self):
+        return get_thumbnail(self.picture_before)
+
+    def thumbnail_current(self):
+        return get_thumbnail(self.picture_current)
+
+    def thumbnail_after(self):
+        return get_thumbnail(self.picture_after)
 
     def __str__(self):
         return u"%s" % self.name
