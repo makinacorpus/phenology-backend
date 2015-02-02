@@ -42,10 +42,10 @@ def has_changed(instance, field, manager='objects'):
 
 
 def get_thumbnail(picture):
-    if picture:
-        options = {'size': (100, 100)}
-        return ".." + get_thumbnailer(picture).get_thumbnail(options).url
-    return picture.field.default
+    if not picture:
+        picture = picture.field.default
+    options = {'size': (100, 100)}
+    return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
 
 #espece
