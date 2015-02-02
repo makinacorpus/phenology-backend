@@ -45,7 +45,7 @@ class Command(BaseCommand):
                     .filter(name=species["name"]).first()
             species_tmp.save()
 
-        for code in main_results["codes"].keys():
+        for code in sorted(main_results["codes"].keys()):
             """if code != "ronce":
                 continue"""
             users = main_results["codes"][code]["users"]
@@ -70,7 +70,11 @@ class Command(BaseCommand):
                     observer.codepostal = user["codepostal_obs"]
                     observer.nationality = user["nationalite_obs"]
                     observer.phone = user["tel_obs"]
+                    observer.function = user["fonction_obs"]
+                    observer.organism = user["organisme"]
+                    observer.category = user["categorie"]
                     observer.adresse = user["adresse_obs"]
+                    observer.is_active = user["is_active"]
                     observer.date_inscription = user["date_inscription"]
                     observer.is_crea = user.get("membre_crea", "non") == "oui"
                     observer.save()
@@ -126,6 +130,8 @@ class Command(BaseCommand):
                             survey["stade"] = survey["stade"].strip()
                             survey_tmp = models.Survey()
                             survey_tmp.individual = ind_tmp
+                            survey_tmp.firstname_obs = survey["prenom_obs"]
+                            survey_tmp.name_obs = survey["nom_obs"]
                             survey_tmp.answer = "isObserved"
                             survey_tmp.date = survey["date"]
                             try:
