@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block title %}Map{% endblock %}
+
+{% block content %}
+
+    <script type="text/javascript">
+      phenoclim.options = {
+        geojson: {},
+      }
+    </script>
+
+    <div class="row  table-row">
+
+      <div class=" col-xs-8 col-md-8  table-col">
+               <div id="map" class="map"></div>
+      </div>
+
+      <div class="col-xs-4 col-md-4 table-col">
+        <div class="map-control">
+           <select data-id="species" class="form-control">
+           </select>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      var cached_surveys = {};
+      phenoclim = phenoclim || {}
+      phenoclim.session = phenoclim.session || {};
+      phenoclim.mapviz = phenoclim.mapviz || {};
+
+      phenoclim.mapviz.load_layers = function(){
+        phenoclim.session.map_layers.clearLayers();
+        var species_id = $("[data-id=species]").val();
+        if(!cached_surveys[species_id]){
+          $.get('/portail/search_surveys?species_id=' + species_id,function(data){
+              $.each(data, function(i, item){
+                  L.circleMarker([item.lat, item.lon], { radius: 5 } ).addTo(phenoclim.session.map_layers);
+              });
+              cached_surveys[species_id] = [data, phenoclim.session.map_layers.getLayers()]
+          });
+        }
+        else{
+          var tmp = cached_surveys[species_id],
+              data = tmp[0],
+              layers = tmp[1];
+          $.each(layers, function(i, item){
+              phenoclim.session.map_layers.addLayer(item)
+          });
+        }
+      }
+
+      $( document ).ready(function(){
+        $(".map").on( "map_init", function(){
+            $.get("/portail/get_species_list", function(data){
+              var species_field = $("select[data-id=species]");
+              $.each(data, function(i, item){
+                var option = $("<option>").attr("value", item.id).text(item.label);
+                option.appendTo(species_field);
+              });
+              phenoclim.session.map_layers = L.featureGroup().addTo(phenoclim.session.map._map);
+              phenoclim.mapviz.load_layers();
+              $("select[data-id=species]").on("change", phenoclim.mapviz.load_layers)
+            })
+        });
+      });
+    </script>
+
+{% endblock %}
