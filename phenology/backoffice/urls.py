@@ -33,7 +33,6 @@ urls = patterns(
         {"next_page": reverse_lazy('home')},
         name='logout'),
     url(r'^export_surveys', views.export_surveys, name="export-survey"),
-    url(r'^search_surveys', views.search_surveys, name="search-surveys"),
     url(r'^area/create$', views.area_detail, name='area-detail'),
     url(r'^area/(?P<area_id>\d+)', views.area_detail, name='area-detail'),
 
@@ -49,6 +48,8 @@ urls = patterns(
     url(r'^mysurveys$', views.dashboard, name='my-surveys'),
     url(r'^allsurveys$', views.all_surveys, name='all-surveys'),
     url(r'^getsurveys$', views.get_surveys, name='get-surveys'),
-    # Examples:
+    # map
+    url(r'^map_all_surveys$', views.map_all_surveys, name='map-surveys'),
+    url(r'^search_surveys', views.search_surveys, name="search-surveys"),
 )
 # vim:set et sts=4 ts=4 tw=80:

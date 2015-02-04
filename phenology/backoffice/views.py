@@ -29,6 +29,47 @@ def index(request):
 def register(request):
     return render(request, 'board.html')
 
+cache_classified = []
+
+
+def map_all_surveys(request):
+    return render_to_response("map_all_surveys.html", {}, RequestContext(request))
+
+
+def get_species_list(request):
+    species = [{"id": species.id,
+                "label": species.name,
+                "stages": [{"id": stage.id,
+                            "label": stage.name,
+                            "order": stage.order}
+                           for stage in species.stage_set.all().order_by("order")]}
+               for species in models.Species.objects.all().order_by("name")]
+
+    return HttpResponse(json.dumps(species),
+                        content_type="application/json")
+
+
+def search_surveys(request):
+    classified = {}
+    query = models.Survey.objects.all().select_related("individual", "stage")
+    species_id = request.GET.get("species_id")
+    if species_id:
+        query = query.filter(individual__species__id=species_id)
+
+    for survey in query:
+        individual = survey.individual
+        classified.setdefault(individual.id, {
+            "lon": individual.lon,
+            "lat": individual.lat,
+            "species": individual.species_id,
+            "surveys": []
+        })
+        classified[individual.id]["surveys"].append([survey.id,
+                                                     survey.date.strftime("%d/%m/%Y"),
+                                                     survey.answer])
+    return HttpResponse(json.dumps(classified),
+                        content_type="application/json")
+
 
 def export_surveys(request):
     columns = ['stage', 'date', 'individual.species',
