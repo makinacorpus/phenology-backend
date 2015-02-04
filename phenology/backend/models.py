@@ -50,7 +50,7 @@ def get_thumbnail(picture):
 
 #espece
 class Species(models.Model):
-    name = models.CharField(max_length=100, verbose_name="nom")
+    name = models.CharField(max_length=100, verbose_name="nom", db_index=True)
     #name_fr = models.CharField(max_length=100, verbose_name="nom")
     description = models.TextField(max_length=500)
     picture = ThumbnailerImageField(upload_to='picture/species',
@@ -92,7 +92,7 @@ class Species(models.Model):
 
 #zone:
 class Area(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"), db_index=True)
     codezone = models.CharField(max_length=20, verbose_name=_("codezone"), blank=True)
     lat = models.FloatField(verbose_name="latitude", default=-1.00)
     lon = models.FloatField(verbose_name="longitude", default=1.00)
@@ -225,7 +225,7 @@ EXPOSITION_CHOICES = (
 
 #individu
 class Individual(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"), db_index=True)
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
