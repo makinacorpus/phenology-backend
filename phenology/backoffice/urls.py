@@ -44,7 +44,9 @@ urls = patterns(
     url(r'^survey/create$', views.survey_detail, name='survey-detail'),
     url(r'^survey/(?P<survey_id>\d+)', views.survey_detail,
         name='survey-detail'),
-
+    url(r'^viz_all_surveys$', views.viz_all_surveys, name='viz-surveys'),
+    url(r'^get_species_list$', views.get_species_list, name='species-list'),
+    url(r'^get_data_for_viz$', views.get_data_for_viz, name='viz-data'),
     url(r'^mysurveys$', views.dashboard, name='my-surveys'),
     url(r'^allsurveys$', views.all_surveys, name='all-surveys'),
     url(r'^getsurveys$', views.get_surveys, name='get-surveys'),

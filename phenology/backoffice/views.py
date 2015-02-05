@@ -17,6 +17,7 @@ from backend import models
 from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm
 from django.db.models import Max, Min
+from django.db import connection
 
 
 @login_required(login_url='login/')
@@ -34,6 +35,30 @@ cache_classified = []
 
 def map_all_surveys(request):
     return render_to_response("map_all_surveys.html", {}, RequestContext(request))
+
+
+def viz_all_surveys(request):
+    return render_to_response("viz_all_surveys.html", {}, RequestContext(request))
+
+
+def get_data_for_viz(request):
+    results = {}
+    cursor = connection.cursor()
+    cursor.execute('SELECT bs.date as date, bi.species_id, bs.stage_id '
+                   'FROM backend_survey bs, backend_individual bi '
+                   'WHERE bs.individual_id = bi.id')
+
+    for survey in cursor.fetchall():
+        survey_date, species_id, stage_id = survey
+        results.setdefault(species_id, {})
+        results[species_id].setdefault(stage_id, {})
+        results[species_id][stage_id].setdefault(survey_date.year, {})
+        results[species_id][stage_id][survey_date.year].setdefault(survey_date.month, 0)
+
+        results[species_id][stage_id][survey_date.year][survey_date.month] += 1
+
+    return HttpResponse(json.dumps(results),
+                        content_type="application/json")
 
 
 def get_species_list(request):
