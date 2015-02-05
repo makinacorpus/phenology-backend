@@ -262,7 +262,7 @@ def user_detail(request):
 
 
 def register_user(request):
-    if request.user:
+    if request.user and request.user.username:
         return redirect(index)
 
     if request.POST:
