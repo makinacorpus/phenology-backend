@@ -42,6 +42,9 @@ def viz_all_surveys(request):
 
 
 def get_data_for_viz(request):
+    """ get all amount of surveys per month classified as
+        species_id/stage_id/year/month
+    """
     results = {}
     cursor = connection.cursor()
     cursor.execute('SELECT bs.date as date, bi.species_id, bs.stage_id '
@@ -62,6 +65,9 @@ def get_data_for_viz(request):
 
 
 def get_species_list(request):
+    """ get all species with stages linked
+        used to populate combobox
+    """
     species = [{"id": species.id,
                 "label": species.name,
                 "stages": [{"id": stage.id,
@@ -75,6 +81,10 @@ def get_species_list(request):
 
 
 def search_surveys(request):
+    """ get all individuals
+        used to get data for map rendering
+        can be filtered by species (species_id)
+    """
     classified = {}
     query = models.Survey.objects.all().select_related("individual", "stage")
     species_id = request.GET.get("species_id")
