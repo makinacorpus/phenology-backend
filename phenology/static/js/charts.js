@@ -195,3 +195,98 @@ phenoclim.viz.lineChart = function(){
       }
   this.colors = d3.scale.category10().domain([1, 12]);
 }
+
+
+phenoclim.viz.barChart = function(){
+  var self = this;
+
+  var margin = {top: 20, right: 20, bottom: 30, left: 40};
+  var width = 960 - margin.left - margin.right;
+  var height = 500 - margin.top - margin.bottom;
+  var x = d3.scale.ordinal().rangeBands([0, width], 0.1);
+  var x1 = d3.scale.ordinal();
+  var y = d3.scale.linear().range([height, 0]);
+
+  var today = new Date()
+  var xAxis = d3.svg.axis()
+  .scale(x)
+  .orient("bottom")
+
+  var yAxis = d3.svg.axis()
+  .scale(y)
+  .orient("left")
+  .ticks(5);
+
+  var container = d3.select(".graph-bars");
+
+  var svg = container.append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var xGraphAxis = svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .attr("class", "x axis");
+
+  var yGraphAxis = svg.append("g")
+  .attr("class", "y axis");
+
+  this.refresh = function(){
+
+    var species_id = +$("select[data-id=species]").val();
+    var years_selected = $(".checkbox input:checked").map(function(i, item){
+      return $(item).attr("value");
+    }).toArray();
+
+    var stages = phenoclim.session.species_list.filter(function(d){
+      return d.id == species_id;
+    })[0].stages
+
+    var dataRaw = phenoclim.session.dataviz[species_id] || {};
+    var data = d3.entries(dataRaw)
+      .map(function(d){
+        d.name = stages.filter(function(d2){
+          return +d2.id === +d.key;
+        })[0].label;
+        d.values = d3.entries(d.value).map(function(d2){
+          d2.amount = d3.sum(d3.entries(d2.value), function(d5){
+            return +d5.value;
+          });
+          return d2;
+        });
+        return d;
+      });
+
+    var stages_id = data.map(function(d){ return d.name });
+    x.domain(stages_id);
+    var ageNames = data[0].values.map(function(d){
+      return d.key;
+    })
+    x1.domain(ageNames).rangeRoundBands([0, x.rangeBand()]);
+    var maxNbObs = d3.max(data,
+      function(d){
+        return d3.max(d.values, function(d){
+          return parseInt(d.amount);
+        })})
+    y.domain([0, maxNbObs]);
+    xGraphAxis.call(xAxis);
+    yGraphAxis.call(yAxis);
+    svg.selectAll(".state").remove();
+    var state = svg.selectAll(".state")
+    .data(data)
+    .enter().append("g")
+    .attr("class", "state")
+    .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
+
+    state.selectAll("rect")
+      .data(function(d) { console.log(d);return d.values; })
+      .enter().append("rect")
+        .attr("width", x1.rangeBand())
+        .attr("x", function(d) { console.log(d.key);return x1(d.key); })
+        .attr("y", function(d) { return y(d.amount); })
+        .attr("height", function(d) { return height - y(d.amount); })
+        .style("fill", function(d) { return phenoclim.session.barchart.colors(d.key); });
+      }
+      this.colors = d3.scale.category10().domain([1, 12]);
+    }

@@ -11,6 +11,7 @@
 
       <div class=" col-xs-8 col-md-8  table-col">
                <div id="graph" class="graph text-center"></div>
+               <div class="graph-bars text-center"></div>
       </div>
 
       <div class="col-xs-4 col-md-4 table-col">
@@ -28,13 +29,16 @@
       <script type="text/javascript">
         $( document ).ready(function(){
           phenoclim.session.linechart = new phenoclim.viz.lineChart();
+          phenoclim.session.barchart = new phenoclim.viz.barChart();
           phenoclim.viz.getSpecies().done(function(event){
             phenoclim.viz.load_data().done(function(event2){
               phenoclim.session.linechart.refresh();
+              phenoclim.session.barchart.refresh();
               $("select[data-id=species]").on("change", function(event3){
                 phenoclim.viz.refreshStages();
                 phenoclim.viz.refreshYears();
                 phenoclim.session.linechart.refresh();
+                phenoclim.session.barchart.refresh();
               });
               $("select[data-id=stages]").on("change", function(event3){
                 phenoclim.viz.refreshYears();
