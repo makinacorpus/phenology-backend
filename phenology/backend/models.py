@@ -41,7 +41,7 @@ def has_changed(instance, field, manager='objects'):
     return not getattr(instance, field) == old
 
 
-def get_thumbnail(picture, options):
+def get_thumbnail(picture, options=None):
     if not picture:
         picture = picture.field.default
     if not options:
