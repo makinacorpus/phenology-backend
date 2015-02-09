@@ -374,25 +374,25 @@ phenoclim.viz.barChart = function(){
         x.domain(d3.range(53));
         xGraphAxis.call(xAxis);
         yGraphAxis.call(yAxis);
-          svg.selectAll(".state").remove();
-          var state = svg.selectAll(".state")
+        svg.selectAll(".state").remove();
+        var state = svg.selectAll(".state")
           .data(data)
           .enter().append("g")
           .attr("class", function(d){ console.log("enter", d); return "state"})
-          
-          var state2 = state.selectAll(".state2")
+
+        var state2 = state.selectAll(".state2")
           .data(function(d){ return d.values;})
           .enter().append("g")
           .attr("class", "state2")
 
-          state2.selectAll("rect")
+        state2.selectAll("rect")
           .data(function(d) { console.log(d);return d.values; })
           .enter().append("rect")
-          .attr("width", x.rangeBand()+1)
-          .attr("x", function(d) { console.log(d);return x(d.key); })
-          .attr("y", function(d) { return y(d.name); })
-          .attr("height", function(d) { return y.rangeBand() })
-          .style("fill", function(d) { return self.colors(d.name) });
-          }
-          this.colors = d3.scale.category10();
+            .attr("width", x.rangeBand()+1)
+            .attr("x", function(d) { console.log(d);return x(d.key); })
+            .attr("y", function(d) { return y(d.name); })
+            .attr("height", function(d) { return y.rangeBand() })
+            .style("fill", function(d) { return self.colors(d.name) });
         }
+        this.colors = d3.scale.category10();
+    }
