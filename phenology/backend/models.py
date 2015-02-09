@@ -41,10 +41,11 @@ def has_changed(instance, field, manager='objects'):
     return not getattr(instance, field) == old
 
 
-def get_thumbnail(picture):
+def get_thumbnail(picture, options):
     if not picture:
         picture = picture.field.default
-    options = {'size': (100, 100)}
+    if not options:
+        options = {'size': (100, 100)}
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
 
@@ -356,13 +357,13 @@ class Stage(models.Model):
                                     default=True)
 
     def thumbnail_before(self):
-        return get_thumbnail(self.picture_before)
+        return get_thumbnail(self.picture_before, {'size': (200, 200)})
 
     def thumbnail_current(self):
-        return get_thumbnail(self.picture_current)
+        return get_thumbnail(self.picture_current, {'size': (200, 200)})
 
     def thumbnail_after(self):
-        return get_thumbnail(self.picture_after)
+        return get_thumbnail(self.picture_after, {'size': (200, 200)})
 
     def __str__(self):
         return u"%s" % self.name
