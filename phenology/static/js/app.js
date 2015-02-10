@@ -45,7 +45,6 @@ phenoclim.map = function(options){
     }).addTo(this._map);
 
     L.control.scale({ imperial : false }).addTo(self._map);
-    console.log("sfds")
     var bounds2 = [[46.38, -1.51],[42.71, 7.95]];
     if(options.geojson && options.geojson.features && options.geojson.features.length > 0){
       self.geojson = L.geoJson(options.geojson,{
@@ -112,6 +111,18 @@ phenoclim.map = function(options){
       });
     }
 }
+
+$.arrayIntersect = function(a, b)
+{
+    return $.grep(a, function(i)
+    {
+        return $.inArray(i, b) > -1;
+    });
+};
+
+$.getKeys = function(dict){
+  return $.map(dict, function(element,index) {return index})
+};
 
 $( document ).ready(function() {
   phenoclim.session = phenoclim.session || {}
