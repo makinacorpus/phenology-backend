@@ -89,15 +89,17 @@ class Command(BaseCommand):
                 if not models.Area.objects.filter(name=area["name"]):
                     area_tmp = models.Area()
                     area_tmp.name = area["name"]
-                    area_tmp.lat = area.get("lat", "-1")
-                    area_tmp.lon = area.get("lon", "1")
+                    area_tmp.lat = str(area.get("lat")).replace(",",".")
+                    area_tmp.lon = str(area.get("lon")).replace(",",".")
                     area_tmp.altitude = area.get("altitude")
+                    area_tmp.commune = area.get("commune", "")
+                    area_tmp.postalcode = area.get("code_postal", "")
                 else:
                     area_tmp = models.Area.objects.filter(name=area["name"]).first()
                 area_tmp.save()
 
                 for observer in observers:
-                    if(not observer in area_tmp.observer_set.all()):
+                    if(observer not in area_tmp.observer_set.all()):
                         area_tmp.observer_set.add(observer)
 
                 area_tmp.save()
