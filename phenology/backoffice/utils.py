@@ -1,6 +1,6 @@
 import xlwt
 import datetime
-
+import time
 from django.forms.forms import pretty_name
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
@@ -10,8 +10,24 @@ DEFAULT_STYLE = xlwt.easyxf()
 CELL_STYLE_MAP = (
     (datetime.date, xlwt.easyxf(num_format_str='DD/MM/YYYY')),
     (datetime.time, xlwt.easyxf(num_format_str='HH:MM')),
-    (bool,          xlwt.easyxf(num_format_str='BOOLEAN')),
+    (bool, xlwt.easyxf(num_format_str='BOOLEAN')),
 )
+
+
+class MyTimer:
+    def __init__(self, name=""):
+        self.times = []
+        self.name = name
+
+    def capture(self):
+        self.times.append(str(time.clock()))
+
+    def content(self):
+        return self.times
+
+    def output(self):
+        return """### %s ### \n%s \n ######""" % (self.name,
+                                                  "\n".join(self.times))
 
 
 def multi_getattr(obj, attr, default=None):
