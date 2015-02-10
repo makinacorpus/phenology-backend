@@ -107,6 +107,20 @@
   shape-rendering: crispEdges;
 }
 
-.x.axis path {
-  display: none;
+rect:hover{
+  fill-opacity:1;
+}
+
+.graph-bars rect:hover{
+  fill-opacity:0.8;
+}
+
+.dot:hover{
+  stroke-width:1px;
+  stroke:grey;
+  cursor: pointer;
+}
+
+.map.all_survey{
+  height: 90%;
 }
