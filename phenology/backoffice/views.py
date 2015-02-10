@@ -1,4 +1,4 @@
-#from django.shortcuts import render
+# from django.shortcuts import render
 import datetime
 import json
 
@@ -18,12 +18,12 @@ from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm
 from django.db.models import Max, Min
 from django.db import connection
+from backoffice.utils import MyTimer
 
 
 @login_required(login_url='login/')
 def index(request):
     return redirect('my-surveys')
-    #return render(request, 'board.html')
 
 
 @login_required(login_url='login/')
@@ -34,11 +34,13 @@ cache_classified = []
 
 
 def map_all_surveys(request):
-    return render_to_response("map_all_surveys.html", {}, RequestContext(request))
+    return render_to_response("map_all_surveys.html", {},
+                              RequestContext(request))
 
 
 def viz_all_surveys(request):
-    return render_to_response("viz_all_surveys.html", {}, RequestContext(request))
+    return render_to_response("viz_all_surveys.html", {},
+                              RequestContext(request))
 
 
 def get_data_for_viz(request):
@@ -119,7 +121,7 @@ def export_surveys(request):
     min_year = years["date__min"].year
     max_year = years["date__max"].year
     workbook = None
-    for year in range(min_year, max_year+1):
+    for year in range(min_year, max_year + 1):
         queryset_tmp = queryset.filter(date__year=year)
         workbook = as_workbook(queryset_tmp, columns,
                                workbook=workbook, sheet_name=str(year))
@@ -293,8 +295,7 @@ def dashboard(request):
 def all_surveys(request):
     surveys = models.Survey.objects.all()[:100]
     return render_to_response("all_surveys.html", {
-        "surveys": surveys
-        }, RequestContext(request))
+        "surveys": surveys}, RequestContext(request))
 
 
 def get_surveys(request):
