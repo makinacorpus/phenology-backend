@@ -100,6 +100,7 @@ class Area(models.Model):
     altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
     commune = models.CharField(max_length=100, verbose_name=_("city"))
+    postalcode = models.CharField(max_length=20, verbose_name=_("codepostal"))
     species = select2_fields.ManyToManyField(Species, blank=True, verbose_name=_("species"))
 
     class Meta:
