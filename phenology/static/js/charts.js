@@ -11,6 +11,14 @@ phenoclim.viz.getFirstDayOfWeek = function(week, year){
   return n1;
 }
 
+phenoclim.viz.getLasttDayOfWeek = function(week, year){
+  firstDay = new Date(year, 0, 1).getDay();
+  var d = new Date("Jan 01, "+year+" 01:00:00");
+  var w = d.getTime() -(3600000*24*(firstDay-1))+ 604800000 * (week)
+  var n1 = new Date(w);
+  return n1;
+}
+
 phenoclim.viz.load_data = function(){
   return $.get("/portail/get_data_for_viz", function(data){
     phenoclim.session.dataviz = data;
@@ -103,6 +111,10 @@ phenoclim.viz.lineChart = function(params){
   var main_width = options.width || $(options.selector).width();
   var width = main_width - options.margin.left - options.margin.right;
   var height = ($(options.selector).width()*3/5) - options.margin.top - options.margin.bottom;
+
+  var tooltip = container.append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 1e-6);
 
   var x = d3.scale.ordinal()
     .rangeBands([0, width])
@@ -226,14 +238,45 @@ phenoclim.viz.lineChart = function(params){
         .attr("cy", function(d) { return y(+d.value); })
             .style("fill", function(d) { return phenoclim.session.linechart.colors(d.year); });
 
-      circles.on("mouseenter", function(d){
+      circles.on("mousemove", function(d){
         d3.select(this).attr("r", 7).style("fill-opacity", 0.9);
+        mousemove(d);
       });
       circles.on("mouseout", function(d){
         d3.select(this).attr("r", 4).style("fill-opacity", 1);
+        mouseout();
+      });
+      circles.on("mouseover", function(d){
+        mouseover();
       });
     }
-  this.colors = d3.scale.category10().domain([1, 12]);
+    /** TOOLTIP **/
+    function mouseover() {
+      tooltip.transition()
+          .duration(500)
+          .style("opacity", 1);
+    }
+
+    function mousemove(week_value) {
+      var week = +week_value.key;
+      var year = +week_value.year;
+      var firstDate = phenoclim.viz.getFirstDayOfWeek(week+1, +year);
+      var firstDateStr = firstDate.getDate() + "/" + (firstDate.getMonth()+1);
+      var lastDate = phenoclim.viz.getLasttDayOfWeek(week+1, +year);
+      var lastDateStr = lastDate.getDate() + "/" + (lastDate.getMonth()+1);
+      tooltip.html(function(d){ 
+        return year+"<br/><b>"+week_value.value+" obs</b><br/> ("+ firstDateStr + " - " + lastDateStr +")" })
+          .style("left", (d3.event.layerX - 34) + "px")
+          .style("top", (d3.event.layerY - 60) + "px");
+    }
+
+    function mouseout() {
+      tooltip.transition()
+          .duration(500)
+          .style("opacity", 1e-6);
+    }
+
+  this.colors = d3.scale.category10().domain([1,12]);
 }
 
 

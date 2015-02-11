@@ -164,3 +164,17 @@ rect:hover{
 
 .map-control select{
   margin-bottom: 5px;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  min-width: 60px;
+  min-height: 12px;
+  padding: 8px;
+  font: 12px sans-serif;
+  background: white;
+  border: solid 1px #aaa;
+  border-radius: 8px;
+  pointer-events: none;
+}
