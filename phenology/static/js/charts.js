@@ -156,6 +156,9 @@ phenoclim.viz.lineChart = function(params){
         d2.year = d.key;
         return d2;
       });
+      d.values.sort(function(a, b){
+        return +a.key-b.key;
+      })
       return d;
     }).filter(function(d){
       return (years_selected.indexOf(d.key) > -1);
@@ -306,10 +309,10 @@ phenoclim.viz.barChart = function(){
     .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
 
     state.selectAll("rect")
-      .data(function(d) { console.log(d);return d.values; })
+      .data(function(d) { return d.values; })
       .enter().append("rect")
         .attr("width", x1.rangeBand())
-        .attr("x", function(d) { console.log(d.key);return x1(d.key); })
+        .attr("x", function(d) { return x1(d.key); })
         .attr("y", function(d) { return y(d.amount); })
         .attr("height", function(d) { return height - y(d.amount); })
         .style("fill", function(d) { return phenoclim.session.barchart.colors(d.key); });
@@ -386,6 +389,7 @@ phenoclim.viz.barChart = function(){
 
         var stages_id = data.map(function(d){ return d.name });
         y.domain(stages_id);
+        self.colors.domain(stages_id);
         x.domain(d3.range(53));
         xGraphAxis.call(xAxis);
         yGraphAxis.call(yAxis);
@@ -394,7 +398,7 @@ phenoclim.viz.barChart = function(){
         var state = svg.selectAll(".state")
           .data(data)
           .enter().append("g")
-          .attr("class", function(d){ console.log("enter", d); return "state"})
+          .attr("class", "state")
 
         var state2 = state.selectAll(".state2")
           .data(function(d){ return d.values;})
@@ -402,7 +406,7 @@ phenoclim.viz.barChart = function(){
           .attr("class", "state2")
 
         state2.selectAll("rect")
-          .data(function(d) { console.log(d);return d.values; })
+          .data(function(d) { return d.values; })
           .enter().append("rect")
             .attr("width", x.rangeBand()+1)
             .attr("x", function(d) { console.log(d);return x(d.key); })
