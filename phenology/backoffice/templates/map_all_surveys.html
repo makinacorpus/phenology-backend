@@ -121,6 +121,47 @@
 
           });
       }
+      phenoclim.mapviz.prepare_data_for_viz = function(data){
+        var results = {};
+        var altitudes = $("#altitudes").slider("getValue");
+        var boundingbox = phenoclim.session.map._map.getBounds();
+        var northEast = boundingbox.getNorthEast();
+        var southWest = boundingbox.getSouthWest();
+        //console.log(boundingbox);
+        //loop areas
+        $.each(data ,function(id, area_data){
+          //loop species
+          if((area_data.altitude >= altitudes[0] && area_data.altitude <= altitudes[1]) && 
+             (area_data.lat <= northEast.lat && area_data.lat >= southWest.lat) && 
+             (area_data.lon >= southWest.lng && area_data.lon <= northEast.lng)){
+            $.each(area_data.values, function(species_id, species_data){
+              if(!results[species_id]){
+                results[species_id] = {};
+              }
+              $.each(species_data, function(stage_id, stage_data){
+                if(!results[species_id][stage_id]){
+                  results[species_id][stage_id] = {};
+                }
+                //loop years
+                $.each(stage_data, function(year, year_data){
+                  if(!results[species_id][stage_id][year]){
+                    results[species_id][stage_id][year] = {};
+                  }
+                  //console.log(year_data);
+                  //loop week
+                  $.each(year_data, function(week, nbobs){
+                    if(!results[species_id][stage_id][year][week]){
+                      results[species_id][stage_id][year][week] = 0;
+                    }
+                    results[species_id][stage_id][year][week] += nbobs;
+                  })
+                })
+              });
+            });
+          }
+        });
+        return results;
+      }
       phenoclim.mapviz.refreshStages = function(){
         var species_field_value = $("select[data-id=species]").val();
         var stages_field = $("select[data-id=stages]");
