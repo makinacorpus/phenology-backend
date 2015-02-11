@@ -150,6 +150,7 @@ def search_surveys(request):
 
     classified = {a.id: {'lon': a.lon, 'lat': a.lat, 'city': a.commune,
                          'altitude': a.altitude, 'name': a.name,
+                         'nb_individuals': 0,
                          "organisms": ",".join(area_organism.get(a.id, [])),
                          'values': {}, 'postalcode': a.postalcode}
                   for a in areas}
@@ -160,6 +161,7 @@ def search_surveys(request):
            (ind.lat != 1 and ind.lat != -1):
             tmp['lat'] = ind.lat
             tmp['lon'] = ind.lon
+        tmp['nb_individuals'] += 1
 
     timer.capture()
     survey_sql = 'SELECT STRFTIME("%Y", date) as year,  STRFTIME("%W", date) as week, ' +\
