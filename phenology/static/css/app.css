@@ -135,6 +135,7 @@ rect:hover{
 }
 .years_choices{
   padding: 20px;
+  padding-bottom: 0px;
   padding-left: 15px;
 }
 
@@ -152,6 +153,14 @@ rect:hover{
 }
 
 #altitudes_slider{
+  margin-top:20px;
   min-width: 93%;
   margin-left: 15px;
 }
+
+#altitudes{
+  display: none;
+}
+
+.map-control select{
+  margin-bottom: 5px;
