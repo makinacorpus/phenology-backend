@@ -110,7 +110,7 @@ phenoclim.viz.lineChart = function(params){
   var container = d3.select(options.selector);
   var main_width = options.width || $(options.selector).width();
   var width = main_width - options.margin.left - options.margin.right;
-  var height = ($(options.selector).width()*3/5) - options.margin.top - options.margin.bottom;
+  var height = (main_width*3/5) - options.margin.top - options.margin.bottom;
 
   var tooltip = container.append("div")
     .attr("class", "tooltip")
@@ -309,11 +309,19 @@ phenoclim.viz.barChart = function(){
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var xGraphAxis = svg.append("g")
-  .attr("transform", "translate(0," + height + ")")
-  .attr("class", "x axis");
-
+    .attr("transform", "translate(0," + height + ")")
+    .attr("class", "x axis");
+  
+  xGraphAxis.append("text")
+    .attr("transform", "translate(" + width +", -20)")
+    .attr("y", 6)
+    .attr("x", 5)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Stade");
+  
   var yGraphAxis = svg.append("g")
-  .attr("class", "y axis");
+    .attr("class", "y axis");
 
   yGraphAxis.append("text")
     .attr("transform", "rotate(-90)")
@@ -334,6 +342,7 @@ phenoclim.viz.barChart = function(){
     })[0].stages
 
     var dataRaw = phenoclim.session.dataviz[species_id] || {};
+
     var data = d3.entries(dataRaw)
       .map(function(d){
         d.name = stages.filter(function(d2){
@@ -380,7 +389,7 @@ phenoclim.viz.barChart = function(){
         .attr("height", function(d) { return height - y(d.amount); })
         .style("fill", function(d) { return phenoclim.session.barchart.colors(d.key); });
       }
-      this.colors = d3.scale.category10().domain([1, 12]);
+      this.colors = d3.scale.category10().domain([1,12]);
     }
 
 
@@ -388,7 +397,7 @@ phenoclim.viz.barChart = function(){
     phenoclim.viz.timeBarChart = function(){
       var self = this;
 
-      var margin = {top: 20, right: 10, bottom: 30, left: 80};
+      var margin = {top: 20, right: 10, bottom: 40, left: 80};
       var width = 960 - margin.left - margin.right;
       var height = 500 - margin.top - margin.bottom;
       var x = d3.scale.ordinal().rangeBands([0, width]);
@@ -401,8 +410,11 @@ phenoclim.viz.barChart = function(){
       .scale(x)
       .orient("bottom")
       .tickFormat(function(d, i){
-        var day = phenoclim.viz.getFirstDayOfWeek(d, today.getFullYear());
-        return ""//day.getDate() + "/" + (+day.getMonth()+1)
+        if(i%2 == 0){
+          var day = phenoclim.viz.getFirstDayOfWeek(d+1, today.getFullYear());
+          return day.getDate() + "/" + (+day.getMonth()+1)
+        }
+        return ""
       })
 
       var yAxis = d3.svg.axis()
@@ -420,9 +432,23 @@ phenoclim.viz.barChart = function(){
       var xGraphAxis = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
          .attr("class", "x axis");
+      
+      xGraphAxis.append("text")
+        .attr("transform", "translate(" + width +", -20)")
+        .attr("y", 10)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Date");
 
       var yGraphAxis = svg.append("g")
         .attr("class", "y axis");
+
+      yGraphAxis.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Stades");
 
       this.refresh = function(){
         //console.log("on refresh time chart");
@@ -450,11 +476,30 @@ phenoclim.viz.barChart = function(){
           return d;
         });
 
+        var minWeek = d3.min(data, function(d){ 
+          return d3.min(d.values, function(d2){
+            return d3.min(d2.values, function(d4){
+                return parseInt(d4.key);
+            })
+          })
+        })
+        var maxWeek = d3.max(data, function(d){ 
+          return d3.max(d.values, function(d2){
+            return d3.max(d2.values, function(d4){
+                return parseInt(d4.key);
+            })
+          })
+        })
+
         var stages_id = data.map(function(d){ return d.name });
+
+        x.domain(d3.range(minWeek, maxWeek + 2, 1));
         y.domain(stages_id);
-        self.colors.domain(stages_id);
-        x.domain(d3.range(53));
-        xGraphAxis.call(xAxis);
+
+        xGraphAxis.call(xAxis)
+        xGraphAxis.selectAll(".tick line")
+          .attr("display", function(d,i){ if(i%2 == 1){ return "none"}});
+                    
         yGraphAxis.call(yAxis);
         svg.selectAll(".state").remove();
 
@@ -472,10 +517,10 @@ phenoclim.viz.barChart = function(){
           .data(function(d) { return d.values; })
           .enter().append("rect")
             .attr("width", x.rangeBand()+1)
-            .attr("x", function(d) { console.log(d);return x(d.key); })
+            .attr("x", function(d) { return x(+d.key) + (x.rangeBand()/2); })
             .attr("y", function(d) { return y(d.name); })
             .attr("height", function(d) { return y.rangeBand() })
             .style("fill", function(d) { return self.colors(d.name) });
         }
-        this.colors = d3.scale.category10();
+        this.colors = d3.scale.category20b().domain([10,11,12,13,14,15,17,18]);
     }

@@ -10,9 +10,9 @@
     <div class="row  table-row">
 
       <div class=" col-xs-8 col-md-8  table-col">
-               <div id="graph" class="graph text-center"></div>
-               <div class="graph-bars-time text-center"></div>
-               <div class="graph-bars text-center"></div>
+         <div id="graph" class="graph text-center"></div>
+         <div class="graph-bars text-center"></div>
+         <div class="graph-bars-time text-center"></div>
       </div>
 
       <div class="col-xs-4 col-md-4 table-col">
@@ -46,7 +46,6 @@
                 phenoclim.session.timebarchart.refresh();
               });
               $("select[data-id=stages]").on("change", function(event3){
-                console.log("change stage")
                 phenoclim.viz.refreshYears();
                 phenoclim.session.linechart.refresh();
                 phenoclim.session.barchart.refresh();
