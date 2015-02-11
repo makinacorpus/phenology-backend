@@ -142,6 +142,13 @@ phenoclim.viz.lineChart = function(params){
     .attr("transform", "translate(0," + height + ")")
     .attr("class", "x axis");
 
+  xGraphAxis.append("text")
+    .attr("transform", "translate(" + width +", -20)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Date");
+
   var yGraphAxis = svg.append("g")
     .attr("class", "y axis");
 
