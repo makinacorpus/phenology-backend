@@ -260,9 +260,23 @@
                 phenoclim.mapviz.refreshYears();
                 phenoclim.mapviz.refreshWidgets()
               })
-              phenoclim.viz.load_data().done(function(event2){
-                phenoclim.session.linechart.refresh();
-              });
+
+              phenoclim.session.map._map.on("zoomend", function(event, toto){
+                var species_id = $("select[data-id=species]").val();
+                phenoclim.mapviz.get_data(species_id).done(function(data){
+                  var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
+                  phenoclim.session.linechart.refresh({ data: vizdata });
+                });
+              })
+
+              phenoclim.session.map._map.on("drag", function(event, toto){
+                var species_id = $("select[data-id=species]").val();
+                phenoclim.mapviz.get_data(species_id).done(function(data){
+                  var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
+                  phenoclim.session.linechart.refresh({ data: vizdata });
+                });
+              })
+
             })
         });
       });
