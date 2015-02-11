@@ -91,57 +91,67 @@ phenoclim.viz.getSpecies = function(){
 
 phenoclim.viz.lineChart = function(params){
   var self = this;
+
   var options = {
     selector: ".graph",
     margin: {top: 20, right: 10, bottom: 30, left: 80},
     line_enable: true
   }
   $.extend(true, options, params);
+
   var container = d3.select(options.selector);
   var main_width = options.width || $(options.selector).width();
   var width = main_width - options.margin.left - options.margin.right;
   var height = ($(options.selector).width()*3/5) - options.margin.top - options.margin.bottom;
-  var x = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(53));
-  var y = d3.scale.linear().range([height, 0]);
+
+  var x = d3.scale.ordinal()
+    .rangeBands([0, width])
+    .domain(d3.range(53));
+
+  var y = d3.scale.linear()
+    .range([height, 0]);
+
   //var xtime =  d3.scale.ordinal().rangePoints([0, width]).domain(d3.range(13));
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 
   var today = new Date()
   var xAxis = d3.svg.axis()
-  .scale(x)
-  .orient("bottom")
-  .tickFormat(function(d, i){
-    var day = phenoclim.viz.getFirstDayOfWeek(d+1, today.getFullYear());
-    return day.getDate() + "/" + (day.getMonth()+1)
-  })
+    .scale(x)
+    .orient("bottom")
+    .tickFormat(function(d, i){
+      var day = phenoclim.viz.getFirstDayOfWeek(d+1, today.getFullYear());
+      return day.getDate() + "/" + (day.getMonth()+1)
+    });
 
   var yAxis = d3.svg.axis()
-  .scale(y)
-  .orient("left")
-  .tickFormat(d3.format("d"))
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format("d"));
 
   var svg = container.append("svg")
-  .attr("width", width + options.margin.left + options.margin.right)
-  .attr("height", height + options.margin.top + options.margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+    .attr("width", width + options.margin.left + options.margin.right)
+    .attr("height", height + options.margin.top + options.margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
 
   var line = d3.svg.line()
-  .x(function(d) { return x(+d.key) + x.rangeBand(); })
-  .y(function(d) { return y(+d.value); });
+    .x(function(d) { return x(+d.key) + x.rangeBand(); })
+    .y(function(d) { return y(+d.value); });
 
   var xGraphAxis = svg.append("g")
-  .attr("transform", "translate(0," + height + ")")
-  .attr("class", "x axis");
+    .attr("transform", "translate(0," + height + ")")
+    .attr("class", "x axis");
 
   var yGraphAxis = svg.append("g")
-  .attr("class", "y axis")
+    .attr("class", "y axis");
+
   yGraphAxis.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 6)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
     .text("Nb obs");
+
   this.refresh = function(opt){
     var opt = opt || {};
     var species_id = +$("select[data-id=species]").val();
