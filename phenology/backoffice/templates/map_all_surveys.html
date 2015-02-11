@@ -26,7 +26,16 @@
            </select>
            <select data-id="stages" class="form-control">
            </select>
-           <div data-id="years" class="form-group">
+           <div data-id="years" class="form-group years_choices">
+            <div class="row">
+              <div class="col-xs-6 col-md-6">
+                <b>Année</b>
+              </div>
+              <div class="col-xs-6 col-md-6">
+                <b>Nb Obs</b>
+              </div>
+            </div>
+            <hr/>
            </div>
         </div>
       </div>
@@ -102,14 +111,18 @@
         var stage_id = +$("select[data-id=stages]").val();
         var spec_data = phenoclim.session.species_list.filter(function(d){
           return d.id == species_id;
+        })[0].stages.filter(function(d){
+          return d.id == stage_id;
         })[0]
         all_years = spec_data.years || [];
-        all_years.sort();
+        all_years.sort(function(a,b){
+          return +a.year-b.year;
+        });
         $yearContainer = $("[data-id=years]");
-        $yearContainer.children().remove();
+        $yearContainer.find(".rowyear").remove();
         $.each(all_years, function(i, year){
-          var $input = $("  <div class='checkbox'><label><input type='checkbox' name='years' value='"+ year +"'>" + year + "</label></div>").appendTo($yearContainer);
-          if(i > -1){
+          var $input = $("<div class='row rowyear'><div class='col-xs-6 col-md-6'><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'>" + year.count +"</div></div>").appendTo($yearContainer);
+          if(i > (all_years.length - 3)){
             $("input", $input).attr("checked", "checked");
           }
         });
