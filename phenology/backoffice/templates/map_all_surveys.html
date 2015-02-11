@@ -210,7 +210,8 @@
         $yearContainer = $("[data-id=years]");
         $yearContainer.find(".rowyear").remove();
         $.each(all_years, function(i, year){
-          var $input = $("<div class='row rowyear'><div class='col-xs-6 col-md-6'><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'>" + year.count +"</div></div>").appendTo($yearContainer);
+          var $input = $("<div class='row rowyear'><div class='col-xs-6 col-md-6'><div class='legend_item'></div><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'>" + year.count +"</div></div>").appendTo($yearContainer);
+          $(".legend_item", $input).css("background-color", phenoclim.session.linechart.colors(year.year))
           if(i > (all_years.length - 3)){
             $("input", $input).attr("checked", "checked");
           }
