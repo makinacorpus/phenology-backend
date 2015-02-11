@@ -135,8 +135,13 @@ phenoclim.viz.lineChart = function(params){
   .attr("class", "x axis");
 
   var yGraphAxis = svg.append("g")
-  .attr("class", "y axis");
-
+  .attr("class", "y axis")
+  yGraphAxis.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Nb obs");
   this.refresh = function(opt){
     var opt = opt || {};
     var species_id = +$("select[data-id=species]").val();
@@ -244,8 +249,15 @@ phenoclim.viz.barChart = function(){
   var yGraphAxis = svg.append("g")
   .attr("class", "y axis");
 
-  this.refresh = function(){
+  yGraphAxis.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Nb obs");
 
+  this.refresh = function(){
+    //console.log("on refresh");
     var species_id = +$("select[data-id=species]").val();
     var years_selected = $(".checkbox input:checked").map(function(i, item){
       return $(item).attr("value");
@@ -347,7 +359,7 @@ phenoclim.viz.barChart = function(){
         .attr("class", "y axis");
 
       this.refresh = function(){
-        console.log("on refresh time chart");
+        //console.log("on refresh time chart");
         var species_id = +$("select[data-id=species]").val();
         var years_selected = $(".checkbox input:checked").map(function(i, item){
           return $(item).attr("value");
