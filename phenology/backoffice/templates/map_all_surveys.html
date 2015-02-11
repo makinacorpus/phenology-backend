@@ -94,7 +94,30 @@
           //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
         });
       }
+      phenoclim.mapviz.slider = function(){
+         var species_id = $("select[data-id=species]").val();
+         phenoclim.mapviz.get_data(species_id).done(function(data){
+                var flat_data = d3.entries(data).map(function(d){ return +d.value.altitude;});
+                var max = d3.max(flat_data)
+                var min = d3.min(flat_data)
+                var ticks = [min, max];
+                var ticks_label = []
+                var existed =  $("#altitudes_slider").length > 0; 
+                var slider = $("#altitudes").slider({
+                    id: "altitudes_slider",
+                    ticks: [0, 500, 1000, 1500, 2000, 2500],
+                    ticks_labels: ["0m", "500m", "1000m", "1500m", "2000m", "2500m"],
+                    min: 0, max: 2000, range: true, value: [min, max],
+                });
+                if(existed === false){
+                  slider.on("slide", function(slideEvt) {
+                    phenoclim.mapviz.refreshWidgets();
+                  });
+                }
+                $("#altitudes").slider("refresh");
 
+          });
+      }
       phenoclim.mapviz.refreshStages = function(){
         var species_field_value = $("select[data-id=species]").val();
         var stages_field = $("select[data-id=stages]");
