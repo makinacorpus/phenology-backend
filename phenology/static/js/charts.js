@@ -98,8 +98,8 @@ phenoclim.viz.lineChart = function(params){
   }
   $.extend(true, options, params);
   var container = d3.select(options.selector);
-
-  var width = $(options.selector).width() - options.margin.left - options.margin.right;
+  var main_width = options.width || $(options.selector).width();
+  var width = main_width - options.margin.left - options.margin.right;
   var height = ($(options.selector).width()*3/5) - options.margin.top - options.margin.bottom;
   var x = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(53));
   var y = d3.scale.linear().range([height, 0]);
@@ -310,7 +310,7 @@ phenoclim.viz.barChart = function(){
     phenoclim.viz.timeBarChart = function(){
       var self = this;
 
-      var margin = {top: 20, right: 0, bottom: 30, left: 80};
+      var margin = {top: 20, right: 10, bottom: 30, left: 80};
       var width = 960 - margin.left - margin.right;
       var height = 500 - margin.top - margin.bottom;
       var x = d3.scale.ordinal().rangeBands([0, width]);
@@ -378,6 +378,7 @@ phenoclim.viz.barChart = function(){
         xGraphAxis.call(xAxis);
         yGraphAxis.call(yAxis);
         svg.selectAll(".state").remove();
+
         var state = svg.selectAll(".state")
           .data(data)
           .enter().append("g")

@@ -29,7 +29,7 @@
 
       <script type="text/javascript">
         $( document ).ready(function(){
-          phenoclim.session.linechart = new phenoclim.viz.lineChart();
+          phenoclim.session.linechart = new phenoclim.viz.lineChart({ margin: {top: 20, right: 10, bottom: 30, left: 80}, width: 960});
           phenoclim.session.barchart = new phenoclim.viz.barChart();
           phenoclim.session.timebarchart = new phenoclim.viz.timeBarChart();
           phenoclim.viz.getSpecies().done(function(event){
