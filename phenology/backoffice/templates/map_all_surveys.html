@@ -194,7 +194,6 @@
         });
       }
       phenoclim.mapviz.refreshYears = function(){
-        var data = phenoclim.session.dataviz || [];
         var all_years = [];
         var species_id = +$("select[data-id=species]").val();
         var stage_id = +$("select[data-id=stages]").val();
@@ -217,8 +216,11 @@
           }
         });
         $("[data-id=years] input").on("change", function(event){
-          phenoclim.mapviz.load_layers();
-          phenoclim.session.linechart.refresh();
+          phenoclim.mapviz.get_data(species_id).done(function(data){
+            phenoclim.mapviz.load_layers();
+            var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
+            phenoclim.session.linechart.refresh({ data: vizdata });
+          });
         })
       }
 
