@@ -3,7 +3,9 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% load json_filters %}
+
 {% block navigation %} {% endblock %}
+
 {% block title %}Plantes au fil des saisons{% endblock %}
 
 {% block content %}
@@ -100,6 +102,7 @@
       phenoclim.mapviz.refreshWidgets = function(){
         var species_id = $("select[data-id=species]").val();
         phenoclim.mapviz.get_data(species_id).done(function(data){
+          phenoclim.mapviz.refreshYearAmounts();
           phenoclim.mapviz.load_layers();
           var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
           phenoclim.session.linechart.refresh({ data: vizdata });
@@ -193,6 +196,22 @@
           option.appendTo(stages_field);
         });
       }
+      phenoclim.mapviz.refreshYearAmounts = function(){
+       var $year_rows = $(".years_choices .rowyear");
+       var species_id = +$("select[data-id=species]").val();
+       var stage_id = +$("select[data-id=stages]").val();
+       phenoclim.mapviz.get_data(species_id).done(function(data){
+          var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
+          $.each($year_rows, function(i, $year_row){
+            var year = +$("input", $year_row).attr("value");
+            if(vizdata[species_id] && vizdata[species_id][stage_id]){
+              var tmp_data = vizdata[species_id][stage_id][year];
+              var nbcounts = d3.sum(d3.values(tmp_data));
+              $(".year_count", $year_row).text(nbcounts);
+            }
+          });
+       });
+      }
       phenoclim.mapviz.refreshYears = function(){
         var all_years = [];
         var species_id = +$("select[data-id=species]").val();
@@ -209,7 +228,8 @@
         $yearContainer = $("[data-id=years]");
         $yearContainer.find(".rowyear").remove();
         $.each(all_years, function(i, year){
-          var $input = $("<div class='row rowyear'><div class='col-xs-6 col-md-6'><div class='legend_item'></div><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'>" + year.count +"</div></div>").appendTo($yearContainer);
+
+          var $input = $("<div class='row rowyear' data-year='" + year.year + "'><div class='col-xs-6 col-md-6'><div class='legend_item'></div><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'><span class='year_count'>" + year.count +"</span></div></div>").appendTo($yearContainer);
           $(".legend_item", $input).css("background-color", phenoclim.session.linechart.colors(year.year))
           if(i > (all_years.length - 3)){
             $("input", $input).attr("checked", "checked");
@@ -266,6 +286,7 @@
                 phenoclim.mapviz.get_data(species_id).done(function(data){
                   var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
                   phenoclim.session.linechart.refresh({ data: vizdata });
+                  phenoclim.mapviz.refreshYearAmounts();
                 });
               })
 
@@ -274,6 +295,7 @@
                 phenoclim.mapviz.get_data(species_id).done(function(data){
                   var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
                   phenoclim.session.linechart.refresh({ data: vizdata });
+                  phenoclim.mapviz.refreshYearAmounts();
                 });
               })
 
