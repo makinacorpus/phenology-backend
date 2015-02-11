@@ -111,15 +111,14 @@ phenoclim.viz.lineChart = function(params){
   .scale(x)
   .orient("bottom")
   .tickFormat(function(d, i){
-    var day = phenoclim.viz.getFirstDayOfWeek(d, today.getFullYear());
-    return day.getDate() + " " + months[day.getMonth()]
+    var day = phenoclim.viz.getFirstDayOfWeek(d+1, today.getFullYear());
+    return day.getDate() + "/" + (day.getMonth()+1)
   })
 
   var yAxis = d3.svg.axis()
   .scale(y)
   .orient("left")
-  .ticks(5);
-  var container = d3.select(".graph");
+  .tickFormat(d3.format("d"))
 
   var svg = container.append("svg")
   .attr("width", width + options.margin.left + options.margin.right)
@@ -164,15 +163,14 @@ phenoclim.viz.lineChart = function(params){
     var maxWeek = d3.max(data, function(d){ return d3.max(d.values, function(d){
       return parseInt(d.key);
     })})
-    x.domain(d3.range(minWeek, maxWeek + 1, 1));
-
+    x.domain(d3.range(minWeek, maxWeek + 2, 1));
     var maxNbObs = d3.max(data,
       function(d){
         return d3.max(d.values, function(d){
           return parseInt(d.value);
         })});
     y.domain([0, maxNbObs]);
-
+    yAxis.ticks((maxNbObs<5) ? maxNbObs : 5);
     xGraphAxis.call(xAxis);
     yGraphAxis.call(yAxis);
     svg.selectAll("g.year").remove();
