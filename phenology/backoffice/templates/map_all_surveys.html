@@ -38,6 +38,8 @@
             <hr/>
            </div>
         </div>
+        <div class="graph">
+        <div>
       </div>
     </div>
 
@@ -140,6 +142,9 @@
       }
 
       $( document ).ready(function(){
+        phenoclim.session.linechart = new phenoclim.viz.lineChart(
+          {margin: {top: 10, right: 10, bottom: 30, left: 20},
+           line_enable: true});
         $(".map").on( "map_init", function(){
             $.get("/portail/get_species_list", function(data){
               phenoclim.session.species_list = data;
