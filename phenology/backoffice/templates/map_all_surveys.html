@@ -66,7 +66,7 @@
         phenoclim.session.map_layers.clearLayers();
         var species_id = $("[data-id=species]").val();
         var stage_id = $("[data-id=stages]").val();
-
+        var altitudes = $("#altitudes").slider("getValue");
         var years_selected = $(".checkbox input:checked").map(function(i, item){
           return $(item).attr("value");
         }).toArray();
@@ -82,8 +82,11 @@
                               return d3.sum(d3.values(d.value));
                             }))
               years = $.getKeys(years);
-              if($.arrayIntersect(years, years_selected).length>0){
-                var marker = L.circleMarker([item.lat, item.lon], {radius:5 + (nbobs/3), weight:1, color: 'blue'}).addTo(phenoclim.session.map_layers);
+              var intersected_years = $.arrayIntersect(years, years_selected)
+              //var max_year = d3.max(intersected_years, function(d){ return +d })
+              //var color = phenoclim.session.linechart.colors(""+max_year);
+              if($.arrayIntersect(years, years_selected).length>0 && item.altitude >= altitudes[0] && item.altitude <= altitudes[1]){
+                var marker = L.circleMarker([item.lat, item.lon], {radius:5 + (nbobs/3), weight:1, opacity: 1, fillOpacity: 0.2, color:"blue"}).addTo(phenoclim.session.map_layers);
                 marker.bindPopup("<div>"+ item.name +"<p>" +item.organisms+"</br>"+item.city + " - " + 
                   item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "<br/>"+nbobs+" obs </br>"+item.nb_individuals+" individus</p></div>")
                 marker.on("click", function(event){
