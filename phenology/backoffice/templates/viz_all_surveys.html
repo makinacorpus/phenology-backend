@@ -34,12 +34,13 @@
           phenoclim.session.timebarchart = new phenoclim.viz.timeBarChart();
           phenoclim.viz.getSpecies().done(function(event){
             phenoclim.viz.load_data().done(function(event2){
+              phenoclim.viz.refreshYears()
               phenoclim.session.linechart.refresh();
               phenoclim.session.barchart.refresh();
               phenoclim.session.timebarchart.refresh();
               $("select[data-id=species]").on("change", function(event3){
-                phenoclim.viz.refreshStages();
-                phenoclim.viz.refreshYears();
+                phenoclim.viz.refreshStages();;
+                phenoclim.viz.refreshYears()
                 phenoclim.session.linechart.refresh();
                 phenoclim.session.barchart.refresh();
                 phenoclim.session.timebarchart.refresh();

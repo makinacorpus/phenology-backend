@@ -14,7 +14,6 @@ phenoclim.viz.getFirstDayOfWeek = function(week, year){
 phenoclim.viz.load_data = function(){
   return $.get("/portail/get_data_for_viz", function(data){
     phenoclim.session.dataviz = data;
-    phenoclim.viz.refreshYears();
   });
 }
 
