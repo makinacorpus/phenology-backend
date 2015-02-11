@@ -25,7 +25,10 @@
       {% endif %}
     </script>
    <body>
-       {% include "navigation.html" %}
+       {% block navigation %}
+        {% include "navigation.html" %}
+       {% endblock %}
+
        {% bootstrap_messages messages %}
      <div class="container-fluid">
       <div class="row">
