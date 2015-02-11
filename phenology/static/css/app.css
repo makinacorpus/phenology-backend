@@ -124,3 +124,14 @@ rect:hover{
 .map.all_survey{
   height: 90%;
 }
+
+.years_choices .rowyear .checkbox{
+  margin:3px;
+}
+.years_choices hr{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.years_choices{
+  padding: 20px;
+}
