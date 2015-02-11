@@ -57,8 +57,11 @@ def get_data_for_viz(request):
                    'GROUP BY stage_id, year, week;')
 
     for survey in cursor.fetchall():
-        survey_year, survey_week, count, stage_id, species_id = int(survey[0]),
-        int(survey[1]), int(survey[2]), survey[3], survey[4]
+        survey_year, survey_week, count, stage_id, species_id = (int(survey[0]),
+                                                                 int(survey[1]),
+                                                                 int(survey[2]),
+                                                                 survey[3],
+                                                                 survey[4])
         results.setdefault(species_id, {})
         results[species_id].setdefault(stage_id, {})
         results[species_id][stage_id].setdefault(survey_year, {})
@@ -74,11 +77,21 @@ def get_species_list(request):
     """
     timer = MyTimer("get_species_list")
     timer.capture()
+    cursor = connection.cursor()
+    sql = 'SELECT STRFTIME("%Y", date) as year, stage_id, COUNT(*) ' +\
+          'FROM backend_survey ' +\
+          'GROUP BY year, stage_id;'
+    cursor.execute(sql)
+    stage_years = {}
+    for year, stage_id, count in cursor.fetchall():
+        stages = stage_years.setdefault(stage_id, [])
+        stages.append({"year": year, "count": count})
+
     species = [{"id": species.id,
                 "label": species.name,
-                'years': get_years(species.id),
                 "stages": [{"id": stage.id,
                             "label": stage.name,
+                            "years": stage_years[stage.id],
                             "order": stage.order}
                            for stage in
                            species.stage_set.all().order_by("order")]}
@@ -87,18 +100,6 @@ def get_species_list(request):
     print timer.output()
     return HttpResponse(json.dumps(species),
                         content_type="application/json")
-
-
-def get_years(species_id, area_id=None):
-    cursor = connection.cursor()
-    sql = 'SELECT DISTINCT STRFTIME("%Y", date) as year ' +\
-          'FROM backend_survey, backend_individual ' +\
-          'WHERE backend_individual.id=backend_survey.individual_id ' +\
-          'AND backend_individual.species_id=%s ' % species_id
-    if area_id:
-        sql += 'AND backend_individual.area_id=%s ' % area_id
-    cursor.execute(sql)
-    return [a[0] for a in cursor.fetchall()]
 
 
 def get_min_max_surveys(stage_id):
