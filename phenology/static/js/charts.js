@@ -127,7 +127,7 @@ phenoclim.viz.lineChart = function(params){
   .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
 
   var line = d3.svg.line()
-  .x(function(d) { return x(+d.key); })
+  .x(function(d) { return x(+d.key) + x.rangeBand(); })
   .y(function(d) { return y(+d.value); });
 
   var xGraphAxis = svg.append("g")
@@ -194,7 +194,7 @@ phenoclim.viz.lineChart = function(params){
       .append("circle")
         .attr("class", "dot")
         .attr("r", 4)
-        .attr("cx", function(d) { return x(+d.key); })
+        .attr("cx", function(d) { return (x(+d.key) + x.rangeBand()); })
         .attr("cy", function(d) { return y(+d.value); })
             .style("fill", function(d) { return phenoclim.session.linechart.colors(d.year); });
 
