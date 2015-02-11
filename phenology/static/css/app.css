@@ -127,6 +127,7 @@ rect:hover{
 
 .years_choices .rowyear .checkbox{
   margin:3px;
+  display: inline-block;
 }
 .years_choices hr{
   margin-top: 5px;
@@ -134,4 +135,23 @@ rect:hover{
 }
 .years_choices{
   padding: 20px;
+  padding-left: 15px;
+}
+
+.legend_item{
+  border-radius: 50%;
+  width: 13px;
+  height: 13px;
+  margin: 3px;
+  margin-left:0px;
+  margin-right: 10px;
+  background-color: white;
+  border: 1px solid black;
+  display: inline-flex;
+  opacity: 0.7;
+}
+
+#altitudes_slider{
+  min-width: 93%;
+  margin-left: 15px;
 }
