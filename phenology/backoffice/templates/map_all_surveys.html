@@ -141,6 +141,7 @@
         });
         $("[data-id=years] input").on("change", function(event){
           phenoclim.mapviz.load_layers();
+          phenoclim.session.linechart.refresh();
         })
       }
 
@@ -167,10 +168,16 @@
                 phenoclim.mapviz.refreshStages();
                 phenoclim.mapviz.refreshYears();
                 phenoclim.mapviz.load_layers();
+                phenoclim.session.linechart.refresh();
               })
               $("select[data-id=stages]").on("change", function(event){
+                phenoclim.mapviz.refreshYears();
                 phenoclim.mapviz.load_layers();
+                phenoclim.session.linechart.refresh();
               })
+              phenoclim.viz.load_data().done(function(event2){
+                phenoclim.session.linechart.refresh();
+              });
             })
         });
       });
