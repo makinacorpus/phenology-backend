@@ -85,6 +85,9 @@
                 var marker = L.circleMarker([item.lat, item.lon], {radius:5 + (nbobs/3), weight:1, color: 'blue'}).addTo(phenoclim.session.map_layers);
                 marker.bindPopup("<div>"+ item.name +"<p>" +item.organisms+"</br>"+item.city + " - " + 
                   item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "<br/>"+nbobs+" obs </br>"+item.nb_individuals+" individus</p></div>")
+                marker.on("click", function(event){
+                  phenoclim.session.linechart.refresh({ 'data': item.values});
+                });
               }
           })
           //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
