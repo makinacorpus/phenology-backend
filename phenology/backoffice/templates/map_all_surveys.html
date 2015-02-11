@@ -97,6 +97,14 @@
           //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
         });
       }
+      phenoclim.mapviz.refreshWidgets = function(){
+        var species_id = $("select[data-id=species]").val();
+        phenoclim.mapviz.get_data(species_id).done(function(data){
+          phenoclim.mapviz.load_layers();
+          var vizdata = phenoclim.mapviz.prepare_data_for_viz(data);
+          phenoclim.session.linechart.refresh({ data: vizdata });
+        });
+      }
       phenoclim.mapviz.slider = function(){
          var species_id = $("select[data-id=species]").val();
          phenoclim.mapviz.get_data(species_id).done(function(data){
@@ -231,17 +239,23 @@
               phenoclim.session.map_layers = L.featureGroup().addTo(phenoclim.session.map._map);
               phenoclim.mapviz.refreshStages();
               phenoclim.mapviz.refreshYears();
-              phenoclim.mapviz.load_layers();
+              phenoclim.mapviz.get_data("5").done(function(data){
+                phenoclim.mapviz.slider();
+                phenoclim.mapviz.refreshWidgets();
+              });
+
               $("select[data-id=species]").on("change", function(event){
                 phenoclim.mapviz.refreshStages();
                 phenoclim.mapviz.refreshYears();
-                phenoclim.mapviz.load_layers();
-                phenoclim.session.linechart.refresh();
+                var species_id = +$(this).val();
+                phenoclim.mapviz.get_data(species_id).done(function(data){
+                  phenoclim.mapviz.slider();
+                  phenoclim.mapviz.refreshWidgets();
+                });
               })
               $("select[data-id=stages]").on("change", function(event){
                 phenoclim.mapviz.refreshYears();
-                phenoclim.mapviz.load_layers();
-                phenoclim.session.linechart.refresh();
+                phenoclim.mapviz.refreshWidgets()
               })
               phenoclim.viz.load_data().done(function(event2){
                 phenoclim.session.linechart.refresh();
