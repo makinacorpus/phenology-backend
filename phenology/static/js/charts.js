@@ -160,7 +160,10 @@ phenoclim.viz.lineChart = function(params){
       return $(item).attr("value");
     }).toArray();
     var main_data = opt.data || phenoclim.session.dataviz;
-    var dataRaw = main_data[species_id][stage_id] || {};
+    var dataRaw = {};
+    if(main_data[species_id] && main_data[species_id][stage_id]){
+      dataRaw = main_data[species_id][stage_id];
+    }
     var data = d3.entries(dataRaw).map(function(d){
       d.values = d3.entries(d.value).map(function(d2){
         d2.year = d.key;
