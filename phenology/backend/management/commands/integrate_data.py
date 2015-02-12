@@ -97,6 +97,15 @@ class Command(BaseCommand):
                 else:
                     area_tmp = models.Area.objects.filter(name=area["name"]).first()
                 area_tmp.save()
+                for temp in area["snowings"]:
+                    snowing_tmp = models.Snowing()
+                    snowing_tmp.area = area_tmp
+                    snowing_tmp.observer = observers[0]
+                    snowing_tmp.date = temp["date_releve"]
+                    snowing_tmp.remark = temp["remark_temp"]
+                    snowing_tmp.height = temp["neige_haut"]
+                    snowing_tmp.temperature = temp["temperature"]
+                    snowing_tmp.save()
 
                 for observer in observers:
                     if(observer not in area_tmp.observer_set.all()):
