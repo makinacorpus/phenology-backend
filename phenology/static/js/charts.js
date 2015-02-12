@@ -173,16 +173,22 @@ phenoclim.viz.lineChart = function(params){
 
   this.refresh = function(opt){
     var opt = opt || {};
+    
+    // filters
     var species_id = +$("select[data-id=species]").val();
     var stage_id = +$("select[data-id=stages]").val();
     var years_selected = $(".checkbox input:checked").map(function(i, item){
       return $(item).attr("value");
     }).toArray();
+
+    // get data
     var main_data = opt.data || phenoclim.session.dataviz;
     var dataRaw = {};
     if(main_data[species_id] && main_data[species_id][stage_id]){
       dataRaw = main_data[species_id][stage_id];
     }
+
+    // prepare data
     var data = d3.entries(dataRaw).map(function(d){
       d.values = d3.entries(d.value).map(function(d2){
         d2.year = d.key;
@@ -196,7 +202,7 @@ phenoclim.viz.lineChart = function(params){
       return (years_selected.indexOf(d.key) > -1);
     })
 
-
+    // X axis
     var minWeek = d3.min(data, function(d){ return d3.min(d.values, function(d){
       return parseInt(d.key);
     })})
@@ -204,21 +210,25 @@ phenoclim.viz.lineChart = function(params){
       return parseInt(d.key);
     })})
     x.domain(d3.range(minWeek, maxWeek + 2, 1));
-    var maxNbObs = d3.max(data,
-      function(d){
-        return d3.max(d.values, function(d){
-          return parseInt(d.value);
-        })});
+    xGraphAxis.call(xAxis);
+
+    // Y axis
+    var maxNbObs = d3.max(data, function(d){ return d3.max(d.values, function(d){
+      return parseInt(d.value);
+    })});
     y.domain([0, maxNbObs]);
     yAxis.ticks((maxNbObs<5) ? maxNbObs : 5);
-    xGraphAxis.call(xAxis);
     yGraphAxis.call(yAxis);
+    
     svg.selectAll("g.year").remove();
 
+    // year group
     var year = svg.selectAll("g.year").data(data)
-    .enter()
-    .append("g")
-    .attr("class", "year")
+      .enter()
+      .append("g")
+        .attr("class", "year")
+
+    // lines
     if(options.line_enable == true){
       // representing amounts of obs per week number, for a specific year
       var lines = year.append("path")
@@ -227,6 +237,7 @@ phenoclim.viz.lineChart = function(params){
         .attr("d", function(d){ return line(d.values) })
         .attr("transform", null)
     }
+
     // circles representing the middle of the week
     var circles = year.selectAll(".dot")
       .data(function(d){ return d.values; })
@@ -236,24 +247,24 @@ phenoclim.viz.lineChart = function(params){
         .attr("r", 4)
         .attr("cx", function(d) { return (x(+d.key) + x.rangeBand()); })
         .attr("cy", function(d) { return y(+d.value); })
-            .style("fill", function(d) { return phenoclim.session.linechart.colors(d.year); });
-
-      circles.on("mousemove", function(d){
-        d3.select(this).attr("r", 7).style("fill-opacity", 0.9);
-        mousemove(d);
-      });
-      circles.on("mouseout", function(d){
-        d3.select(this).attr("r", 4).style("fill-opacity", 1);
-        mouseout();
-      });
-      circles.on("mouseover", function(d){
-        mouseover();
-      });
+        .style("fill", function(d) { return phenoclim.session.linechart.colors(d.year); })
+        .on("mousemove", function(d){
+          d3.select(this).attr("r", 7).style("fill-opacity", 0.9);
+          mousemove(d);
+        })
+        .on("mouseout", function(d){
+          d3.select(this).attr("r", 4).style("fill-opacity", 1);
+          mouseout();
+        })
+        .on("mouseover", function(d){
+          mouseover();
+        });
     }
+
     /** TOOLTIP **/
     function mouseover() {
       tooltip.transition()
-          .duration(500)
+          .duration(300)
           .style("opacity", 1);
     }
 
@@ -272,7 +283,7 @@ phenoclim.viz.lineChart = function(params){
 
     function mouseout() {
       tooltip.transition()
-          .duration(500)
+          .duration(300)
           .style("opacity", 1e-6);
     }
 
@@ -280,33 +291,41 @@ phenoclim.viz.lineChart = function(params){
 }
 
 
-phenoclim.viz.barChart = function(){
+phenoclim.viz.barChart = function(params){
   var self = this;
 
-  var margin = {top: 20, right: 10, bottom: 30, left: 80};
-  var width = 960 - margin.left - margin.right;
-  var height = 500 - margin.top - margin.bottom;
+  var options = {
+    selector: ".graph-bars",
+    margin: {top: 20, right: 10, bottom: 30, left: 80},
+  }
+  $.extend(true, options, params);
+
+  var container = d3.select(options.selector);
+  var main_width = options.width || $(options.selector).width();
+  var width = main_width - options.margin.left - options.margin.right;
+  var height = (main_width*3/5) - options.margin.top - options.margin.bottom;
+
   var x = d3.scale.ordinal().rangeBands([0, width], 0.1);
   var x1 = d3.scale.ordinal();
   var y = d3.scale.linear().range([height, 0]);
 
   var today = new Date()
   var xAxis = d3.svg.axis()
-  .scale(x)
-  .orient("bottom")
+    .scale(x)
+    .orient("bottom")
 
   var yAxis = d3.svg.axis()
-  .scale(y)
-  .orient("left")
-  .ticks(5);
+    .scale(y)
+    .orient("left")
+    .ticks(5);
 
   var container = d3.select(".graph-bars");
 
   var svg = container.append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("width", width + options.margin.left + options.margin.right)
+    .attr("height", height + options.margin.top + options.margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
 
   var xGraphAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -361,24 +380,29 @@ phenoclim.viz.barChart = function(){
 
     var stages_id = data.map(function(d){ return d.name });
     x.domain(stages_id);
-    var ageNames = data[0].values.map(function(d){
+    
+    var years = data[0].values.map(function(d){
       return d.key;
     })
-    x1.domain(ageNames).rangeRoundBands([0, x.rangeBand()]);
+    x1.domain(years).rangeRoundBands([0, x.rangeBand()]);
+    
     var maxNbObs = d3.max(data,
       function(d){
         return d3.max(d.values, function(d){
           return parseInt(d.amount);
         })})
     y.domain([0, maxNbObs]);
+    
     xGraphAxis.call(xAxis);
     yGraphAxis.call(yAxis);
+    
     svg.selectAll(".state").remove();
+    
     var state = svg.selectAll(".state")
-    .data(data)
-    .enter().append("g")
-    .attr("class", "state")
-    .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
+      .data(data)
+      .enter().append("g")
+      .attr("class", "state")
+      .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
 
     state.selectAll("rect")
       .data(function(d) { return d.values; })
@@ -394,12 +418,20 @@ phenoclim.viz.barChart = function(){
 
 
 
-    phenoclim.viz.timeBarChart = function(){
+    phenoclim.viz.timeBarChart = function(params){
       var self = this;
 
-      var margin = {top: 20, right: 10, bottom: 40, left: 80};
-      var width = 960 - margin.left - margin.right;
-      var height = 500 - margin.top - margin.bottom;
+      var options = {
+        selector: ".graph-bars-time",
+        margin: {top: 20, right: 10, bottom: 30, left: 80},
+      }
+      $.extend(true, options, params);
+
+      var container = d3.select(options.selector);
+      var main_width = options.width || $(options.selector).width();
+      var width = main_width - options.margin.left - options.margin.right;
+      var height = (main_width*3/5) - options.margin.top - options.margin.bottom;
+
       var x = d3.scale.ordinal().rangeBands([0, width]);
       var x1 = d3.scale.ordinal();
       var y = d3.scale.ordinal().rangeRoundBands([0, height], .1);
@@ -424,10 +456,10 @@ phenoclim.viz.barChart = function(){
       var container = d3.select(".graph-bars-time");
 
       var svg = container.append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width + options.margin.left + options.margin.right)
+      .attr("height", height + options.margin.top + options.margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
 
       var xGraphAxis = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
@@ -459,7 +491,7 @@ phenoclim.viz.barChart = function(){
 
         var stages = phenoclim.session.species_list.filter(function(d){
           return d.id == species_id;
-        })[0].stages
+        })[0].stages;
 
         var dataRaw = phenoclim.session.dataviz[species_id] || {};
         var data = d3.entries(dataRaw)
@@ -482,21 +514,21 @@ phenoclim.viz.barChart = function(){
                 return parseInt(d4.key);
             })
           })
-        })
+        });
         var maxWeek = d3.max(data, function(d){ 
           return d3.max(d.values, function(d2){
             return d3.max(d2.values, function(d4){
                 return parseInt(d4.key);
-            })
-          })
-        })
+            });
+          });
+        });
 
         var stages_id = data.map(function(d){ return d.name });
 
         x.domain(d3.range(minWeek, maxWeek + 2, 1));
         y.domain(stages_id);
 
-        xGraphAxis.call(xAxis)
+        xGraphAxis.call(xAxis);
         xGraphAxis.selectAll(".tick line")
           .attr("display", function(d,i){ if(i%2 == 1){ return "none"}});
                     
@@ -506,12 +538,12 @@ phenoclim.viz.barChart = function(){
         var state = svg.selectAll(".state")
           .data(data)
           .enter().append("g")
-          .attr("class", "state")
+          .attr("class", "state");
 
         var state2 = state.selectAll(".state2")
           .data(function(d){ return d.values;})
           .enter().append("g")
-          .attr("class", "state2")
+          .attr("class", "state2");
 
         state2.selectAll("rect")
           .data(function(d) { return d.values; })
