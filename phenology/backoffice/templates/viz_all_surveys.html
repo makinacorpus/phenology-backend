@@ -4,18 +4,20 @@
 {% load staticfiles %}
 {% load json_filters %}
 
-{% block title %}Viz{% endblock %}
+{% block navigation %} {% endblock %}
+
+{% block title %}{% endblock %}
 
 {% block content %}
     <div class="row  table-row">
 
-      <div class=" col-xs-8 col-md-8  table-col">
+      <div class=" col-xs-9 col-md-9  table-col">
          <div id="graph" class="graph text-center"></div>
          <div class="graph-bars text-center"></div>
          <div class="graph-bars-time text-center"></div>
       </div>
 
-      <div class="col-xs-4 col-md-4 table-col">
+      <div class="col-xs-9 col-md-9 table-col">
         <div class="map-control">
            <select name="species" data-id="species" class="form-control">
            </select>
@@ -29,7 +31,7 @@
 
       <script type="text/javascript">
         $( document ).ready(function(){
-          phenoclim.session.linechart = new phenoclim.viz.lineChart({ margin: {top: 20, right: 10, bottom: 30, left: 80}, width: 960});
+          phenoclim.session.linechart = new phenoclim.viz.lineChart({ margin: {top: 20, right: 10, bottom: 30, left: 80}});
           phenoclim.session.barchart = new phenoclim.viz.barChart();
           phenoclim.session.timebarchart = new phenoclim.viz.timeBarChart();
           phenoclim.viz.getSpecies().done(function(event){
