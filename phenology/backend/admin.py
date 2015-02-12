@@ -4,9 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
-admin.site.register(models.Observer)
-admin.site.register(models.Snowing)
-
 
 class TabAdmin(TranslationAdmin):
     class Media:
@@ -20,7 +17,6 @@ class TabAdmin(TranslationAdmin):
         }
 
 
-
 class StageAdmin(TabAdmin):
     list_display = ('name', 'species', 'order', 'is_active', )
     search_fields = ['name', 'species__name']
@@ -28,7 +24,7 @@ class StageAdmin(TabAdmin):
 
 
 class SurveyAdmin(admin.ModelAdmin):
-    list_display = ('individual', 'species_name', 'stage', 'answer', 'remark', 'area_name')
+    list_display = ('date', 'individual', 'species_name', 'stage', 'answer', 'remark', 'area_name')
 
     def species_name(self, obj):
         return ("%s" % (obj.individual.species.name))
@@ -55,9 +51,29 @@ class AreaAdmin(admin.ModelAdmin):
     search_fields = ['name', 'observer__user__username']
 
     def observers(self, obj):
-        return [str(o.user.username) for o in obj.observer_set.all()]
+        return [str(o.user.username) for o in obj.observer_set.all().select_related('user')]
 
 admin.site.register(models.Area, AreaAdmin)
+
+
+class SnowingAdmin(admin.ModelAdmin):
+    list_display = ('date', 'area_city', 'height', 'remark')
+    list_select_related = ('area', )
+
+    def area_city(self, obj):
+        return ("%s" % (obj.area.commune))
+
+admin.site.register(models.Snowing, SnowingAdmin)
+
+
+class ObserverAdmin(admin.ModelAdmin):
+    list_display = ('user', )
+    list_select_related = ('user', )
+
+    def area_city(self, obj):
+        return ("%s" % (obj.area.commune))
+
+admin.site.register(models.Observer, ObserverAdmin)
 
 
 # Define an inline admin descriptor for Employee model
@@ -80,6 +96,8 @@ class UserAdmin(UserAdmin):
 
 class SpeciesAdmin(TabAdmin):
     inlines = (StageInline, )
+
+
 # Re-register UserAdmin
 admin.site.unregister(models.User)
 admin.site.register(models.User, UserAdmin)
