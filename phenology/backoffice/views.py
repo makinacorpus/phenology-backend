@@ -1,6 +1,6 @@
 # from django.shortcuts import render
 import datetime
-import json
+import simplejson as json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -18,7 +18,7 @@ from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm
 from django.db.models import Max, Min
 from django.db import connection
-from backoffice.utils import MyTimer
+from backoffice.utils import MyTimer, json_serial
 
 
 @login_required(login_url='login/')
@@ -43,6 +43,11 @@ def viz_all_surveys(request):
                               RequestContext(request))
 
 
+def map_all_snowings(request):
+    return render_to_response("map_all_snowings.html", {},
+                              RequestContext(request))
+
+
 def get_data_for_viz(request):
     """ get all amount of surveys per month classified as
         species_id/stage_id/year/month
@@ -55,17 +60,13 @@ def get_data_for_viz(request):
                    'FROM backend_survey, backend_stage '
                    'WHERE backend_survey.stage_id=backend_stage.id '
                    'GROUP BY stage_id, year, week;')
-
+    keys = ['year', 'week', 'count', 'stage_id', 'species_id']
     for survey in cursor.fetchall():
-        survey_year, survey_week, count, stage_id, species_id = (int(survey[0]),
-                                                                 int(survey[1]),
-                                                                 int(survey[2]),
-                                                                 survey[3],
-                                                                 survey[4])
-        results.setdefault(species_id, {})
-        results[species_id].setdefault(stage_id, {})
-        results[species_id][stage_id].setdefault(survey_year, {})
-        results[species_id][stage_id][survey_year][survey_week] = count
+        survey_dict = dict(zip(keys, survey))
+        species = results.setdefault(survey_dict["species_id"], {})
+        stage = species.setdefault(survey_dict["stage_id"], {})
+        year = stage.setdefault(survey_dict["year"], {})
+        year[survey_dict["week"]] = int(survey_dict["count"])
 
     return HttpResponse(json.dumps(results),
                         content_type="application/json")
@@ -184,6 +185,69 @@ def search_surveys(request):
     print timer.output()
 
     return HttpResponse(json.dumps(classified),
+                        content_type="application/json")
+
+
+def search_snowings(request):
+    """ get all individuals
+        used to get data for map rendering
+        can be filtered by species (species_id)
+    """
+    # observers = models.Observer.objects.all()
+    timer = MyTimer()
+    cursor = connection.cursor()
+    timer.capture()
+    classified = {}
+
+    # species_id = request.GET.get("species_id")
+    # individuals = models.Individual.objects.all()
+    areas = models.Area.objects.all()
+
+    area_organism = {}
+    area_org_sql = "SELECT area_id, observer_id, bo.organism " +\
+                   "FROM backend_observer_areas as boa, backend_observer as bo " +\
+                   "WHERE boa.observer_id=bo.id"
+    cursor.execute(area_org_sql)
+    for area_id, observer_id, organism in cursor.fetchall():
+        area = area_organism.setdefault(area_id, [])
+        if not organism:
+            organism = "Particulier"
+        area.append(organism)
+
+    classified = {a.id: {'lon': a.lon, 'lat': a.lat, 'city': a.commune,
+                         'altitude': a.altitude, 'name': a.name,
+                         'nb_individuals': 0,
+                         'organisms': ','.join(area_organism.get(a.id, [])),
+                         'values': {}, 'postalcode': a.postalcode}
+                  for a in areas}
+
+    # for ind in individuals:
+    #     tmp = classified[ind.area_id]
+    #     if (tmp['lat'] == 1 or tmp['lat'] == -1) and\
+    #        (ind.lat != 1 and ind.lat != -1):
+    #         tmp['lat'] = ind.lat
+    #         tmp['lon'] = ind.lon
+    #     tmp['nb_individuals'] += 1
+
+    timer.capture()
+    snowing_sql = 'SELECT STRFTIME("%Y", date) as year,  area_id, MAX(height) ' +\
+                  'FROM backend_snowing ' +\
+                  'WHERE height < 999  AND height > 0 ' +\
+                  'GROUP BY area_id, year ' +\
+                  'ORDER BY area_id, year;'
+    cursor.execute(snowing_sql)
+    keys = ['year', 'area_id', 'height']
+    for snowing in cursor.fetchall():
+        snowing_dict = dict(zip(keys, snowing))
+        area = classified.get(snowing_dict["area_id"])
+        area['values'][snowing_dict["year"]] = snowing_dict["height"]
+
+    timer.capture()
+    print timer.output()
+
+    return HttpResponse(json.dumps(classified,
+                                   use_decimal=True,
+                                   default=json_serial),
                         content_type="application/json")
 
 
@@ -407,17 +471,27 @@ def get_surveys(request):
         query = query.order_by(query_1)
 
     filtered_total = query.count()
-    filtered_data = query.all()[start: start + length]
+    filtered_data = query.select_related('individual').all()[start:
+                                                             start + length]
     response_data = {
         "draw": int(draw),
         "data": [{"id": o.id,
                   "date": str(o.date),
                   "area": o.individual.area.name,
                   "species": o.individual.species.name,
-                  "individual": o.individual.name,
-                  "observer": o.observer,
+                  "individual": "",
+                  "organisms": ",".join([a.organism
+                                         for a in
+                                         o.individual.area.observer_set.all()]
+                                        ),
                   "stage": o.stage.name,
-                  "answer": o.answer} for o in filtered_data],
+                  "answer": o.answer,
+                  "categorie": ",".join([a.category
+                                         for a in
+                                         o.individual.area.observer_set.all()]
+                                        )
+                  }
+                 for o in filtered_data],
         "recordsTotal": models.Survey.objects.count(),
         "recordsFiltered": filtered_total
     }

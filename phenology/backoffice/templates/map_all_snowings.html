@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block navigation %} {% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+    <script type="text/javascript">
+      phenoclim.options = {
+        geojson: {},
+      }
+    </script>
+
+    <div class="row  table-row">
+
+      <div class=" col-xs-8 col-md-8  table-col">
+               <div id="map" class="map all_survey"></div>
+      </div>
+
+      <div class="col-xs-4 col-md-4 table-col">
+        <div class="map-control">
+           <input data-id="altitudes" id="altitudes" type="text"/><br/>
+        </div>
+        <div class="graph">
+        <div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      var cached_snowings;
+      phenoclim = phenoclim || {}
+      phenoclim.session = phenoclim.session || {};
+      phenoclim.mapvizsnowing = phenoclim.mapvizsnowing || {};
+      var existed = false;
+      phenoclim.mapvizsnowing.get_data = function(){
+        if(typeof cached_snowings == "undefined"){
+          console.log("getting")
+          return $.get('/portail/search_snowings',function(data){
+              cached_snowings = data;
+          });
+        }
+        else{
+          var defer = $.Deferred();
+          defer.resolve(cached_snowings);
+          return defer.promise();
+        };
+      }
+      phenoclim.mapvizsnowing.slider = function(){
+         var species_id = $("select[data-id=species]").val();
+         phenoclim.mapvizsnowing.get_data().done(function(data){
+                var flat_data = d3.entries(data).map(function(d){ return +d.value.altitude;});
+                var max = d3.max(flat_data)
+                var min = d3.min(flat_data)
+                var ticks = [min, max];
+                var ticks_label = []
+                var existed =  $("#altitudes_slider").length > 0; 
+                var slider = $("#altitudes").slider({
+                    id: "altitudes_slider",
+                    ticks: [0, 500, 1000, 1500, 2000, 2500],
+                    ticks_labels: ["0m", "500m", "1000m", "1500m", "2000m", "2500m"],
+                    min: 0, max: 2000, range: true, value: [min, max],
+                });
+                if(existed === false){
+                  slider.on("slide", function(slideEvt) {
+                    phenoclim.mapvizsnowing.load_layers();
+                  });
+                }
+                $("#altitudes").slider("refresh");
+          });
+      }
+      phenoclim.mapvizsnowing.load_layers = function(){
+        phenoclim.session.map_layers.clearLayers();
+        var altitudes = $("#altitudes").slider("getValue");
+
+        phenoclim.mapvizsnowing.get_data().done(function(data){
+          $.each(data, function(i, item){
+              var years = item.values;
+              var values = d3.values(years);
+              if (values.length > 0 && item.altitude >= altitudes[0] && item.altitude <= altitudes[1]){
+                var max = d3.max(values);
+                var marker = L.circleMarker([item.lat, item.lon], {radius:(8 * (max/ 100)), weight:1, opacity: 1, fillOpacity: 0.2, color:"blue"}).addTo(phenoclim.session.map_layers);
+                marker.bindPopup("<div><p>" +item.organisms+"</br>"+item.city + " - " + 
+                  item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "<br/> Hauteur max de neige: "+max+" cm </br></div>")
+              }
+          })
+          //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
+        });
+      }
+   
+      $( document ).ready(function(){
+        $(".map").on( "map_init", function(){
+              phenoclim.session.map_layers = L.featureGroup().addTo(phenoclim.session.map._map);
+              phenoclim.mapvizsnowing.get_data().done(function(data){
+                phenoclim.mapvizsnowing.slider();
+                phenoclim.mapvizsnowing.load_layers();
+                phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
+              });
+
+        });
+      });
+    </script>
+
+{% endblock %}
