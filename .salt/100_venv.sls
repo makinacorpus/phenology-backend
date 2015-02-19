@@ -9,12 +9,16 @@
     - user: {{cfg.user}}
     - runas: {{cfg.user}}
     - use_vt: true
-  pip.installed:
-    - bin_env: {{data.py_root}}
-    - requirements: {{cfg.project_root}}/requirements.txt
+  cmd.run:
+    - name: |
+            . {{data.py_root}}/bin/activate;
+            pip install -r "{{data.requirements}}" --download-cache "{{cfg.data_root}}/cache"
+    - env:
+       - CFLAGS: "-I/usr/include/gdal"
+    - cwd: {{data.app_root}}
     - use_vt: true
     - download_cache: {{cfg.data_root}}/cache
-    - runas: {{cfg.user}}
+    - user: {{cfg.user}}
     - require:
       - virtualenv: {{cfg.name}}-venv
   file.symlink:
@@ -23,8 +27,23 @@
     - makedirs: true
     - onlyif: test -e "{{data.py_root}}/src"
     - require:
-      - pip: {{cfg.name}}-venv
+      - cmd: {{cfg.name}}-venv
 
+{# install the django app in develop if we have a setup.py #}
+{{cfg.name}}-develop:
+  cmd.run:
+    - name: |
+            . {{data.py_root}}/bin/activate;
+            pip install -e .
+    - env:
+       - CFLAGS: "-I/usr/include/gdal"
+    - cwd: {{data.app_root}}
+    - onlyif: test -e setup.py
+    - use_vt: true
+    - download_cache: {{cfg.data_root}}/cache
+    - user: {{cfg.user}}
+    - require:
+      - file: {{cfg.name}}-venv
 {{cfg.name}}-venv-cleanup:
   file.absent:
     - name: {{cfg.project_root}}/develop_eggs

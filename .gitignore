@@ -17,3 +17,9 @@ makina-states.flask-deploy.log
 salt.cfg
 salt_config.py
 psql.sh
+/phenology/phenology/local_settings.py
+/phenology/phenology/localsettings.py
+/phenology/salt_*_check.py
+/phenology/salt_*_check.py
+/phenology/salt_*_check.py
+

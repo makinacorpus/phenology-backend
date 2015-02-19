@@ -10,7 +10,10 @@
 
 {{cfg.name}}-config:
   file.managed:
-    - name: {{data.app_root}}/{{data.PROJECT}}/settings_local.py
+    - names:
+      - {{data.app_root}}/{{data.PROJECT}}/settings_local.py
+      - {{data.app_root}}/{{data.PROJECT}}/local_settings.py
+      - {{data.app_root}}/{{data.PROJECT}}/localsettings.py
     - source: salt://makina-projects/{{cfg.name}}/files/config.py
     - template: jinja
     - user: {{cfg.user}}
@@ -29,9 +32,28 @@ static-{{cfg.name}}:
     - watch:
       - file: {{cfg.name}}-config
 
+{% if data.compile_messages %}
+msg-{{cfg.name}}:
+  cmd.run:
+    - name: | 
+            set -e
+            . {{data.py_root}}/bin/activate
+            for i in phenology backend backoffice;do
+              cd $i
+              python ../manage.py compilemessages
+              cd ..
+            done
+    {{set_env()}}
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - file: {{cfg.name}}-config
+{% endif %}
+
 syncdb-{{cfg.name}}:
   cmd.run:
-    - name: {{data.py}} manage.py syncdb --noinput
+    #- name: {{data.py}} manage.py syncdb --noinput
+    - name: {{data.py}} manage.py syncdb --noinput && {{data.py}} manage.py migrate --noinput
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
@@ -53,9 +75,10 @@ media-{{cfg.name}}:
 
 {% for dadmins in data.admins %}
 {% for admin, udata in dadmins.items() %}
+{% set f = data.app_root + '/salt_' + admin + '_check.py' %}
 user-{{cfg.name}}-{{admin}}:
   file.managed:
-    - name: "{{data.app_root}}/salt_{{admin}}_check.py"
+    - name: "{{f}}"
     - contents: |
                 #!{{data.py}}
                 import os
@@ -63,11 +86,12 @@ user-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from django.contrib.auth.models import User;User.objects.filter(username='{{admin}}').all()[0]
-                if os.path.isfile("{{data.app_root}}/salt_{{admin}}_check.py"):
-                    os.unlink("{{data.app_root}}/salt_{{admin}}_check.py")
-    - template: jinja
+                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
+                User.objects.filter(username='{{admin}}').all()[0]
+                if os.path.isfile("{{f}}"):
+                    os.unlink("{{f}}")
     - mode: 700
+    - template: jinja
     - user: {{cfg.user}}
     - group: {{cfg.group}}
     - source: ""
@@ -78,7 +102,7 @@ user-{{cfg.name}}-{{admin}}:
       - cmd: syncdb-{{cfg.name}}
   cmd.run:
     - name: {{data.py}} manage.py createsuperuser --username="{{admin}}" --email="{{udata.mail}}" --noinput
-    - unless: "{{data.app_root}}/salt_{{admin}}_check.py"
+    - unless: "{{f}}"
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
@@ -87,6 +111,7 @@ user-{{cfg.name}}-{{admin}}:
       - cmd: syncdb-{{cfg.name}}
       - file: user-{{cfg.name}}-{{admin}}
 
+{% set f = data.app_root + '/salt_' + admin + '_password.py' %}
 superuser-{{cfg.name}}-{{admin}}:
   file.managed:
     - contents: |
@@ -96,23 +121,24 @@ superuser-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from django.contrib.auth.models import User
+                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
                 user=User.objects.filter(username='{{admin}}').all()[0]
                 user.set_password('{{udata.password}}')
+                user.email = '{{udata.mail}}'
                 user.save()
-                if os.path.isfile("{{data.app_root}}/salt_{{admin}}_password.py"):
-                    os.unlink("{{data.app_root}}/salt_{{admin}}_password.py")
+                if os.path.isfile("{{f}}"):
+                    os.unlink("{{f}}")
     - template: jinja
     - mode: 700
     - user: {{cfg.user}}
     - group: {{cfg.group}}
-    - name: "{{data.app_root}}/salt_{{admin}}_password.py"
+    - name: "{{f}}"
     - watch:
       - file: {{cfg.name}}-config
       - cmd: syncdb-{{cfg.name}}
   cmd.run:
     {{set_env()}}
-    - name: {{data.app_root}}/salt_{{admin}}_password.py
+    - name: {{f}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - watch:

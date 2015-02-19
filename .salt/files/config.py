@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+__docformat__ = 'restructuredtext en'
 {% set cfg = salt['mc_utils.json_load'](cfg) %}
 {% set data = cfg.data %}
 {% macro renderbool(opt)%}
 {{opt}} = {%if data.get(opt, False)%}True{%else%}False{%endif%}
 {% endmacro %}
-import os
 import json
+import os
 from django.utils.translation import gettext_lazy as _
 SITE_ID={{data.SITE_ID}}
-SERVER_EMAIL = DEFAULT_FROM_EMAIL ='root@{{cfg.fqdn}}'
-DATABASES = {
-    'default': json.loads("""
+SERVER_EMAIL = DEFAULT_FROM_EMAIL = 'root@{{cfg.fqdn}}'
+DATABASES = json.loads("""
 {{salt['mc_utils.json_dump'](data.db)}}
-""".strip()),
-}
+""".strip())
 {% set admint = None %}
 ADMINS = (
     {% for dadmins in data.admins %}
@@ -47,7 +46,6 @@ LANGUAGES = (
     ('it', _('Italia')),
     ('en', _('English'))
 )
-
 TILES_SETTINGS = {
     'TILES_RADIUS_LARGE': 0.01,  # ~1 km
     'TILES_RADIUS_SMALL': 0.05,  # ~500 m
@@ -57,5 +55,51 @@ TILES_SETTINGS = {
     'TILES_URL': 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',  # tiles url
     'GLOBAL_MAP_BBOX': [4.669189453125, 43.69965122967144, 7.9046630859375, 46.464349400461124],  # Whole Alpes
 }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        }
+    }
+}
+{% if data.get('ADDITIONAL_TEMPLATE_DIRS', None) %}
+ADDITIONAL_TEMPLATE_DIRS = tuple({{data.ADDITIONAL_TEMPLATE_DIRS}})
+{% endif %}
 
+# Application specific settings
+{% for param, value in data.get('extra_settings', {}).items() %}
+{{param}} = {{value}}
+{% endfor %}
 # vim:set et sts=4 ts=4 tw=80:
+
+
+

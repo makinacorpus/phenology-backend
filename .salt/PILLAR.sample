@@ -17,10 +17,11 @@ makina-projects.projectname:
     PROJECT: phenology
     SITE_ID: 1
     app_root: "{project_root}/{PROJECT}"
-    periodicity: 0 */1 * * *
+    htaccess: "/etc/{name}.webaccess"
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
-    domain: "{PROJECT}.mydomain.tld"
+    domain: "{fqdn}"
+    requirements: "{project_root}/requirements.txt"
     server_aliases: []
     LANGUAGE_CODE: fr-fr
     DATE_FORMAT: 'iso-8601'
@@ -41,34 +42,45 @@ makina-projects.projectname:
       - foo:
           mail: "{adminmail}"
           password: {{salt['mc_utils.generate_stored_password'](
-                           'phenology_web_admin')}}
+                           'corpus-django_web_admin')}}
     #db:
-    #  ENGINE: 'django.db.backends.sqlite3'
-    #  NAME: "{data_root}/{PROJECT}.sqlite"
+    #  default:
+    #    ENGINE: 'django.db.backends.sqlite3'
+    #    NAME: "{data_root}/{PROJECT}.sqlite"
     ###
     db:
-      ENGINE: 'django.db.backends.postgresql_psycopg2'
-      USER: '{name}'
-      PORT: '5432'
-      HOST: '127.0.0.1'
-      NAME: '{name}'
-      PASSWORD: '{name}secret'              
+      default:
+        ENGINE: 'django.db.backends.postgresql_psycopg2'
+        USER: 'phenology'
+        PORT: '5432'
+        HOST: '127.0.0.1'
+        NAME: 'phenology'
+        PASSWORD: '{name}secret'
     static: "{data_root}/static"
     media: "{data_root}/media"
     host: localhost
     port: 8180
-    workers: 1
+    workers: 10
+    worker_class: sync
+    worker_timeout: 9000
     DEBUG: False
     py: "{py_root}/bin/python"
     USE_X_FORWARDED_HOST: True
-    htaccess: "/etc/{name}.webaccess"
-
+    USER_MODULE: django.contrib.auth.models
+    USER_CLASS: User
+    compile_messages: true
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
-                           'phenology_web_secret_key', 64)}}"
+                           'corpus-django_web_secret_key', 64)}}"
     # http_users:
     #   - root: foo
+    #ADDITIONAL_TEMPLATE_DIRS:
+    #  - '{project_root}/calanques'
+    # extra django settings to add
+    # to the file
+    #extra_settings:
+    #  FOO: "'bar'"
+    #  BAR: "True"
   env_defaults:
     dev:
       DEBUG: True
-
 # vim:set ft=yaml:

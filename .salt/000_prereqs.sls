@@ -88,6 +88,13 @@ prepreqs-{{cfg.name}}:
       - cython
       - python-numpy
       - zlib1g-dev
+      # geodjango
+      - gdal-bin
+      - libgdal1-dev
+      - libgeos-dev
+      - geoip-bin
+      - libgeoip-dev 
+
 
 {{cfg.name}}-dirs:
   file.directory:
@@ -96,6 +103,7 @@ prepreqs-{{cfg.name}}:
     - group: {{cfg.group}}
     - watch:
       - pkg: prepreqs-{{cfg.name}}
+      - user: {{cfg.name}}-www-data
     - names:
       - {{cfg.data_root}}/cache
       - {{cfg.data.static}}
