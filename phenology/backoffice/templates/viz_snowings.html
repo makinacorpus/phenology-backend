@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block navigation %} {% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid snowing-compare">
+      <div class="row snowing-area area1" rel="area1">
+        <div class="col-md-12 col-xs-12">
+          <div style="display:flex; width:50%">
+           <select name="area" style="width:100%" class="form-control">
+            {% for a in areas %}
+              <option value="{{a.pk}}">{{a.postalcode}} {{ a.commune }} {{ a.altitude|floatformat }}m</option>
+            {% endfor %}
+           </select>
+           <select name="year" style="width:30%" class="form-control">
+           </select>
+          </div>
+          <div class="graph">
+          </div>
+        </div>
+      </div>
+      <div class="row snowing-area area2" rel="area2">
+        <div class="col-md-12 col-xs-12">
+          <div style="display:flex; width:50%">
+           <select name="area" style="width:100%" class="form-control">
+            {% for a in areas %}
+              <option value="{{a.pk}}">{{a.postalcode}} {{ a.commune }} {{ a.altitude|floatformat }}m</option>
+            {% endfor %}
+           </select>
+           <select name="year" style="width:30%" class="form-control">
+           </select>
+          </div>
+          <div class="graph">
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .bar {
+        fill: steelblue;
+        fill-opacity: .9;
+      }
+    </style>
+      <script type="text/javascript">
+
+         phenoclim.tools = phenoclim.tools || {};
+        phenoclim.tools.myTimeFormatter = function(date) {
+          return moment(date).format('MMMM');
+        };
+        phenoclim.vizsnowings = phenoclim.vizsnowings || {};
+        phenoclim.vizsnowings.getData = function(area_id){
+          var defer = $.Deferred();
+          if(typeof phenoclim.session.areasnowings[area_id] == "undefined"){
+            $.get("get_area_snowings?area_id="+ area_id, function(data){
+              phenoclim.session.areasnowings[area_id] = data;
+              defer.resolve(data);
+            })
+          }
+          else{
+            defer.resolve(phenoclim.session.areasnowings[area_id])
+          }
+          return defer.promise()
+        }
+        phenoclim.vizsnowings.refreshYears = function(data, container){
+          var snowings = data.snowings;
+          var years = d3.set(snowings.map(function(d){
+            var newdate = new Date(d.date);
+            return newdate.getFullYear();
+          })).values().reverse();
+          var $input = $('[name=year]', container);
+          $("option", $input).remove();
+          $.each(years, function(i, year){
+            $("<option value='"+year+"'>Hiver " + (year-1) + "-" + year + "</option>").appendTo($input);
+          });
+        }
+
+        phenoclim.session = phenoclim.session || {};
+        phenoclim.session.areasnowings = {}
+        $( document ).ready(function(){
+            // init charts
+            phenoclim.session.chart1 = new phenoclim.viz.SnowingChart({ selector: ".area1 .graph"});
+            phenoclim.session.chart2 = new phenoclim.viz.SnowingChart({ selector: ".area2 .graph"});
+            
+            //$('select').select2();
+            $('.area1 select:first').on("change",function(event){
+              var area_id = $(this).val();
+              var container = $(this).parents(".snowing-area"); 
+              phenoclim.vizsnowings.getData(area_id).done(function(data){
+                phenoclim.vizsnowings.refreshYears(data, $('.area1'));
+                phenoclim.vizsnowings.refreshYears(data, $('.area2'));
+                var year = $("[name=year]", container).val();
+
+                $(".area2 select:first").val(area_id);
+                $(".area2 [name=year]").val(year-1);
+
+                var year = $("[name=year]", container).val();
+                phenoclim.session.chart1.refresh({
+                  year: year,
+                  data: data
+                });
+                setTimeout(function(){
+                  phenoclim.session.chart2.refresh({
+                    year: year-1,
+                    data: data
+                  });
+                },1)
+
+              });
+            });
+            $('.area1 [name=year]').on("change",function(event){
+              var area_id = $("[name=area]").val();
+              var container = $(this).parents(".snowing-area"); 
+              phenoclim.vizsnowings.getData(area_id).done(function(data){
+                var year = $("[name=year]", container).val();
+                phenoclim.session.chart1.refresh({
+                  year: year,
+                  data: data
+                });
+              });
+            });
+            $('.area2 select:first').on("change",function(event){
+              var area_id = $(this).val();
+              var container = $(this).parents(".snowing-area"); 
+              phenoclim.vizsnowings.getData(area_id).done(function(data){
+                phenoclim.vizsnowings.refreshYears(data, $('.area2'));
+                var year = $("[name=year]", container).val();
+                phenoclim.session.chart2.refresh({
+                  year: year,
+                  data: data
+                });
+              });
+            });
+            $('.area2 [name=year]').on("change",function(event){
+              var area_id = $("[name=area]").val();
+              var container = $(this).parents(".snowing-area"); 
+              phenoclim.vizsnowings.getData(area_id).done(function(data){
+                var year = $("[name=year]", container).val();
+                phenoclim.session.chart2.refresh({
+                  year: year,
+                  data: data
+                });
+              });
+            });
+            $('.area1 select:first').trigger("change");
+        });
+      </script>
+
+{% endblock %}

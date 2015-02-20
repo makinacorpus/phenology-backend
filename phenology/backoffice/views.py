@@ -188,6 +188,38 @@ def search_surveys(request):
                         content_type="application/json")
 
 
+def get_area_snowings(request):
+    """ get all individuals
+        used to get data for map rendering
+        can be filtered by species (species_id)
+    """
+    area_id = request.GET.get("area_id")
+    area = models.Area.objects.get(id=area_id)
+    snowings = list(area.snowing_set.all().
+                    filter(height__gt=0).
+                    filter(height__lt=999).
+                    values("height", "date"))
+    timer = MyTimer()
+    # cursor = connection.cursor()
+    timer.capture()
+    max_height = 1
+    if snowings:
+        max_height = max([float(s["height"]) for s in snowings])
+
+    classified = {"id": area_id,
+                  "maxHeight": max_height,
+                  "name": area.name,
+                  "altitude": area.altitude,
+                  "snowings": snowings
+                  }
+    timer.capture()
+    print timer.output()
+
+    return HttpResponse(json.dumps(classified, use_decimal=True,
+                                   default=json_serial),
+                        content_type="application/json")
+
+
 def search_snowings(request):
     """ get all individuals
         used to get data for map rendering
@@ -497,3 +529,15 @@ def get_surveys(request):
     }
     return HttpResponse(json.dumps(response_data),
                         content_type="application/json")
+from django.db.models import Count
+
+
+def viz_snowings(request):
+    query = models.Snowing.objects.filter(height__gt=0).\
+        filter(height__lt=999).values("area").annotate(count=Count('id'))
+    area_ids = [s["area"] for s in query if int(s["count"]) > 50]
+    areas = models.Area.objects.filter(pk__in=area_ids).\
+        extra(select={'postalcode_int': "CAST(postalcode AS UNSIGNED)"}).\
+        order_by('postalcode_int')
+    return render_to_response("viz_snowings.html", {"areas": areas},
+                              RequestContext(request))
