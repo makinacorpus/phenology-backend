@@ -177,7 +177,7 @@ phenoclim.viz.lineChart = function(params){
     // filters
     var species_id = +$("select[data-id=species]").val();
     var stage_id = +$("select[data-id=stages]").val();
-    var years_selected = $(".checkbox input:checked").map(function(i, item){
+    var years_selected = $(".rowyear input:checked").map(function(i, item){
       return $(item).attr("value");
     }).toArray();
 
@@ -555,4 +555,160 @@ phenoclim.viz.barChart = function(params){
             .style("fill", function(d) { return self.colors(d.name) });
         }
         this.colors = d3.scale.category20b().domain([10,11,12,13,14,15,17,18]);
+    }
+    phenoclim.viz.SnowingChart = function(params){
+      var self = this;
+
+      var options = {
+        selector: ".graph",
+        margin: {top: 20, right: 30, bottom: 30, left: 30},
+        line_enable: true,
+        max_width: 920,
+      }
+      $.extend(true, options, params);
+
+      var container = d3.select(options.selector);
+      var main_width = options.width || $(options.selector).width();
+      if (main_width > options.max_width){
+        main_width = options.max_width;
+      }
+      var width = main_width - options.margin.left - options.margin.right;
+      var height = (main_width*2/5) - options.margin.top - options.margin.bottom;
+      var tooltip = container.append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 1e-6);
+
+      var x = d3.scale.ordinal()
+        .rangeBands([0, width])
+
+      var xTime = d3.time.scale()
+        .range([0, width])
+
+      var y = d3.scale.linear()
+        .range([height, 0]);
+
+      var xAxis = d3.svg.axis()
+        .scale(xTime)
+        .orient("bottom")
+        .tickFormat(phenoclim.tools.myTimeFormatter);
+
+      var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+
+      var svg = container.append("svg")
+        .attr("width", width + options.margin.left + options.margin.right)
+        .attr("height", height + options.margin.top + options.margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+      
+      var xGraphAxis = svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .attr("class", "x axis");
+
+      xGraphAxis.append("text")
+        .attr("transform", "translate(" + width +", -20)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Date");
+
+      var yGraphAxis = svg.append("g")
+        .attr("class", "y axis");
+
+      yGraphAxis.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Height");
+
+      this.refresh = function(r_params){
+        var data = r_params.data;
+        var year = +r_params.year;
+        var snowings = data.snowings.map(function(d){
+          d.date = moment(d.date);
+          return d;
+        });
+
+        var minDate = moment([year-1, 9, 1]) // fixed
+        var maxDate = moment([year, 4, 1]); // fixed
+
+        var filtered = snowings.filter(function(d){
+          return d.date <= maxDate && d.date >= minDate;
+        })
+        filtered.sort(function(a, b){
+          if(a.date > b.date){
+            return 1;
+          }
+          else{
+            return -1;
+          }
+        });
+        var maxHeight = d3.max(filtered, function(d){
+          return +d.height;
+        })
+
+        var fulldates = []; // Array of day of year
+        var tmpDate = moment(minDate);
+        while(tmpDate <= maxDate){
+          fulldates.push(tmpDate.format("DDD"));
+          tmpDate.add(1, "days");
+        }
+        xTime.domain([minDate, maxDate]);
+        x.domain(fulldates);
+        y.domain([0, data.maxHeight + 10]);
+        xGraphAxis.call(xAxis);
+        xGraphAxis.selectAll(".tick text").attr("transform", "translate(" + x.rangeBand()*15 +", 0)")
+        yGraphAxis.call(yAxis);
+        svg.selectAll(".bar").remove();
+        var rect = svg.selectAll(".bar")
+                      .data(filtered)
+                      .enter()
+                      .append("rect")
+                      .attr("class", "bar")
+                      .attr("width", x.rangeBand()+1)
+                      .attr("x", function(d){
+                        return x(d.date.format("DDD"));
+                      })
+                      .attr("y", function(d) { return y(0); })
+                      .attr("height", function(d) { return 0; })
+       .on("mousemove", function(d){
+          mousemove(d);
+        })
+        .on("mouseout", function(d){
+          mouseout();
+        })
+        .on("mouseover", function(d){
+          mouseover();
+        });
+
+      rect.transition()
+          .duration(200)
+          .delay(function(d, i) { return i*2; })
+          .attr("y", function(d) { return y(+d.height); })
+
+          .attr("height", function(d) { return height - y(+d.height); });
+
+      /** TOOLTIP **/
+      function mouseover() {
+        tooltip.transition()
+            .duration(300)
+            .style("opacity", 1);
+      }
+
+      function mousemove(data) {
+        tooltip.html(function(d){ 
+          return data.date.format("D MMM YYYY") + " <br/><b>"+data.height+"cm</b><br/>"})
+            .style("left", (d3.event.layerX - 34) + "px")
+            .style("top", (y(+data.height) + 5) + "px");
+      }
+
+      function mouseout() {
+        tooltip.transition()
+            .duration(300)
+            .style("opacity", 1e-6);
+      }
+      }
+      this.colors = d3.scale.category10();
     }
