@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
+
 from django.conf.urls import patterns, url
 from backoffice import views
 from django.core.urlresolvers import reverse_lazy
@@ -52,7 +53,7 @@ urls = patterns(
     url(r'^survey/(?P<survey_id>\d+)', views.survey_detail,
         name='survey-detail'),
 
-    #mysurveys
+    # mysurveys
     url(r'^mysurveys$', views.dashboard, name='my-surveys'),
     url(r'^get_species_list$', views.get_species_list, name='species-list'),
 
@@ -67,9 +68,19 @@ urls = patterns(
     # viz
     url(r'^viz_all_surveys$', views.viz_all_surveys, name='viz-surveys'),
     url(r'^get_data_for_viz$', views.get_data_for_viz, name='viz-data'),
+    url(r'^viz_area_surveys$', views.viz_area_surveys,
+        name='viz-area-surveys'),
+    url(r'^get_area_data$', views.get_area_data, name='area-data'),
+
 
     # export
     url(r'^export_surveys', views.export_surveys, name="export-survey"),
 
+    # map
+    url(r'^map_all_snowings$', views.map_all_snowings, name='map-snowings'),
+    url(r'^search_snowings', views.search_snowings, name="search-snowings"),
+    url(r'^viz_snowings$', views.viz_snowings, name='viz-snowings'),
+    url(r'^get_area_snowings$', views.get_area_snowings, name='viz-area-snowings'),
+    url(r'^map_viz$', views.map_viz, name='viz-map'),
 )
 # vim:set et sts=4 ts=4 tw=80:

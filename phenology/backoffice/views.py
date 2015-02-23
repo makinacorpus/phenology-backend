@@ -53,6 +53,31 @@ def map_all_snowings(request):
                               RequestContext(request))
 
 
+def get_area_data(request):
+    area_id = request.GET.get("area_id")
+    area = models.Area.objects.get(id=area_id)
+    area_dict = {'lon': area.lon, 'lat': area.lat, 'city': area.commune,
+                 'altitude': area.altitude, 'name': area.name, 'species': {},
+                 'postalcode': area.postalcode}
+    surveys = models.Survey.objects.filter(individual__area=area)\
+                    .select_related("individual", "stage",
+                                    "individual__species")
+    for survey in surveys.all():
+        species_dict = area_dict["species"].setdefault(
+            survey.individual.species_id, {
+                "name": survey.individual.species.name, "values": {}})
+        stage_dict = species_dict["values"].setdefault(
+            survey.stage_id, {
+                "name": survey.stage.name, "values": {}})
+        individual_dict = stage_dict["values"].setdefault(survey.individual_id,
+                                                          [])
+        individual_dict.append({
+            "year": survey.date.year,
+            "date": survey.date})
+    return HttpResponse(json.dumps(area_dict, default=json_serial),
+                        content_type="application/json")
+
+
 def get_data_for_viz(request):
     """ get all amount of surveys per month classified as
         species_id/stage_id/year/month
