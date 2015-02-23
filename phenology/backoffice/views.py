@@ -121,7 +121,7 @@ def get_data_for_viz(request):
         year = stage.setdefault(survey_dict["year"], {})
         year[survey_dict["week"]] = int(survey_dict["count"])
 
-    return HttpResponse(json.dumps(results),
+    return HttpResponse(json.dumps(results, default=json_serial),
                         content_type="application/json")
 
 
@@ -152,7 +152,7 @@ def get_species_list(request):
                for species in models.Species.objects.all().order_by("name")]
     timer.capture()
     print timer.output()
-    return HttpResponse(json.dumps(species),
+    return HttpResponse(json.dumps(species, default=json_serial),
                         content_type="application/json")
 
 
@@ -259,7 +259,7 @@ def search_surveys(request):
     timer.capture()
     print timer.output()
 
-    return HttpResponse(json.dumps(classified),
+    return HttpResponse(json.dumps(classified, default=json_serial),
                         content_type="application/json")
 
 
@@ -602,7 +602,7 @@ def get_surveys(request):
         "recordsTotal": models.Survey.objects.count(),
         "recordsFiltered": filtered_total
     }
-    return HttpResponse(json.dumps(response_data),
+    return HttpResponse(json.dumps(response_data, default=json_serial),
                         content_type="application/json")
 from django.db.models import Count
 
