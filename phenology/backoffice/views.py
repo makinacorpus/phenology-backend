@@ -112,7 +112,7 @@ def get_data_for_viz(request):
                    'stage_id , species_id ' +
                    'FROM backend_survey, backend_stage ' +
                    'WHERE backend_survey.stage_id=backend_stage.id ' +
-                   'GROUP BY stage_id, year, week;')
+                   'GROUP BY stage_id, year, week, species_id;')
     keys = ['year', 'week', 'count', 'stage_id', 'species_id']
     for survey in cursor.fetchall():
         survey_dict = dict(zip(keys, survey))
