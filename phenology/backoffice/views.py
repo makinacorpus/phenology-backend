@@ -40,9 +40,9 @@ def map_all_surveys(request):
 
 def week_query():
     if "sqlite" in connection.vendor:
-        return 'CAST(STRFTIME("%W", date) AS INTEGER)'
+        return 'CAST((strftime("%j", date(date, "-3 days", "weekday 4")) - 1) / 7 + 1 AS INTEGER)'
     else:
-        return 'extract(week from date) AS INTEGER)'
+        return 'CAST(extract(week from date) AS INTEGER)'
 
 
 def year_query():
