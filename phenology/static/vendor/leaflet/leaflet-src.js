@@ -1,6 +1,6 @@
 /*
- Leaflet 0.8-dev (2e04b30), a JS library for interactive maps. http://leafletjs.com
- (c) 2010-2014 Vladimir Agafonkin, (c) 2010-2011 CloudMade
+ Leaflet 0.8-dev (4101f01), a JS library for interactive maps. http://leafletjs.com
+ (c) 2010-2015 Vladimir Agafonkin, (c) 2010-2011 CloudMade
 */
 (function (window, document, undefined) {
 var L = {
@@ -77,9 +77,10 @@ L.Util = {
 
 	// return unique ID of an object
 	stamp: function (obj) {
-		// jshint camelcase: false
+		/*eslint-disable */
 		obj._leaflet_id = obj._leaflet_id || ++L.Util.lastId;
 		return obj._leaflet_id;
+		/*eslint-enable */
 	},
 
 	lastId: 0,
@@ -151,7 +152,7 @@ L.Util = {
 		return obj.options;
 	},
 
-	// make an URL with GET parameters out of a set of properties/values
+	// make a URL with GET parameters out of a set of properties/values
 	getParamString: function (obj, existingUrl, uppercase) {
 		var params = [];
 		for (var i in obj) {
@@ -251,7 +252,6 @@ L.Class.extend = function (props) {
 		this.callInitHooks();
 	};
 
-	// jshint camelcase: false
 	var parentProto = NewClass.__super__ = this.prototype;
 
 	var proto = L.Util.create(parentProto);
@@ -624,7 +624,7 @@ L.Mixin = {Events: proto};
  * L.Point represents a point with x and y coordinates.
  */
 
-L.Point = function (/*Number*/ x, /*Number*/ y, /*Boolean*/ round) {
+L.Point = function (x, y, round) {
 	this.x = (round ? Math.round(x) : x);
 	this.y = (round ? Math.round(y) : y);
 };
@@ -983,27 +983,30 @@ L.DomUtil = {
 			el.style.opacity = value;
 
 		} else if ('filter' in el.style) {
+			L.DomUtil._setOpacityIE(el, value);
+		}
+	},
 
-			var filter = false,
-			    filterName = 'DXImageTransform.Microsoft.Alpha';
+	_setOpacityIE: function (el, value) {
+		var filter = false,
+		    filterName = 'DXImageTransform.Microsoft.Alpha';
 
-			// filters collection throws an error if we try to retrieve a filter that doesn't exist
-			try {
-				filter = el.filters.item(filterName);
-			} catch (e) {
-				// don't set opacity to 1 if we haven't already set an opacity,
-				// it isn't needed and breaks transparent pngs.
-				if (value === 1) { return; }
-			}
+		// filters collection throws an error if we try to retrieve a filter that doesn't exist
+		try {
+			filter = el.filters.item(filterName);
+		} catch (e) {
+			// don't set opacity to 1 if we haven't already set an opacity,
+			// it isn't needed and breaks transparent pngs.
+			if (value === 1) { return; }
+		}
 
-			value = Math.round(value * 100);
+		value = Math.round(value * 100);
 
-			if (filter) {
-				filter.Enabled = (value !== 100);
-				filter.Opacity = value;
-			} else {
-				el.style.filter += ' progid:' + filterName + '(opacity=' + value + ')';
-			}
+		if (filter) {
+			filter.Enabled = (value !== 100);
+			filter.Opacity = value;
+		} else {
+			el.style.filter += ' progid:' + filterName + '(opacity=' + value + ')';
 		}
 	},
 
@@ -1028,8 +1031,9 @@ L.DomUtil = {
 
 	setPosition: function (el, point, no3d) { // (HTMLElement, Point[, Boolean])
 
-		// jshint camelcase: false
+		/*eslint-disable */
 		el._leaflet_pos = point;
+		/*eslint-enable */
 
 		if (L.Browser.any3d && !no3d) {
 			L.DomUtil.setTransform(el, point);
@@ -1043,7 +1047,6 @@ L.DomUtil = {
 		// this method is only used for elements previously positioned using setPosition,
 		// so it's safe to cache the position for performance
 
-		// jshint camelcase: false
 		return el._leaflet_pos;
 	}
 };
@@ -1184,7 +1187,6 @@ L.latLng = function (a, b, c) {
 	}
 	return new L.LatLng(a, b, c);
 };
-
 
 
 /*
@@ -1499,7 +1501,7 @@ L.CRS.Earth = L.extend({}, L.CRS, {
 
 	R: 6378137,
 
-	// distane between two geographical points using spherical law of cosines approximation
+	// distance between two geographical points using spherical law of cosines approximation
 	distance: function (latlng1, latlng2) {
 		var rad = Math.PI / 180,
 		    lat1 = latlng1.lat * rad,
@@ -1872,8 +1874,8 @@ L.Map = L.Evented.extend({
 		return this._size.clone();
 	},
 
-	getPixelBounds: function () {
-		var topLeftPoint = this._getTopLeftPoint();
+	getPixelBounds: function (center, zoom) {
+		var topLeftPoint = this._getTopLeftPoint(center, zoom);
 		return new L.Bounds(topLeftPoint, topLeftPoint.add(this.getSize()));
 	},
 
@@ -2180,8 +2182,11 @@ L.Map = L.Evented.extend({
 		return pos && !pos.equals([0, 0]);
 	},
 
-	_getTopLeftPoint: function () {
-		return this.getPixelOrigin().subtract(this._getMapPanePos());
+	_getTopLeftPoint: function (center, zoom) {
+		var pixelOrigin = center && zoom !== undefined ?
+			this._getNewPixelOrigin(center, zoom) :
+			this.getPixelOrigin();
+		return pixelOrigin.subtract(this._getMapPanePos());
 	},
 
 	_getNewPixelOrigin: function (center, zoom) {
@@ -2485,7 +2490,6 @@ L.GridLayer = L.Layer.extend({
 		tileSize: 256,
 		opacity: 1,
 
-		unloadInvisibleTiles: L.Browser.mobile,
 		updateWhenIdle: L.Browser.mobile,
 		updateInterval: 200,
 
@@ -2504,16 +2508,10 @@ L.GridLayer = L.Layer.extend({
 	onAdd: function () {
 		this._initContainer();
 
-		this._pruneTiles = L.Util.throttle(this._pruneTiles, 200, this);
-
 		this._levels = {};
-
 		this._tiles = {};
-		this._loaded = {};
-		this._retain = {};
-		this._tilesToLoad = 0;
 
-		this._reset();
+		this._viewReset();
 		this._update();
 	},
 
@@ -2578,13 +2576,13 @@ L.GridLayer = L.Layer.extend({
 
 	getEvents: function () {
 		var events = {
-			viewreset: this._reset,
-			moveend: this._update
+			viewreset: this._viewReset,
+			moveend: this._move
 		};
 
 		if (!this.options.updateWhenIdle) {
 			// update tiles on move, but not more often than once per given interval
-			events.move = L.Util.throttle(this._update, this.options.updateInterval, this);
+			events.move = L.Util.throttle(this._move, this.options.updateInterval, this);
 		}
 
 		if (this._zoomAnimated) {
@@ -2628,13 +2626,33 @@ L.GridLayer = L.Layer.extend({
 	_updateOpacity: function () {
 		var opacity = this.options.opacity;
 
-		if (L.Browser.ielt9) {
-			// IE doesn't inherit filter opacity properly, so we're forced to set it on tiles
-			for (var i in this._tiles) {
-				L.DomUtil.setOpacity(this._tiles[i], opacity);
-			}
-		} else {
+		// IE doesn't inherit filter opacity properly, so we're forced to set it on tiles
+		if (!L.Browser.ielt9 && !this._map._fadeAnimated) {
 			L.DomUtil.setOpacity(this._container, opacity);
+			return;
+		}
+
+		var now = +new Date(),
+			nextFrame = false;
+
+		for (var key in this._tiles) {
+			var tile = this._tiles[key];
+			if (!tile.current || !tile.loaded || tile.active) { continue; }
+
+			var fade = Math.min(1, (now - tile.loaded) / 200);
+			if (fade < 1) {
+				L.DomUtil.setOpacity(tile.el, opacity * fade);
+				nextFrame = true;
+			} else {
+				L.DomUtil.setOpacity(tile.el, opacity);
+				tile.active = true;
+				this._pruneTiles();
+			}
+		}
+
+		if (nextFrame) {
+			L.Util.cancelAnimFrame(this._fadeFrame);
+			this._fadeFrame = L.Util.requestAnimFrame(this._updateOpacity, this);
 		}
 	},
 
@@ -2652,10 +2670,16 @@ L.GridLayer = L.Layer.extend({
 	},
 
 	_updateLevels: function () {
-		var zoom = this._tileZoom;
+		var zoom = this._tileZoom,
+			maxZoom = this.options.maxZoom;
 
 		for (var z in this._levels) {
-			this._levels[z].el.style.zIndex = -Math.abs(zoom - z);
+			if (this._levels[z].el.children.length || z === zoom) {
+				this._levels[z].el.style.zIndex = maxZoom - Math.abs(zoom - z);
+			} else {
+				L.DomUtil.remove(this._levels[z].el);
+				delete this._levels[z];
+			}
 		}
 
 		var level = this._levels[zoom],
@@ -2665,10 +2689,13 @@ L.GridLayer = L.Layer.extend({
 			level = this._levels[zoom] = {};
 
 			level.el = L.DomUtil.create('div', 'leaflet-tile-container leaflet-zoom-animated', this._container);
-			level.el.style.zIndex = 0;
+			level.el.style.zIndex = maxZoom;
 
 			level.origin = map.project(map.unproject(map.getPixelOrigin()), zoom).round();
 			level.zoom = zoom;
+
+			this._setZoomTransform(level, map.getCenter(), map.getZoom());
+			L.Util.falseFn(level.el.offsetWidth); // Force recalculation to trigger transitions.
 		}
 
 		this._level = level;
@@ -2677,52 +2704,32 @@ L.GridLayer = L.Layer.extend({
 	},
 
 	_pruneTiles: function () {
+		var key, tile;
 
-		if (!this._map) { return; }
+		for (key in this._tiles) {
+			tile = this._tiles[key];
+			tile.retain = tile.current;
+		}
 
-		this._retain = {};
-
-		var bounds = this._map.getBounds(),
-			z = this._tileZoom,
-			range = this._getTileRange(bounds, z),
-			i, j, key, found;
-
-		for (i = range.min.x; i <= range.max.x; i++) {
-			for (j = range.min.y; j <= range.max.y; j++) {
-
-				key = i + ':' + j + ':' + z;
-
-				this._retain[key] = true;
-
-				if (!this._loaded[key]) {
-					found = this._retainParent(i, j, z, z - 5) || this._retainChildren(i, j, z, z + 2);
+		for (key in this._tiles) {
+			tile = this._tiles[key];
+			if (tile.current && !tile.active) {
+				var coords = tile.coords;
+				if (!this._retainParent(coords.x, coords.y, coords.z, coords.z - 5)) {
+					this._retainChildren(coords.x, coords.y, coords.z, coords.z + 2);
 				}
 			}
 		}
 
 		for (key in this._tiles) {
-			if (!this._retain[key]) {
-				if (!this._loaded[key]) {
-					this._removeTile(key);
-					this._tilesToLoad--;
-				} else if (this._map._fadeAnimated) {
-					setTimeout(L.bind(this._deferRemove, this, key), 250);
-				} else {
-					this._removeTile(key);
-				}
+			if (!this._tiles[key].retain) {
+				this._removeTile(key);
 			}
 		}
 	},
 
 	_removeAllTiles: function () {
 		for (var key in this._tiles) {
-			this._removeTile(key);
-		}
-		this._tilesToLoad = 0;
-	},
-
-	_deferRemove: function (key) {
-		if (!this._retain[key]) {
 			this._removeTile(key);
 		}
 	},
@@ -2732,13 +2739,18 @@ L.GridLayer = L.Layer.extend({
 			y2 = Math.floor(y / 2),
 			z2 = z - 1;
 
-		var key = x2 + ':' + y2 + ':' + z2;
+		var key = x2 + ':' + y2 + ':' + z2,
+			tile = this._tiles[key];
 
-		if (this._loaded[key]) {
-			this._retain[key] = true;
+		if (tile && tile.active) {
+			tile.retain = true;
 			return true;
 
-		} else if (z2 > minZoom) {
+		} else if (tile && tile.loaded) {
+			tile.retain = true;
+		}
+
+		if (z2 > minZoom) {
 			return this._retainParent(x2, y2, z2, minZoom);
 		}
 
@@ -2750,34 +2762,51 @@ L.GridLayer = L.Layer.extend({
 		for (var i = 2 * x; i < 2 * x + 2; i++) {
 			for (var j = 2 * y; j < 2 * y + 2; j++) {
 
-				var key = i + ':' + j + ':' + (z + 1);
+				var key = i + ':' + j + ':' + (z + 1),
+					tile = this._tiles[key];
 
-				if (this._loaded[key]) {
-					this._retain[key] = true;
+				if (tile && tile.active) {
+					tile.retain = true;
+					continue;
 
-				} else if (z + 1 < maxZoom) {
+				} else if (tile && tile.loaded) {
+					tile.retain = true;
+				}
+
+				if (z + 1 < maxZoom) {
 					this._retainChildren(i, j, z + 1, maxZoom);
 				}
 			}
 		}
 	},
 
-	_reset: function (e) {
-		var map = this._map,
-		    zoom = map.getZoom(),
-		    tileZoom = Math.round(zoom),
-		    tileZoomChanged = this._tileZoom !== tileZoom;
+	_viewReset: function (e) {
+		var map = this._map;
+		this._reset(map.getCenter(), map.getZoom(), e && e.hard);
+	},
 
-		if (tileZoomChanged || (e && e.hard)) {
+	_animateZoom: function (e) {
+		this._reset(e.center, e.zoom, false, true);
+	},
+
+	_reset: function (center, zoom, hard, noPrune) {
+		var tileZoom = Math.round(zoom),
+			tileZoomChanged = this._tileZoom !== tileZoom;
+
+		if (tileZoomChanged || hard) {
 			if (this._abortLoading) {
 				this._abortLoading();
 			}
 			this._tileZoom = tileZoom;
 			this._updateLevels();
 			this._resetGrid();
+			this._update(center, tileZoom);
+			if (!noPrune) {
+				this._pruneTiles();
+			}
 		}
 
-		this._setZoomTransforms(map.getCenter(), zoom);
+		this._setZoomTransforms(center, zoom);
 	},
 
 	_setZoomTransforms: function (center, zoom) {
@@ -2819,8 +2848,14 @@ L.GridLayer = L.Layer.extend({
 		return this.options.tileSize;
 	},
 
-	_update: function () {
-		if (!this._map) { return; }
+	_move: function () {
+		this._update();
+		this._pruneTiles();
+	},
+
+	_update: function (center, zoom) {
+		var map = this._map;
+		if (!map) { return; }
 
 		// TODO move to reset
 		// var zoom = this._map.getZoom();
@@ -2828,38 +2863,30 @@ L.GridLayer = L.Layer.extend({
 		// if (zoom > this.options.maxZoom ||
 		//     zoom < this.options.minZoom) { return; }
 
-		var bounds = this._map.getBounds();
+		if (center === undefined) { center = map.getCenter(); }
+		if (zoom === undefined) { zoom = Math.round(map.getZoom()); }
 
-		if (this.options.unloadInvisibleTiles) {
-			this._removeOtherTiles(bounds);
+		var pixelBounds = map.getPixelBounds(center, zoom),
+			tileRange = this._pxBoundsToTileRange(pixelBounds),
+			tileCenter = tileRange.getCenter(),
+			queue = [];
+
+		for (var key in this._tiles) {
+			this._tiles[key].current = false;
 		}
 
-		this._addTiles(bounds);
-	},
-
-	// tile coordinates range for particular geo bounds and zoom
-	_getTileRange: function (bounds, zoom) {
-		var pxBounds = new L.Bounds(
-		        this._map.project(bounds.getNorthWest(), zoom),
-		        this._map.project(bounds.getSouthEast(), zoom));
-		return this._pxBoundsToTileRange(pxBounds);
-	},
-
-	_addTiles: function (bounds) {
-		var queue = [],
-			tileRange = this._getTileRange(bounds, this._tileZoom),
-		    center = tileRange.getCenter(),
-			j, i, coords;
-
 		// create a queue of coordinates to load tiles from
-		for (j = tileRange.min.y; j <= tileRange.max.y; j++) {
-			for (i = tileRange.min.x; i <= tileRange.max.x; i++) {
+		for (var j = tileRange.min.y; j <= tileRange.max.y; j++) {
+			for (var i = tileRange.min.x; i <= tileRange.max.x; i++) {
+				var coords = new L.Point(i, j);
+				coords.z = zoom;
 
-				coords = new L.Point(i, j);
-				coords.z = this._tileZoom;
+				if (!this._isValidTile(coords)) { continue; }
 
-				// add tile to queue if it's not in cache or out of bounds
-				if (!(this._tileCoordsToKey(coords) in this._tiles) && this._isValidTile(coords)) {
+				var tile = this._tiles[this._tileCoordsToKey(coords)];
+				if (tile) {
+					tile.current = true;
+				} else {
 					queue.push(coords);
 				}
 			}
@@ -2867,31 +2894,24 @@ L.GridLayer = L.Layer.extend({
 
 		// sort tile queue to load tiles in order of their distance to center
 		queue.sort(function (a, b) {
-			return a.distanceTo(center) - b.distanceTo(center);
+			return a.distanceTo(tileCenter) - b.distanceTo(tileCenter);
 		});
 
-		var tilesToLoad = queue.length;
-
-
-		if (tilesToLoad !== 0) {
+		if (queue.length !== 0) {
 			// if its the first batch of tiles to load
-			if (!this._tilesToLoad) {
+			if (this._noTilesToLoad()) {
 				this.fire('loading');
 			}
-
-			this._tilesToLoad += tilesToLoad;
 
 			// create DOM fragment to append tiles in one batch
 			var fragment = document.createDocumentFragment();
 
-			for (i = 0; i < tilesToLoad; i++) {
+			for (i = 0; i < queue.length; i++) {
 				this._addTile(queue[i], fragment);
 			}
 
 			this._level.el.appendChild(fragment);
 		}
-
-		this._pruneTiles();
 	},
 
 	_isValidTile: function (coords) {
@@ -2943,27 +2963,16 @@ L.GridLayer = L.Layer.extend({
 		return coords;
 	},
 
-	// remove any present tiles that are off the specified bounds
-	_removeOtherTiles: function (bounds) {
-		for (var key in this._tiles) {
-			var tileBounds = this._keyToBounds(key);
-			if (!bounds.intersects(tileBounds)) {
-				this._removeTile(key);
-			}
-		}
-	},
-
 	_removeTile: function (key) {
 		var tile = this._tiles[key];
 		if (!tile) { return; }
 
-		L.DomUtil.remove(tile);
+		L.DomUtil.remove(tile.el);
 
 		delete this._tiles[key];
-		delete this._loaded[key];
 
 		this.fire('tileunload', {
-			tile: tile,
+			tile: tile.el,
 			coords: this._keyToTileCoords(key)
 		});
 	},
@@ -3009,7 +3018,11 @@ L.GridLayer = L.Layer.extend({
 		L.DomUtil.setPosition(tile, tilePos, true);
 
 		// save tile in cache
-		this._tiles[key] = tile;
+		this._tiles[key] = {
+			el: tile,
+			coords: coords,
+			current: true
+		};
 
 		container.appendChild(tile);
 		this.fire('tileloadstart', {
@@ -3029,21 +3042,27 @@ L.GridLayer = L.Layer.extend({
 
 		var key = this._tileCoordsToKey(coords);
 
-		if (!this._tiles[key]) { return; }
+		tile = this._tiles[key];
+		if (!tile) { return; }
 
-		this._loaded[key] = true;
-		this._pruneTiles();
+		tile.loaded = +new Date();
+		if (this._map._fadeAnimated) {
+			L.DomUtil.setOpacity(tile.el, 0);
+			L.Util.cancelAnimFrame(this._fadeFrame);
+			this._fadeFrame = L.Util.requestAnimFrame(this._updateOpacity, this);
+		} else {
+			tile.active = true;
+			this._pruneTiles();
+		}
 
-		L.DomUtil.addClass(tile, 'leaflet-tile-loaded');
+		L.DomUtil.addClass(tile.el, 'leaflet-tile-loaded');
 
 		this.fire('tileload', {
-			tile: tile,
+			tile: tile.el,
 			coords: coords
 		});
 
-		this._tilesToLoad--;
-
-		if (this._tilesToLoad === 0) {
+		if (this._noTilesToLoad()) {
 			this.fire('load');
 		}
 	},
@@ -3066,8 +3085,11 @@ L.GridLayer = L.Layer.extend({
 			bounds.max.divideBy(this._tileSize).ceil().subtract([1, 1]));
 	},
 
-	_animateZoom: function (e) {
-		this._setZoomTransforms(e.center, e.zoom);
+	_noTilesToLoad: function () {
+		for (var key in this._tiles) {
+			if (!this._tiles[key].loaded) { return false; }
+		}
+		return true;
 	}
 });
 
@@ -3188,7 +3210,6 @@ L.TileLayer = L.GridLayer.extend({
 
 	_onTileRemove: function (e) {
 		e.tile.onload = null;
-		e.tile.src = L.Util.emptyImageUrl;
 	},
 
 	_getZoomForUrl: function () {
@@ -3214,7 +3235,7 @@ L.TileLayer = L.GridLayer.extend({
 	_abortLoading: function () {
 		var i, tile;
 		for (i in this._tiles) {
-			tile = this._tiles[i];
+			tile = this._tiles[i].el;
 
 			tile.onload = L.Util.falseFn;
 			tile.onerror = L.Util.falseFn;
@@ -3636,8 +3657,8 @@ L.Marker = L.Layer.extend({
 	},
 
 	onRemove: function () {
-		if (this.dragging) {
-			this.dragging.disable();
+		if (this.dragging && this.dragging.enabled()) {
+			this.dragging.removeHooks();
 		}
 
 		this._removeIcon();
@@ -3662,7 +3683,7 @@ L.Marker = L.Layer.extend({
 		var oldLatLng = this._latlng;
 		this._latlng = L.latLng(latlng);
 		this.update();
-		return this.fire('move', { oldLatLng: oldLatLng, latlng: this._latlng });
+		return this.fire('move', {oldLatLng: oldLatLng, latlng: this._latlng});
 	},
 
 	setZIndexOffset: function (offset) {
@@ -4054,7 +4075,7 @@ L.Popup = L.Layer.extend({
 		}
 		return events;
 	},
-	
+
 	isOpen: function () {
 		return !!this._map && this._map.hasLayer(this);
 	},
@@ -4729,14 +4750,12 @@ L.Path = L.Layer.extend({
  * and polylines (clipping, simplification, distances, etc.)
  */
 
-/*jshint bitwise:false */ // allow bitwise operations for this file
-
 L.LineUtil = {
 
 	// Simplify polyline with vertex reduction and Douglas-Peucker simplification.
 	// Improves rendering performance dramatically by lessening the number of points to draw.
 
-	simplify: function (/*Point[]*/ points, /*Number*/ tolerance) {
+	simplify: function (points, tolerance) {
 		if (!tolerance || !points.length) {
 			return points.slice();
 		}
@@ -4753,11 +4772,11 @@ L.LineUtil = {
 	},
 
 	// distance from a point to a segment between two points
-	pointToSegmentDistance:  function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
+	pointToSegmentDistance:  function (p, p1, p2) {
 		return Math.sqrt(this._sqClosestPointOnSegment(p, p1, p2, true));
 	},
 
-	closestPointOnSegment: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
+	closestPointOnSegment: function (p, p1, p2) {
 		return this._sqClosestPointOnSegment(p, p1, p2);
 	},
 
@@ -4825,7 +4844,7 @@ L.LineUtil = {
 	// Cohen-Sutherland line clipping algorithm.
 	// Used to avoid rendering parts of a polyline that are not currently visible.
 
-	clipSegment: function (a, b, bounds, useLastCode) {
+	clipSegment: function (a, b, bounds, useLastCode, round) {
 		var codeA = useLastCode ? this._lastCode : this._getBitCode(a, bounds),
 		    codeB = this._getBitCode(b, bounds),
 
@@ -4844,7 +4863,7 @@ L.LineUtil = {
 			// other cases
 			} else {
 				codeOut = codeA || codeB;
-				p = this._getEdgeIntersection(a, b, codeOut, bounds);
+				p = this._getEdgeIntersection(a, b, codeOut, bounds, round);
 				newCode = this._getBitCode(p, bounds);
 
 				if (codeOut === codeA) {
@@ -4858,7 +4877,7 @@ L.LineUtil = {
 		}
 	},
 
-	_getEdgeIntersection: function (a, b, code, bounds) {
+	_getEdgeIntersection: function (a, b, code, bounds, round) {
 		var dx = b.x - a.x,
 		    dy = b.y - a.y,
 		    min = bounds.min,
@@ -4882,7 +4901,7 @@ L.LineUtil = {
 			y = a.y + dy * (min.x - a.x) / dx;
 		}
 
-		return new L.Point(x, y, true);
+		return new L.Point(x, y, round);
 	},
 
 	_getBitCode: function (/*Point*/ p, bounds) {
@@ -5120,7 +5139,7 @@ L.Polyline = L.Path.extend({
 			points = this._rings[i];
 
 			for (j = 0, len2 = points.length; j < len2 - 1; j++) {
-				segment = L.LineUtil.clipSegment(points[j], points[j + 1], bounds, j);
+				segment = L.LineUtil.clipSegment(points[j], points[j + 1], bounds, j, true);
 
 				if (!segment) { continue; }
 
@@ -5168,15 +5187,13 @@ L.polyline = function (latlngs, options) {
  * L.PolyUtil contains utility functions for polygons (clipping, etc.).
  */
 
-/*jshint bitwise:false */ // allow bitwise operations here
-
 L.PolyUtil = {};
 
 /*
  * Sutherland-Hodgeman polygon clipping algorithm.
  * Used to avoid rendering parts of a polygon that are not currently visible.
  */
-L.PolyUtil.clipPolygon = function (points, bounds) {
+L.PolyUtil.clipPolygon = function (points, bounds, round) {
 	var clippedPoints,
 	    edges = [1, 4, 2, 8],
 	    i, j, k,
@@ -5201,7 +5218,7 @@ L.PolyUtil.clipPolygon = function (points, bounds) {
 			if (!(a._code & edge)) {
 				// if b is outside the clip window (a->b goes out of screen)
 				if (b._code & edge) {
-					p = lu._getEdgeIntersection(b, a, edge, bounds);
+					p = lu._getEdgeIntersection(b, a, edge, bounds, round);
 					p._code = lu._getBitCode(p, bounds);
 					clippedPoints.push(p);
 				}
@@ -5209,7 +5226,7 @@ L.PolyUtil.clipPolygon = function (points, bounds) {
 
 			// else if b is inside the clip window (a->b enters the screen)
 			} else if (!(b._code & edge)) {
-				p = lu._getEdgeIntersection(b, a, edge, bounds);
+				p = lu._getEdgeIntersection(b, a, edge, bounds, round);
 				p._code = lu._getBitCode(p, bounds);
 				clippedPoints.push(p);
 			}
@@ -5281,7 +5298,7 @@ L.Polygon = L.Polyline.extend({
 		this._parts = [];
 
 		for (var i = 0, len = this._rings.length, clipped; i < len; i++) {
-			clipped = L.PolyUtil.clipPolygon(this._rings[i], bounds);
+			clipped = L.PolyUtil.clipPolygon(this._rings[i], bounds, true);
 			if (clipped.length) {
 				this._parts.push(clipped);
 			}
@@ -5596,7 +5613,7 @@ L.SVG = L.Renderer.extend({
 		// drawing a circle with two half-arcs
 		var d = layer._empty() ? 'M0 0' :
 				'M' + (p.x - r) + ',' + p.y +
-				arc +  (r * 2) + ',0 ' +
+				arc + (r * 2) + ',0 ' +
 				arc + (-r * 2) + ',0 ';
 
 		this._setPath(layer, d);
@@ -5980,7 +5997,7 @@ L.Canvas = L.Renderer.extend({
 			ctx.fill(options.fillRule || 'evenodd');
 		}
 
-		if (options.stroke) {
+		if (options.stroke && options.weight !== 0) {
 			ctx.globalAlpha = clear ? 1 : options.opacity;
 
 			// if clearing shape, do it with the previously drawn line width
@@ -6135,7 +6152,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 
 		var options = this.options;
 
-		if (options.filter && !options.filter(geojson)) { return; }
+		if (options.filter && !options.filter(geojson)) { return this; }
 
 		var layer = L.GeoJSON.geometryToLayer(geojson, options);
 		layer.feature = L.GeoJSON.asFeature(geojson);
@@ -6250,7 +6267,7 @@ L.extend(L.GeoJSON, {
 
 		for (var i = 0, len = latlngs.length; i < len; i++) {
 			coords.push(levelsDeep ?
-				L.GeoJSON.latLngsToCoords(latlngs[i], levelsDeep - 1, closed):
+				L.GeoJSON.latLngsToCoords(latlngs[i], levelsDeep - 1, closed) :
 				L.GeoJSON.latLngToCoords(latlngs[i]));
 		}
 
@@ -6428,7 +6445,7 @@ L.DomEvent = {
 
 		if (L.Browser.pointer && type.indexOf('touch') === 0) {
 			this.addPointerListener(obj, type, handler, id);
-		
+
 		} else if (L.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
 			this.addDoubleTapListener(obj, handler, id);
 
@@ -6441,8 +6458,9 @@ L.DomEvent = {
 			} else if ((type === 'mouseenter') || (type === 'mouseleave')) {
 				handler = function (e) {
 					e = e || window.event;
-					if (!L.DomEvent._checkMouse(obj, e)) { return; }
-					return originalHandler(e);
+					if (L.DomEvent._checkMouse(obj, e)) {
+						originalHandler(e);
+					}
 				};
 				obj.addEventListener(type === 'mouseenter' ? 'mouseover' : 'mouseout', handler, false);
 
@@ -6614,7 +6632,7 @@ L.DomEvent = {
 		}
 		L.DomEvent._lastClick = timeStamp;
 
-		return handler(e);
+		handler(e);
 	}
 };
 
@@ -6803,7 +6821,6 @@ L.Map.mergeOptions({
 	inertia: !L.Browser.android23,
 	inertiaDeceleration: 3400, // px/s^2
 	inertiaMaxSpeed: Infinity, // px/s
-	inertiaThreshold: L.Browser.touch ? 32 : 18, // ms
 	easeLinearity: 0.2,
 
 	// TODO refactor, move to CRS
@@ -6867,7 +6884,7 @@ L.Map.Drag = L.Handler.extend({
 			this._positions.push(pos);
 			this._times.push(time);
 
-			if (time - this._times[0] > 100) {
+			if (time - this._times[0] > 50) {
 				this._positions.shift();
 				this._times.shift();
 			}
@@ -6903,9 +6920,8 @@ L.Map.Drag = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var map = this._map,
 		    options = map.options,
-		    delay = +new Date() - this._lastTime,
 
-		    noInertia = !options.inertia || delay > options.inertiaThreshold || !this._positions[0];
+		    noInertia = !options.inertia || this._times.length < 2;
 
 		map.fire('dragend', e);
 
@@ -6915,7 +6931,7 @@ L.Map.Drag = L.Handler.extend({
 		} else {
 
 			var direction = this._lastPos.subtract(this._positions[0]),
-			    duration = (this._lastTime + delay - this._times[0]) / 1000,
+			    duration = (this._lastTime - this._times[0]) / 1000,
 			    ease = options.easeLinearity,
 
 			    speedVector = direction.multiplyBy(ease / duration),
@@ -7421,7 +7437,7 @@ L.Map.Tap = L.Handler.extend({
 				this._simulateEvent('contextmenu', first);
 			}
 		}, this), 1000);
-		
+
 		this._simulateEvent('mousedown', first);
 
 		L.DomEvent.on(document, {
@@ -7446,7 +7462,7 @@ L.Map.Tap = L.Handler.extend({
 			if (el && el.tagName && el.tagName.toLowerCase() === 'a') {
 				L.DomUtil.removeClass(el, 'leaflet-active');
 			}
-			
+
 			this._simulateEvent('mouseup', first);
 
 			// simulate click if the touch didn't move too much
@@ -7571,7 +7587,7 @@ L.Map.BoxZoom = L.Handler.extend({
 	},
 
 	_onMouseUp: function (e) {
-		if ((e.which !== 1) && (e.button !== 1)) { return false; }
+		if ((e.which !== 1) && (e.button !== 1)) { return; }
 
 		this._finish();
 
@@ -7787,7 +7803,9 @@ L.Handler.MarkerDrag = L.Handler.extend({
 			dragend: this._onDragEnd
 		}, this).disable();
 
-		L.DomUtil.removeClass(this._marker._icon, 'leaflet-marker-draggable');
+		if (this._marker._icon) {
+			L.DomUtil.removeClass(this._marker._icon, 'leaflet-marker-draggable');
+		}
 	},
 
 	moved: function () {
@@ -7982,12 +8000,28 @@ L.Control.Zoom = L.Control.extend({
 		map.off('zoomend zoomlevelschange', this._updateDisabled, this);
 	},
 
+	disable: function () {
+		this._disabled = true;
+		this._updateDisabled();
+		return this;
+	},
+
+	enable: function () {
+		this._disabled = false;
+		this._updateDisabled();
+		return this;
+	},
+
 	_zoomIn: function (e) {
-		this._map.zoomIn(e.shiftKey ? 3 : 1);
+		if (!this._disabled) {
+			this._map.zoomIn(e.shiftKey ? 3 : 1);
+		}
 	},
 
 	_zoomOut: function (e) {
-		this._map.zoomOut(e.shiftKey ? 3 : 1);
+		if (!this._disabled) {
+			this._map.zoomOut(e.shiftKey ? 3 : 1);
+		}
 	},
 
 	_createButton: function (html, title, className, container, fn) {
@@ -8012,10 +8046,10 @@ L.Control.Zoom = L.Control.extend({
 		L.DomUtil.removeClass(this._zoomInButton, className);
 		L.DomUtil.removeClass(this._zoomOutButton, className);
 
-		if (map._zoom === map.getMinZoom()) {
+		if (this._disabled || map._zoom === map.getMinZoom()) {
 			L.DomUtil.addClass(this._zoomOutButton, className);
 		}
-		if (map._zoom === map.getMaxZoom()) {
+		if (this._disabled || map._zoom === map.getMaxZoom()) {
 			L.DomUtil.addClass(this._zoomInButton, className);
 		}
 	}
@@ -8035,7 +8069,6 @@ L.Map.addInitHook(function () {
 L.control.zoom = function (options) {
 	return new L.Control.Zoom(options);
 };
-
 
 
 /*
@@ -8079,7 +8112,7 @@ L.Control.Attribution = L.Control.extend({
 	},
 
 	addAttribution: function (text) {
-		if (!text) { return; }
+		if (!text) { return this; }
 
 		if (!this._attributions[text]) {
 			this._attributions[text] = 0;
@@ -8092,7 +8125,7 @@ L.Control.Attribution = L.Control.extend({
 	},
 
 	removeAttribution: function (text) {
-		if (!text) { return; }
+		if (!text) { return this; }
 
 		if (this._attributions[text]) {
 			this._attributions[text]--;
@@ -8253,7 +8286,8 @@ L.Control.Layers = L.Control.extend({
 	options: {
 		collapsed: true,
 		position: 'topright',
-		autoZIndex: true
+		autoZIndex: true,
+		hideSingleBase: false
 	},
 
 	initialize: function (baseLayers, overlays, options) {
@@ -8369,18 +8403,25 @@ L.Control.Layers = L.Control.extend({
 	},
 
 	_update: function () {
-		if (!this._container) { return; }
+		if (!this._container) { return this; }
 
 		L.DomUtil.empty(this._baseLayersList);
 		L.DomUtil.empty(this._overlaysList);
 
-		var baseLayersPresent, overlaysPresent, i, obj;
+		var baseLayersPresent, overlaysPresent, i, obj, baseLayersCount = 0;
 
 		for (i in this._layers) {
 			obj = this._layers[i];
 			this._addItem(obj);
 			overlaysPresent = overlaysPresent || obj.overlay;
 			baseLayersPresent = baseLayersPresent || !obj.overlay;
+			baseLayersCount += !obj.overlay ? 1 : 0;
+		}
+
+		// Hide base layers section if there's only one layer.
+		if (this.options.hideSingleBase) {
+			baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
+			this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
 		}
 
 		this._separator.style.display = overlaysPresent && baseLayersPresent ? '' : 'none';
@@ -8663,7 +8704,7 @@ L.Map.include({
 
 		this.panBy(offset, options);
 
-		return true;
+		return (options && options.animate) !== false;
 	}
 });
 
@@ -8793,6 +8834,7 @@ L.Map.include({
 		    size = this.getSize(),
 		    startZoom = this._zoom;
 
+		targetCenter = L.latLng(targetCenter);
 		targetZoom = targetZoom === undefined ? startZoom : targetZoom;
 
 		var w0 = Math.max(size.x, size.y),
@@ -8859,7 +8901,7 @@ L.Map.include({
 
 	locate: function (/*Object*/ options) {
 
-		options = this._locateOptions = L.extend(this._defaultLocateOptions, options);
+		options = this._locateOptions = L.extend({}, this._defaultLocateOptions, options);
 
 		if (!navigator.geolocation) {
 			this._handleGeolocationError({
