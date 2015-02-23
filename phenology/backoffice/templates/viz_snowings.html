@@ -59,6 +59,29 @@
           return moment(date).format('MMMM');
         };
         phenoclim.vizsnowings = phenoclim.vizsnowings || {};
+        phenoclim.vizsnowings.prepareData = function(data, year){
+        console.log(data);
+        var minDate = moment([year-1, 9, 1]) // fixed
+        var maxDate = moment([year, 4, 1]); // fixed
+        console.log(data);
+        var filtered = data.snowings.map(function(d){
+          d.date = moment(d.date);
+          return d;
+        }).filter(function(d){
+          return d.date <= maxDate && d.date >= minDate;
+        })
+        return {
+          year: year,
+          minDate: minDate,
+          maxDate: maxDate,
+          values: filtered,
+          altitude: data.altitude,
+          maxHeight: data.maxHeight,
+          name: data.name,
+          id: data.id
+        }
+
+        }
         phenoclim.vizsnowings.getData = function(area_id){
           var defer = $.Deferred();
           if(typeof phenoclim.session.areasnowings[area_id] == "undefined"){
@@ -89,9 +112,8 @@
         phenoclim.session.areasnowings = {}
         $( document ).ready(function(){
             // init charts
-            phenoclim.session.chart1 = new phenoclim.viz.SnowingChart({ selector: ".area1 .graph"});
+            phenoclim.session.chart1 = new phenoclim.viz.SnowingChart2().width(920);
             phenoclim.session.chart2 = new phenoclim.viz.SnowingChart({ selector: ".area2 .graph"});
-            
             //$('select').select2();
             $('.area1 select:first').on("change",function(event){
               var area_id = $(this).val();
@@ -105,10 +127,8 @@
                 $(".area2 [name=year]").val(year-1);
 
                 var year = $("[name=year]", container).val();
-                phenoclim.session.chart1.refresh({
-                  year: year,
-                  data: data
-                });
+                var pdata = phenoclim.vizsnowings.prepareData(data, year);
+                d3.select(".area1 .graph").datum(pdata).call(phenoclim.session.chart1);
                 setTimeout(function(){
                   phenoclim.session.chart2.refresh({
                     year: year-1,
@@ -123,10 +143,8 @@
               var container = $(this).parents(".snowing-area"); 
               phenoclim.vizsnowings.getData(area_id).done(function(data){
                 var year = $("[name=year]", container).val();
-                phenoclim.session.chart1.refresh({
-                  year: year,
-                  data: data
-                });
+                var pdata = phenoclim.vizsnowings.prepareData(data, year);
+                d3.select(".area1 .graph").datum(pdata).call(phenoclim.session.chart1);
               });
             });
             $('.area2 select:first').on("change",function(event){
