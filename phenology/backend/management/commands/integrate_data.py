@@ -98,15 +98,24 @@ class Command(BaseCommand):
                     area_tmp = models.Area.objects.filter(name=area["name"]).first()
                 area_tmp.save()
                 for temp in area["snowings"]:
-                    snowing_tmp = models.Snowing()
-                    snowing_tmp.area = area_tmp
-                    snowing_tmp.observer = observers[0]
-                    snowing_tmp.date = temp["date_releve"]
-                    snowing_tmp.remark = temp["remark_temp"]
-                    snowing_tmp.height = temp["neige_haut"]
-                    snowing_tmp.temperature = temp["temperature"]
-                    snowing_tmp.save()
-
+                    if(temp["neige_haut"] < 999):
+                        snowing_tmp = models.Snowing()
+                        snowing_tmp.area = area_tmp
+                        snowing_tmp.observer = observers[0]
+                        snowing_tmp.date = "%s %s" % (temp["date_releve"],
+                                                      temp["heure_releve"])
+                        snowing_tmp.remark = temp["remark_temp"]
+                        snowing_tmp.height = temp["neige_haut"]
+                        snowing_tmp.save()
+                    if(temp["temperature"] < 99):
+                        snowing_tmp = models.Temperature()
+                        snowing_tmp.area = area_tmp
+                        snowing_tmp.observer = observers[0]
+                        snowing_tmp.date = "%s %s" % (temp["date_releve"],
+                                                      temp["heure_releve"])
+                        snowing_tmp.remark = temp["remark_temp"]
+                        snowing_tmp.temperature = temp["temperature"]
+                        snowing_tmp.save()
                 for observer in observers:
                     if(observer not in area_tmp.observer_set.all()):
                         area_tmp.observer_set.add(observer)
@@ -114,10 +123,12 @@ class Command(BaseCommand):
                 area_tmp.save()
 
                 for area_species in area["species"]:
-                    species_m = [sp for sp in main_results["species"] if sp["name"] == area_species["name"].capitalize()]
+                    species_m = [sp for sp in main_results["species"]
+                                 if sp["name"] == area_species["name"].
+                                 capitalize()]
                     species = models.Species.objects\
                         .filter(name=species_m[0]["name"]).first()
-                    if(not species in area_tmp.species.all()):
+                    if not(species in area_tmp.species.all()):
                         area_tmp.species.add(species)
                     for ind in area_species["individuals"]:
                         if(not models.Individual.objects.filter(name=ind["name"]).filter(area_id=area_tmp.id).filter(species_id=species.id)):
