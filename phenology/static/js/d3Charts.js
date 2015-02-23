@@ -302,3 +302,71 @@ phenoclim.viz.chart = function chart(params) {
 
     return chart;
 }
+
+phenoclim.viz.SnowingChart2 = function(params){
+
+    var options = {
+      margin: {top: 20, right: 30, bottom: 30, left: 30},
+    }
+    $.extend(true, options, params);
+
+    var chart = phenoclim.viz.chart(options)
+    chart._height = function(d){
+      return (chart.options.width*2/5) - chart.options.margin.top - chart.options.margin.bottom;
+    }
+    var parentDraw = chart.draw;
+    chart.draw = function(selection){
+      selection.each(function(data) {
+
+        chart.options.xScale.domain([data.minDate, data.maxDate]);
+        var maxHeight = d3.max(data.values, function(d){
+          return +d.height;
+        })
+        chart.options.yScale.domain([0, data.maxHeight + 10])
+
+        parentDraw(d3.select(this));
+
+        var height = chart._height();
+        var fulldates = []; // Array of day of year
+        var tmpDate = moment(data.minDate);
+        while(tmpDate <= data.maxDate){
+          fulldates.push(tmpDate.format("DDD"));
+          tmpDate.add(1, "days");
+        }
+        chart.options.x2.rangeBands([0, chart._width()]).domain(fulldates);
+        d3.select(this).selectAll(".x.axis .tick text").attr("transform", "translate(" + chart.options.x2.rangeBand()*15 +", 0)")
+        d3.select(this).select("svg g").selectAll(".bar").remove()
+        var rect = d3.select(this).select("svg g").selectAll(".bar")
+                      .data(data.values)
+                      .enter()
+                      .append("rect")
+                      .attr("class", "bar")
+                      .attr("width", chart.options.x2.rangeBand()+1)
+                      .attr("x", function(d){ return chart.options.x2(d.date.format("DDD")); })
+                      .attr("y", function(d) { return chart.options.yScale(0); })
+                      .attr("height", function(d) { return 0; })
+                      .on('mousemove', function(d){
+                          chart.tooltip.show(d);
+                        })
+                        .on('mouseout', function(d){
+                          chart.tooltip.hide();
+                        })
+      rect.transition()
+          .duration(200)
+          .delay(function(d, i) { return i*2; })
+          .attr("y", function(d) { return chart.options.yScale(+d.height); })
+          .attr("height", function(d) { return height - chart.options.yScale(+d.height); });
+      })
+    }
+    
+    chart.options.x2 =  d3.scale.ordinal();
+    chart.options.xScale = d3.time.scale();
+    chart.options.yScale = d3.scale.linear();
+    chart.options.xAxis.tickFormat(function(d){
+      return moment(d).format("MMMM");
+    });
+    chart.tooltip.text = function(d){
+      return d.date.format("D MMM YYYY") + " <br/><b>"+d.height+"cm</b><br/>";
+    }
+    return chart;
+}
