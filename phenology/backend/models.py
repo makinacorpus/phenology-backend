@@ -13,6 +13,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
+from django.db.models import Q
 
 # Create your models here.
 
@@ -49,10 +50,10 @@ def get_thumbnail(picture, options=None):
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
 
-#espece
+# espece
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom", db_index=True)
-    #name_fr = models.CharField(max_length=100, verbose_name="nom")
+    # name_fr = models.CharField(max_length=100, verbose_name="nom")
     description = models.TextField(max_length=500)
     picture = ThumbnailerImageField(upload_to='picture/species',
                                     default='no-img.jpg')
@@ -91,14 +92,18 @@ class Species(models.Model):
 ###########
 
 
-#zone:
+# zone:
 class Area(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("name"), db_index=True)
-    codezone = models.CharField(max_length=20, verbose_name=_("codezone"), blank=True)
+    name = models.CharField(max_length=100, verbose_name=_("name"),
+                            db_index=True)
+    codezone = models.CharField(max_length=20, verbose_name=_("codezone"),
+                                blank=True)
     lat = models.FloatField(verbose_name="latitude", default=-1.00)
     lon = models.FloatField(verbose_name="longitude", default=1.00)
-    altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
-    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
+    altitude = models.FloatField(verbose_name="altitude", null=True,
+                                 blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+                              blank=True)
     commune = models.CharField(max_length=100, verbose_name=_("city"))
     postalcode = models.CharField(max_length=20, verbose_name=_("codepostal"))
     species = select2_fields.ManyToManyField(Species, blank=True, verbose_name=_("species"))
@@ -157,7 +162,7 @@ CATEGORY_CHOICES = (
 )
 
 
-#observateur
+# observateur
 class Observer(models.Model):
     user = models.OneToOneField(User)
     city = models.CharField(max_length=100, verbose_name=_("city"))
@@ -186,6 +191,7 @@ class Observer(models.Model):
     class Meta:
         verbose_name = _("Observer")
         verbose_name_plural = _("Observers")
+        ordering = ("user__username",)
 
     def __str__(self):
         return u"%s" % self.user.username
@@ -225,9 +231,10 @@ EXPOSITION_CHOICES = (
 )
 
 
-#individu
+# individu
 class Individual(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("name"), db_index=True)
+    name = models.CharField(max_length=100, verbose_name=_("name"),
+                            db_index=True)
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
@@ -246,7 +253,8 @@ class Individual(models.Model):
                                   verbose_name=_("exposition"),
                                   choices=EXPOSITION_CHOICES,
                                   null=True, blank=True)
-    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+                              blank=True)
 
     class Meta:
         verbose_name = _("individual")
@@ -296,37 +304,53 @@ class Individual(models.Model):
         previous_date = date_referer + relativedelta(months=-6)
         next_date = date_referer + relativedelta(months=+8)
         for stage in self.species.stage_set.all().filter(is_active=True):
-            date_start = datetime.date(next_date.year, stage.month_start, stage.day_start)
-            #if (stage.month_start > stage.month_start):
+            date_start = datetime.date(next_date.year, stage.month_start,
+                                       stage.day_start)
+            # if (stage.month_start > stage.month_start):
             #    year_start = date_refer.
-            date_end = datetime.date(previous_date.year, stage.month_end, stage.day_end)
-            if( date_referer <= date_start < next_date ):
-                last_stages.append((stage, (date_start, datetime.date(date_start.year, stage.month_end, stage.day_end))))
-            if( date_referer >= date_end > previous_date):
-                next_stages.append((stage, (datetime.date(date_end.year, stage.month_start, stage.day_start), date_end)))
+            date_end = datetime.date(previous_date.year, stage.month_end,
+                                     stage.day_end)
+            if(date_referer <= date_start < next_date):
+                last_stages.append((stage, (date_start,
+                                            datetime.date(date_start.year,
+                                                          stage.month_end,
+                                                          stage.day_end))))
+            if(date_referer >= date_end > previous_date):
+                next_stages.append((stage, (datetime.date(date_end.year,
+                                                          stage.month_start,
+                                                          stage.day_start),
+                                            date_end)))
         print "###################"
-        #print "sfsfsfsdfs"
+        # print "sfsfsfsdfs"
         all_stages = last_stages + next_stages
-        all_stages = [ (stage, dates, self.survey_set.filter(stage=stage, date__year=dates[0].year).first()) for (stage, dates) in all_stages ]
+        all_stages = [(stage, dates,
+                       self.survey_set.filter(stage=stage,
+                                              date__year=dates[0].year).first()
+                       )
+                      for (stage, dates) in all_stages]
         all_stages = sorted(all_stages, key=lambda stage: stage[1][0])
         return all_stages
 
 
-#enneigement
+# enneigement
 class Snowing(models.Model):
-    area = models.ForeignKey(Area, verbose_name=_("Area"))
-    observer = models.ForeignKey(Observer, verbose_name=_("Observer"))
+    area = select2_fields.ForeignKey(Area, verbose_name=_("Area"),
+                                     search_field='name', ajax=True,)
+    observer = select2_fields.ForeignKey(Observer, verbose_name=_("Observer"),
+                                         search_field=lambda q: Q(user__username__icontains=q), ajax=True,)
     date = models.DateTimeField(verbose_name=_("date"))
-    remark = models.TextField(max_length=100, verbose_name=_("remark"), default="", blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+                              default="", blank=True)
     height = models.FloatField(verbose_name=_("height"))
-    temperature = models.FloatField(verbose_name=_("temperature"), null=True, blank=True)
+    temperature = models.FloatField(verbose_name=_("temperature"), null=True,
+                                    blank=True)
 
     class Meta:
         verbose_name = _("Snowing")
         verbose_name_plural = _("Snowings")
 
 
-#stades
+# stades
 class Stage(models.Model):
 
     class Meta:
@@ -334,7 +358,7 @@ class Stage(models.Model):
         verbose_name_plural = _("Stages")
 
     name = models.CharField(max_length=100, verbose_name=_("Name"))
-    #name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
+    # name_fr = models.CharField(max_length=100, verbose_name=_("Name"))
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     day_start = models.IntegerField(blank=True, null=True,
                                     verbose_name=_("Start day"))
@@ -373,16 +397,21 @@ class Stage(models.Model):
         return self.name
 
 
-#observation
+# observation
 class Survey(models.Model):
     individual = models.ForeignKey(Individual)
-    observer = models.ForeignKey(Observer, verbose_name=_("observer"), blank=True, null=True)
+    observer = models.ForeignKey(Observer, verbose_name=_("observer"),
+                                 blank=True, null=True)
     stage = models.ForeignKey(Stage, verbose_name=_("Stage"))
-    name_obs = models.CharField(max_length=100, verbose_name=_("name"), blank=True)
-    firstname_obs = models.CharField(max_length=100, verbose_name=_("firstname"), blank=True)
-    answer = models.CharField(max_length=300, verbose_name=_("reponse"), blank=True)
+    name_obs = models.CharField(max_length=100, verbose_name=_("name"),
+                                blank=True)
+    firstname_obs = models.CharField(max_length=100,
+                                     verbose_name=_("firstname"), blank=True)
+    answer = models.CharField(max_length=300, verbose_name=_("reponse"),
+                              blank=True)
     date = models.DateField(verbose_name=_("survey date"), db_index=True)
-    remark = models.TextField(max_length=100, verbose_name=_("remark"), blank=True)
+    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+                              blank=True)
 
     class Meta:
         verbose_name = _("Survey")
