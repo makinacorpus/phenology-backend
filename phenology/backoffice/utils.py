@@ -28,7 +28,13 @@ class MyTimer:
     def output(self):
         return """### %s ### \n%s \n ######""" % (self.name,
                                                   "\n".join(self.times))
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
 
+    if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, datetime.timedelta):
+        return (datetime.datetime.min + obj).time().isoformat()
 
 def multi_getattr(obj, attr, default=None):
     attributes = attr.split(".")
