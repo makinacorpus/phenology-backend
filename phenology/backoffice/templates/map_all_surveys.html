@@ -69,7 +69,7 @@
         var species_id = $("[data-id=species]").val();
         var stage_id = $("[data-id=stages]").val();
         var altitudes = $("#altitudes").slider("getValue");
-        var years_selected = $(".checkbox input:checked").map(function(i, item){
+        var years_selected = $(".rowyear input:checked").map(function(i, item){
           return $(item).attr("value");
         }).toArray();
 
@@ -156,15 +156,20 @@
                 //loop years
                 $.each(stage_data, function(year, year_data){
                   if(!results[species_id][stage_id][year]){
-                    results[species_id][stage_id][year] = {};
+                    results[species_id][stage_id][year] = {
+                      min: year_data.minDate,
+                      max: year_data.maxDate,
+                      weeks: {}
+                    };
+
                   }
                   //console.log(year_data);
                   //loop week
-                  $.each(year_data, function(week, nbobs){
-                    if(!results[species_id][stage_id][year][week]){
-                      results[species_id][stage_id][year][week] = 0;
+                  $.each(year_data.values, function(week, nbobs){
+                    if(!results[species_id][stage_id][year].weeks[week]){
+                      results[species_id][stage_id][year].weeks[week] = 0;
                     }
-                    results[species_id][stage_id][year][week] += nbobs;
+                    results[species_id][stage_id][year].weeks[week] += nbobs;
                   })
                 })
               });
@@ -205,8 +210,8 @@
           $.each($year_rows, function(i, $year_row){
             var year = +$("input", $year_row).attr("value");
             if(vizdata[species_id] && vizdata[species_id][stage_id]){
-              var tmp_data = vizdata[species_id][stage_id][year];
-              var nbcounts = d3.sum(d3.values(tmp_data));
+              var tmp_data = vizdata[species_id][stage_id][year] || {};
+              var nbcounts = d3.sum(d3.values(tmp_data.weeks));
               $(".year_count", $year_row).text(nbcounts);
             }
           });
@@ -229,8 +234,9 @@
         $yearContainer.find(".rowyear").remove();
         $.each(all_years, function(i, year){
 
-          var $input = $("<div class='row rowyear' data-year='" + year.year + "'><div class='col-xs-6 col-md-6'><div class='legend_item'></div><div class='checkbox'><label><input type='checkbox' name='years' value='"+ year.year +"'>" + year.year + "</label></div></div><div class='col-xs-6 col-md-6'><span class='year_count'>" + year.count +"</span></div></div>").appendTo($yearContainer);
-          $(".legend_item", $input).css("background-color", phenoclim.session.linechart.colors(year.year))
+          var $input = $("<div class='row rowyear' data-year='" + year.year + "'><div class='col-xs-6 col-md-6'><input type='checkbox' name='years' value='"+ year.year +"' id='id-"+ year.year + "'><label for='id-"+ year.year + "'><span>" + year.year + "</span></label></div><div class='col-xs-6 col-md-6'><span class='year_count'>" + year.count +"</span></div></div>").appendTo($yearContainer);
+          //$("<style type='text/css'>." + year.year + "{ color: 'red';}</style>").appendTo($(".styles"));
+          $("label", $input).css("color", phenoclim.session.linechart.colors(year.year))
           if(i > (all_years.length - 3)){
             $("input", $input).attr("checked", "checked");
           }
