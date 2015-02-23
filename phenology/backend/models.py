@@ -342,17 +342,37 @@ class Snowing(models.Model):
     area = select2_fields.ForeignKey(Area, verbose_name=_("Area"),
                                      search_field='name', ajax=True,)
     observer = select2_fields.ForeignKey(Observer, verbose_name=_("Observer"),
-                                         search_field=lambda q: Q(user__username__icontains=q), ajax=True,)
+                                         search_field=lambda q=None:
+                                         Q(user__username__icontains=q)
+                                         if q is not None else "",
+                                         ajax=True,)
     date = models.DateTimeField(verbose_name=_("date"))
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
                               default="", blank=True)
     height = models.FloatField(verbose_name=_("height"))
-    temperature = models.FloatField(verbose_name=_("temperature"), null=True,
-                                    blank=True)
 
     class Meta:
         verbose_name = _("Snowing")
         verbose_name_plural = _("Snowings")
+
+
+# temperature
+class Temperature(models.Model):
+    area = select2_fields.ForeignKey(Area, verbose_name=_("Area"),
+                                     search_field='name', ajax=True,)
+    observer = select2_fields.ForeignKey(Observer, verbose_name=_("Observer"),
+                                         search_field=lambda q=None:
+                                         Q(user__username__icontains=q)
+                                         if q is not None else "",
+                                         ajax=True,)
+    date = models.DateTimeField(verbose_name=_("date"))
+    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+                              default="", blank=True)
+    temperature = models.FloatField(verbose_name=_("temperature"))
+
+    class Meta:
+        verbose_name = _("Temperature")
+        verbose_name_plural = _("Temperatures")
 
 
 # stades
