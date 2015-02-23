@@ -4,9 +4,7 @@
   {% load staticfiles %}
   {% load json_filters %}
   {% load i18n %}
-  {% load compress %}
 
-  {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/leaflet/leaflet.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/leaflet.awesome-markers/leaflet.awesome-markers.css' %}" />
@@ -14,9 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap-slider/css/bootstrap-slider.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2.css'%}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" />
-  {% endcompress %}
 
-  {% compress js %}
     <script src="{% static 'vendor/jquery/jquery-1.11.2.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
@@ -26,7 +22,6 @@
     <script src="{% static 'vendor/momentjs/moment-with-locales.js' %}"></script>
     <script src="{% static 'vendor/bootstrap-slider/bootstrap-slider.min.js' %}"></script>
     <script src="{% static 'select2/js/select2.js' %}"></script>
-  {% endcompress %}
 
   <script type="text/javascript">
     var phenoclim = phenoclim || {};
@@ -59,10 +54,8 @@
 
    </body>
 
-  {% compress js %}
    <script src="{% static 'js/charts.js' %}"></script>
    <script src="{% static 'js/d3Charts.js' %}"></script>
    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-  {% endcompress %}
 
 </html>
