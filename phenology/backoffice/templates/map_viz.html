@@ -83,7 +83,22 @@
                 var marker = L.circleMarker([item.lat, item.lon], {radius:5, weight:1, opacity: 1, fillOpacity: 0.2, color:"blue"}).addTo(phenoclim.session.map_layers);
                 marker.bindPopup("<div class='container-fluid'><div class='row'><div class='col-xs-12'>"+ item.name +"<p>" +item.organisms+"</br>"+item.city + " - " + 
                   item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "</br>"+item.nb_individuals+" individus</p></div></div><div class='row'><div class='graph'></div></div></div>")
-        
+                marker.on("click", function(event, toto){
+                  phenoclim.session.chart2_Obj.width(300);
+                  var popup = this.getPopup()
+                  var node = d3.select(popup._container);
+                  phenoclim.mapviz.get_area(item.id).done(function(data){
+                    var stage = data.species[species_id].values[stage_id];
+                    var individuals = d3.entries(stage.values).map(function(d, i){
+                      return {
+                        label: "individu" + i,
+                        key: d.key,
+                        values: d.value
+                      }
+                    }); 
+                    node.select(".graph").datum(individuals).call(phenoclim.session.chart2_Obj);
+                  })
+                });
               }
           })
           //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
@@ -190,6 +205,7 @@
 
       $( document ).ready(function(){
         phenoclim.session.chart1_Obj = phenoclim.viz.minMaxChart();
+        phenoclim.session.chart2_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
 
         $(".map").on( "map_init", function(){
             $.get("/portail/get_species_list", function(data){

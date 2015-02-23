@@ -127,7 +127,9 @@ rect:hover{
 
 .leaflet-popup-content .graph{
   min-width:300px;
+  position: relative;
 }
+
 .dot:hover{
   stroke-width:1px;
   stroke:grey;
