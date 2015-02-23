@@ -270,3 +270,11 @@ div.tooltip {
   width:50%;
   margin:auto;
 }
+
+.snowing-area .bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+.snowing-area .bar:hover {
+  fill: brown;
+}
