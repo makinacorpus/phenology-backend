@@ -190,7 +190,7 @@ phenoclim.viz.lineChart = function(params){
 
     // prepare data
     var data = d3.entries(dataRaw).map(function(d){
-      d.values = d3.entries(d.value).map(function(d2){
+      d.values = d3.entries(d.value.weeks).map(function(d2){
         d2.year = d.key;
         return d2;
       });
@@ -687,7 +687,6 @@ phenoclim.viz.barChart = function(params){
           .duration(200)
           .delay(function(d, i) { return i*2; })
           .attr("y", function(d) { return y(+d.height); })
-
           .attr("height", function(d) { return height - y(+d.height); });
 
       /** TOOLTIP **/
