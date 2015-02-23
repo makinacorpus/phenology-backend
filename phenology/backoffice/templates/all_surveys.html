@@ -31,7 +31,7 @@
           {% trans "Individual" %}
         </th>
         <th>
-          {% trans "Observer" %}
+          {% trans "Organism" %}
         </th>
         <th>
           {% trans "Stage" %}
@@ -58,16 +58,17 @@
         "processing": true,
         "pageLength": 20,
         "columns": [
-          { "data": "id",
-            "visible": false },
-          { "data": "date" },
-          { "data": "area" },
-          { "data": "species" },
-          { "data": "individual" },
-          { "data": "observer",
-            "visible": false },
-          { "data": "stage" },
-          { "data": "answer" },
+          { data: "id",
+            visible: false },
+          { data: "date" },
+          { data: "area", 
+            visible: false },
+          { data: "species" },
+          { data: "individual",
+            visible: false },
+          { data: "organisms"},
+          { data: "stage" },
+          { data: "answer" },
         ],
         "order": [[ 1, "desc" ]]
       });
