@@ -610,9 +610,9 @@ from django.db.models import Count
 def viz_snowings(request):
     query = models.Snowing.objects.filter(height__gt=0).\
         filter(height__lt=999).values("area").annotate(count=Count('id'))
-    area_ids = [s["area"] for s in query if int(s["count"]) > 50]
-    areas = models.Area.objects.filter(pk__in=area_ids).\
-        extra(select={'postalcode_int': "CAST(postalcode AS INTEGER)"}).\
-        order_by('postalcode_int')
+
+    area_ids = {s["area"]: s["count"] for s in query if int(s["count"]) > 50}
+    areas = list(models.Area.objects.filter(pk__in=area_ids.keys()))
+    areas = sorted(areas, key=lambda a: (int(area_ids[a.id])), reverse=True)
     return render_to_response("viz_snowings.html", {"areas": areas},
                               RequestContext(request))
