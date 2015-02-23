@@ -104,3 +104,4 @@ admin.site.register(models.User, UserAdmin)
 
 admin.site.register(models.Stage, StageAdmin)
 admin.site.register(models.Species, SpeciesAdmin)
+admin.site.register(models.Temperature)
