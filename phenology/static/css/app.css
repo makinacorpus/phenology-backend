@@ -41,7 +41,9 @@
   padding-left: 5px;
   padding-right: 5px;
 }
-
+.leaflet-popup-content svg{
+  position: relative;
+}
 .mynav .nav-justified{
   float:left;
   margin-top:3px;
@@ -119,7 +121,13 @@ rect:hover{
 .graph-bars rect:hover{
   fill-opacity:0.8;
 }
+.graph{
+  //position: relative;
+}
 
+.leaflet-popup-content .graph{
+  min-width:300px;
+}
 .dot:hover{
   stroke-width:1px;
   stroke:grey;
