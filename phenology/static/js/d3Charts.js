@@ -138,3 +138,154 @@ phenoclim.viz.chart = function chart(params) {
   return chart;
 }
 
+ phenoclim.viz.minMaxChart = function(params) {
+ 
+    var chart = phenoclim.viz.chart(params)
+    var parentDraw = chart.draw;
+    var currentYear = moment().year();
+
+    var line = d3.svg.line()
+      .x(function(d) {
+        return chart.options.xScale(parseInt(d.year)) + (chart.options.xScale.rangeBand()/2) ;})
+      .y(function(d) {
+        return chart.options.yScale(moment(d.date).year(currentYear))})
+
+    chart._xScale = function(d){
+        chart.xScale().rangeBands([0, chart._width()]);
+    }
+    
+    chart.draw = function(selection){
+      selection.each(function(data) {
+        data = data || [];
+        chart.options.colors.domain(data.map(function(d){
+          return d.key;
+        }))
+        var dates = [];
+        var years = [];
+        $.each(data, function(i, item){
+          var tmp = item.values.map(function(d){ 
+            var date1 = new Date(d.date);
+            if(years.indexOf(d.year) == -1){
+              years.push(d.year);
+            }
+            date1.setFullYear(currentYear);
+            return date1
+          });
+          dates = dates.concat(tmp);
+        });
+        years.sort();
+        var minDate = d3.min(dates);
+        var maxDate = d3.max(dates);
+
+        chart.options.yScale.domain([minDate, maxDate]);
+        chart.options.xScale.domain(years);
+
+        parentDraw(d3.select(this));
+
+        d3.select(this).select(".x.axis text.legend")
+          .text("Year")
+        d3.select(this).select(".y.axis text.legend")
+          .text("Date")
+
+        var svg = d3.select(this).select("svg g")
+
+          var group = svg.selectAll("g.values").data(data)
+          group.exit().remove();
+          var gEnter = group.enter()
+               .append("g")
+               .attr("class", "values");
+          
+          gEnter.append("path")
+              .style('stroke-width', 1)
+              .style("stroke-opacity", 0.7)
+              .attr("class", "line");
+
+          gEnter.append("text")
+              .attr("class", "legend");
+
+          var dots = group.selectAll(".dot").data(function(d){
+            d.values.sort(function(a,b){
+              return d3.ascending(+a.year, +b.year);
+            })
+            return d.values.map(function(d2){
+              d2.type = d.key;
+              return d2;
+            });
+          })
+
+          dots.enter()
+            .append("circle")
+            .attr("class", "dot")
+            .attr("r", 3.5)
+            .style("fill-opacity", 0.8)
+            .on('mousemove', function(d){
+              d3.select(this).attr("r", 7);
+              chart.tooltip.show(d);
+            })
+            .on('mouseout', function(d){
+              chart.tooltip.hide();
+              d3.select(this).attr("r", 3.5);
+            })
+
+          dots.exit()
+              .remove()
+
+          group.selectAll(".dot")
+            .transition()
+            .duration(150)
+            .attr("cx", function(d){
+               return chart.options.xScale(parseInt(d.year)) + (chart.options.xScale.rangeBand()/2);
+            })
+            .attr("cy", function(d){
+               var date1 = new Date(d.date);
+               date1.setFullYear(currentYear);
+               return chart.options.yScale(date1);
+            })
+            .attr("fill", function(d){
+              return chart.options.colors(d.type);
+            })
+          group.select(".line")
+            .transition()
+            .duration(150)
+            .attr("d", function(d){
+              var v = line(d.values) || "M0,0";
+              return v;
+            })
+            .style("stroke", function(d){
+              return chart.options.colors(d.key);
+            })
+          if(chart.options.textLegend){
+          group.select(".legend")
+            .attr("transform", "translate(10)")
+            .transition()
+            .duration(150)
+            .text(function(d){
+              return d.label;
+            })
+            .attr("x", function(d){
+              var last = d.values[d.values.length-1];
+              if(last)
+                return chart.options.xScale(last.year) + (chart.options.xScale.rangeBand()/2)
+              else
+                return 0
+            })
+           .attr("y", function(d){
+              var last = d.values[d.values.length-1];
+              if(last)
+                return chart.options.yScale(last.date);
+              else
+               { 
+                example = chart;
+                return chart._height();
+                }
+            })
+          }
+      })
+    }
+    chart.tooltip.text = function(d){
+      return moment(d.date).year(d.year).format("ddd DD MMMM YYYY");
+    }
+    chart.options.xScale = d3.scale.ordinal();
+    chart.options.yScale = d3.time.scale();
+    return chart;
+  }
