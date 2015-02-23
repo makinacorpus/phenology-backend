@@ -612,7 +612,7 @@ def viz_snowings(request):
         filter(height__lt=999).values("area").annotate(count=Count('id'))
     area_ids = [s["area"] for s in query if int(s["count"]) > 50]
     areas = models.Area.objects.filter(pk__in=area_ids).\
-        extra(select={'postalcode_int': "CAST(postalcode AS UNSIGNED)"}).\
+        extra(select={'postalcode_int': "CAST(postalcode AS INTEGER)"}).\
         order_by('postalcode_int')
     return render_to_response("viz_snowings.html", {"areas": areas},
                               RequestContext(request))
