@@ -289,3 +289,16 @@ phenoclim.viz.chart = function chart(params) {
     chart.options.yScale = d3.time.scale();
     return chart;
   }
+
+ phenoclim.viz.areaChart = function(params) {
+ 
+    var chart = phenoclim.viz.minMaxChart(params)
+    var parentDraw = chart.draw;
+    var currentYear = moment().year();
+
+    chart.options.yAxis.tickFormat(function(d){
+      return moment(d).format("DD/MM")
+    }).ticks(4)
+
+    return chart;
+}
