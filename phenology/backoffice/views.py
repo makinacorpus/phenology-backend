@@ -53,6 +53,12 @@ def map_all_snowings(request):
                               RequestContext(request))
 
 
+def viz_area_surveys(request):
+    areas = models.Area.objects.all().exclude(individual__survey__isnull=True)
+    return render_to_response("viz_area_surveys.html", {"areas": areas},
+                              RequestContext(request))
+
+
 def get_area_data(request):
     area_id = request.GET.get("area_id")
     area = models.Area.objects.get(id=area_id)
