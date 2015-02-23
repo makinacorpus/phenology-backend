@@ -22,11 +22,14 @@
     <script src="{% static 'vendor/leaflet.awesome-markers/leaflet.awesome-markers.js' %}"></script>
     <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/d3js/d3.min.js' %}"></script>
+    <script src="{% static 'vendor/momentjs/moment-with-locales.js' %}"></script>
     <script src="{% static 'vendor/bootstrap-slider/bootstrap-slider.min.js' %}"></script>
   {% endcompress %}
 
   <script type="text/javascript">
     var phenoclim = phenoclim || {};
+    var userLang = navigator.language || navigator.userLanguage;
+    moment.locale(userLang);
     {% if form %}
       phenoclim.options = {
         geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
