@@ -106,12 +106,17 @@ class Area(models.Model):
                               blank=True)
     commune = models.CharField(max_length=100, verbose_name=_("city"))
     postalcode = models.CharField(max_length=20, verbose_name=_("codepostal"))
-    species = select2_fields.ManyToManyField(Species, blank=True, verbose_name=_("species"))
+    region = models.CharField(max_length=100, verbose_name=_("region"),
+                              blank=True, default="")
+    departement = models.CharField(max_length=100,
+                                   verbose_name=_("departement"),
+                                   blank=True, default="")
+    species = select2_fields.ManyToManyField(Species, blank=True,
+                                             verbose_name=_("species"))
 
     class Meta:
         verbose_name = _("Area")
         verbose_name_plural = _("Areas")
-        ordering = ['name']
 
     def __str__(self):
         return "%s" % (self.name)
