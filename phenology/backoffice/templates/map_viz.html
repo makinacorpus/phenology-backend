@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block navigation %} {% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+    <script type="text/javascript">
+      phenoclim.options = {
+        geojson: {},
+      }
+    </script>
+    <div class="styles">
+    </div>
+    <div class="row  table-row">
+
+      <div class=" col-xs-8 col-md-8  table-col">
+               <div id="map" class="map all_survey"></div>
+      </div>
+
+      <div class="col-xs-4 col-md-4 table-col">
+        <div class="map-control">
+           <select data-id="species" class="form-control">
+           </select>
+           <select data-id="stages" class="form-control">
+           </select>
+        </div>
+        <div class="graph graph-above">
+        </div>
+        <div class="graph graph-below">
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      var cached_surveys = {};
+      var cached_areas = {};
+      phenoclim = phenoclim || {}
+      phenoclim.session = phenoclim.session || {};
+      phenoclim.mapviz = phenoclim.mapviz || {};
+      phenoclim.mapviz.get_data = function(species_id){
+        if(!cached_surveys[species_id]){
+          return $.get('/portail/search_surveys?species_id=' + species_id,function(data){
+              cached_surveys[species_id] = data
+          });
+        }
+        else{
+          var defer = $.Deferred();
+          defer.resolve(cached_surveys[species_id]);
+          return defer.promise();
+        };
+      }
+      phenoclim.mapviz.get_area = function(id){
+        var defer = $.Deferred();
+        var data = cached_areas[id];
+        if(!data){
+          $.get("get_area_data?area_id="+id).done(function(data){
+            cached_areas[id] = data;
+            defer.resolve(data);
+          });
+        }
+        else{
+          defer.resolve(data);
+        };
+        return defer.promise();
+      };
+      phenoclim.mapviz.load_layers = function(){
+        phenoclim.session.map_layers.clearLayers();
+        var species_id = $("[data-id=species]").val();
+        var stage_id = $("[data-id=stages]").val();
+
+        phenoclim.mapviz.get_data(species_id).done(function(data){
+          $.each(data, function(i, item){
+              var years = (item.values[species_id]) ? item.values[species_id][stage_id] || [] : []
+              years = $.getKeys(years);
+              if(years.length > 0){
+                var marker = L.circleMarker([item.lat, item.lon], {radius:5, weight:1, opacity: 1, fillOpacity: 0.2, color:"blue"}).addTo(phenoclim.session.map_layers);
+                marker.bindPopup("<div class='container-fluid'><div class='row'><div class='col-xs-12'>"+ item.name +"<p>" +item.organisms+"</br>"+item.city + " - " + 
+                  item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "</br>"+item.nb_individuals+" individus</p></div></div><div class='row'><div class='graph'></div></div></div>")
+        
+              }
+          })
+          //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
+        });
+      }
+      phenoclim.mapviz.refreshWidgets = function(){
+        var species_id = $("select[data-id=species]").val();
+        phenoclim.mapviz.get_data(species_id).done(function(data){
+          phenoclim.mapviz.load_layers();
+          phenoclim.mapviz.refreshCharts();
+        });
+      }
+      phenoclim.mapviz.refreshCharts = function(){
+        var species_id = $("select[data-id=species]").val();
+        var stages_id = $("select[data-id=stages]").val();
+        var below1000 = function(d){ return +d.altitude < 1000}
+        var above1000 = function(d){ return +d.altitude > 1000}
+        phenoclim.mapviz.get_data(species_id).done(function(data){
+          var tmp = phenoclim.mapviz.prepare_data_for_viz(data, below1000);
+          var values = d3.values(tmp)
+          var vizData = [
+            { key: "minDate", label: "min", values: values.map(function(d){
+                                      return {date: d.minDate, year: d.year}})},
+            { key: "maxDate", label: "max", values: values.map(function(d){
+                                      return {date: d.maxDate, year: d.year}})}]
+          d3.select(".graph-below").datum(vizData).call(phenoclim.session.chart1_Obj);
+
+          var tmp = phenoclim.mapviz.prepare_data_for_viz(data, above1000);
+          var values = d3.values(tmp)
+          var vizData = [
+            { key: "minDate", label:"min", values: values.map(function(d){
+                                      return {date: d.minDate, year: d.year}})},
+            { key: "maxDate", label:"max", values: values.map(function(d){
+                                      return {date: d.maxDate, year: d.year}})}]
+          d3.select(".graph-above").datum(vizData).call(phenoclim.session.chart1_Obj);
+        })
+      }
+
+      phenoclim.mapviz.prepare_data_for_viz = function(data, filter){
+        var results = {};
+        var boundingbox = phenoclim.session.map._map.getBounds();
+        var northEast = boundingbox.getNorthEast();
+        var southWest = boundingbox.getSouthWest();
+        var currentYear = moment().year()
+        var species_id = $("select[data-id=species]").val();
+        var stage_id = $("select[data-id=stages]").val();
+        $.each(data ,function(id, area_data){
+          if((area_data.lat <= northEast.lat && area_data.lat >= southWest.lat) && 
+             (area_data.lon >= southWest.lng && area_data.lon <= northEast.lng)){
+            if(!filter || filter(area_data) == true ){
+              if(area_data.values[species_id] && area_data.values[species_id][stage_id]){
+                  $.each(area_data.values[species_id][stage_id], function(year, year_data){
+                    var tmpMin = new Date(year_data.minDate)
+                    tmpMin.setFullYear(currentYear);
+                    var tmpMax = new Date(year_data.maxDate)
+                    tmpMax.setFullYear(currentYear);
+                    if(!results[year]){
+                      results[year] = {
+                        year: year,
+                        dates: [],
+                        minDate: tmpMin,
+                        maxDate: tmpMax
+                      };
+                    }
+                    else{
+                        if(tmpMin < results[year].minDate){
+                          results[year].minDate = tmpMin;
+                        }
+                        if(tmpMax > results[year].maxDate){
+                          results[year].maxDate = tmpMax;
+                        }
+                    }
+                  })
+              };
+            };
+          }
+        });
+
+        return results;
+      }
+      phenoclim.mapviz.refreshStages = function(){
+        var species_field_value = $("select[data-id=species]").val();
+        var stages_field = $("select[data-id=stages]");
+        var cache_stage_value = stages_field.val();
+
+        var species = phenoclim.session.species_list.filter(function(d){
+          return d.id == species_field_value;
+        });
+
+        if (species.length > 0){
+          species = species[0];
+        }
+
+        $("option", stages_field).remove();
+
+        $.each(species.stages, function(i, item){
+          var option = $("<option>").attr("value", item.id).text(item.label);
+          if(cache_stage_value === item.id){
+            option.attr("selected", "selected");
+          }
+          option.appendTo(stages_field);
+        });
+      }
+
+      $( document ).ready(function(){
+        phenoclim.session.chart1_Obj = phenoclim.viz.minMaxChart();
+
+        $(".map").on( "map_init", function(){
+            $.get("/portail/get_species_list", function(data){
+              phenoclim.session.species_list = data;
+
+              var species_field = $("select[data-id=species]");
+              $.each(data, function(i, item){
+                var option = $("<option>").attr("value", item.id).text(item.label);
+                option.appendTo(species_field);
+              });
+              $("option[value='5']", species_field).attr("selected", "selected");
+
+              phenoclim.session.map_layers = L.featureGroup().addTo(phenoclim.session.map._map);
+              phenoclim.mapviz.refreshStages();
+              phenoclim.mapviz.get_data("5").done(function(data){
+                phenoclim.mapviz.refreshWidgets();
+              });
+
+              $("select[data-id=species]").on("change", function(event){
+                phenoclim.mapviz.refreshStages();
+                var species_id = +$(this).val();
+                phenoclim.mapviz.get_data(species_id).done(function(data){
+                  phenoclim.mapviz.refreshWidgets();
+                });
+              })
+              $("select[data-id=stages]").on("change", function(event){
+                phenoclim.mapviz.refreshWidgets()
+              })
+
+              phenoclim.session.map._map.on("zoomend", function(event, toto){
+                phenoclim.mapviz.refreshCharts();
+              })
+
+              phenoclim.session.map._map.on("drag", function(event, toto){
+                phenoclim.mapviz.refreshCharts();
+              })
+
+            })
+        });
+      });
+  </script>
+{% endblock %}

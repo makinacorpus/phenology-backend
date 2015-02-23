@@ -38,6 +38,11 @@ def map_all_surveys(request):
                               RequestContext(request))
 
 
+def map_viz(request):
+    return render_to_response("map_viz.html", {},
+                              RequestContext(request))
+
+
 def viz_all_surveys(request):
     return render_to_response("viz_all_surveys.html", {},
                               RequestContext(request))
@@ -129,7 +134,7 @@ def search_surveys(request):
     cursor = connection.cursor()
     timer.capture()
     classified = {}
-
+    results = {}
     species_id = request.GET.get("species_id")
     individuals = models.Individual.objects.all()
     areas = models.Area.objects.all()
@@ -151,6 +156,7 @@ def search_surveys(request):
 
     classified = {a.id: {'lon': a.lon, 'lat': a.lat, 'city': a.commune,
                          'altitude': a.altitude, 'name': a.name,
+                         'id': a.id,
                          'nb_individuals': 0,
                          "organisms": ",".join(area_organism.get(a.id, [])),
                          'values': {}, 'postalcode': a.postalcode}
@@ -165,6 +171,27 @@ def search_surveys(request):
         tmp['nb_individuals'] += 1
 
     timer.capture()
+    survey_sql = 'SELECT STRFTIME("%Y", date) as year, ' +\
+                 'COUNT(*), MAX(date), MIN(date), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
+                 ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
+                 'backend_individual.species_id = %s ' % species_id +\
+                 'GROUP BY area_id, species_id, stage_id, year ' +\
+                 'ORDER BY area_id, species_id, stage_id,year;'
+    cursor.execute(survey_sql)
+    keys = ['year', 'count', 'max', 'min', 'stage_id', 'species_id', 'area_id']
+    for survey in cursor.fetchall():
+        survey_dict = dict(zip(keys, survey))
+        area = results.setdefault(survey_dict["area_id"],
+                                  classified.get(survey_dict["area_id"]))
+        species = area['values'].setdefault(survey_dict["species_id"], {})
+        stage = species.setdefault(survey_dict["stage_id"], {})
+        stage[survey_dict["year"]] = {
+            "minDate": survey_dict["min"],
+            "maxDate": survey_dict["max"],
+            "count": survey_dict["count"],
+            "values": {}
+        }
+
     survey_sql = 'SELECT STRFTIME("%Y", date) as year,  STRFTIME("%W", date) as week, ' +\
                  'COUNT(*), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
                  ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
@@ -179,7 +206,7 @@ def search_surveys(request):
         species = area['values'].setdefault(survey_dict["species_id"], {})
         stage = species.setdefault(survey_dict["stage_id"], {})
         year = stage.setdefault(survey_dict["year"], {})
-        year[survey_dict["week"]] = survey_dict["count"]
+        year["values"][survey_dict["week"]] = survey_dict["count"]
 
     timer.capture()
     print timer.output()
