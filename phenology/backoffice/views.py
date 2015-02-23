@@ -38,6 +38,20 @@ def map_all_surveys(request):
                               RequestContext(request))
 
 
+def week_query():
+    if "sqlite" in connection.vendor:
+        return 'STRFTIME("%W", date)'
+    else:
+        return 'extract(week from date)'
+
+
+def year_query():
+    if "sqlite" in connection.vendor:
+        return 'STRFTIME("%Y", date)'
+    else:
+        return 'extract(year from date)'
+
+
 def map_viz(request):
     return render_to_response("map_viz.html", {},
                               RequestContext(request))
@@ -90,11 +104,14 @@ def get_data_for_viz(request):
     """
     results = {}
     cursor = connection.cursor()
-    cursor.execute('SELECT STRFTIME("%Y", date) as year,'
-                   'STRFTIME("%W", date) as week, COUNT(*),'
-                   'stage_id , species_id '
-                   'FROM backend_survey, backend_stage '
-                   'WHERE backend_survey.stage_id=backend_stage.id '
+    cursor.execute('SELECT ' +
+                   year_query() +
+                   ' as year,' +
+                   week_query() +
+                   ' as week, COUNT(*),' +
+                   'stage_id , species_id ' +
+                   'FROM backend_survey, backend_stage ' +
+                   'WHERE backend_survey.stage_id=backend_stage.id ' +
                    'GROUP BY stage_id, year, week;')
     keys = ['year', 'week', 'count', 'stage_id', 'species_id']
     for survey in cursor.fetchall():
@@ -115,7 +132,7 @@ def get_species_list(request):
     timer = MyTimer("get_species_list")
     timer.capture()
     cursor = connection.cursor()
-    sql = 'SELECT STRFTIME("%Y", date) as year, stage_id, COUNT(*) ' +\
+    sql = 'SELECT ' + year_query() + ' as year, stage_id, COUNT(*) ' +\
           'FROM backend_survey ' +\
           'GROUP BY year, stage_id;'
     cursor.execute(sql)
@@ -141,8 +158,8 @@ def get_species_list(request):
 
 def get_min_max_surveys(stage_id):
     cursor = connection.cursor()
-    cursor.execute('SELECT STRFTIME("%Y", date) as year,'
-                   'MAX(date) as max, MIN(date) as min '
+    cursor.execute('SELECT ' + year_query() + ' as year,' +
+                   'MAX(date) as max, MIN(date) as min ' +
                    'FROM backend_survey ' +
                    'WHERE stage_id=%s ' % stage_id +
                    'GROUP BY year order by year;')
@@ -202,7 +219,7 @@ def search_surveys(request):
         tmp['nb_individuals'] += 1
 
     timer.capture()
-    survey_sql = 'SELECT STRFTIME("%Y", date) as year, ' +\
+    survey_sql = 'SELECT ' + year_query() + ' as year, ' +\
                  'COUNT(*), MAX(date), MIN(date), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
                  ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
                  'backend_individual.species_id = %s ' % species_id +\
@@ -223,7 +240,7 @@ def search_surveys(request):
             "values": {}
         }
 
-    survey_sql = 'SELECT STRFTIME("%Y", date) as year,  STRFTIME("%W", date) as week, ' +\
+    survey_sql = 'SELECT ' + year_query() + ' as year, ' + week_query() + ' as week, ' +\
                  'COUNT(*), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
                  ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
                  'backend_individual.species_id = %s ' % species_id +\
@@ -320,7 +337,7 @@ def search_snowings(request):
     #     tmp['nb_individuals'] += 1
 
     timer.capture()
-    snowing_sql = 'SELECT STRFTIME("%Y", date) as year,  area_id, MAX(height) ' +\
+    snowing_sql = 'SELECT ' + year_query() + ' as year,  area_id, MAX(height) ' +\
                   'FROM backend_snowing ' +\
                   'WHERE height < 999  AND height > 0 ' +\
                   'GROUP BY area_id, year ' +\
