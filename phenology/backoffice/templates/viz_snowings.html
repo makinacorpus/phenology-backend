@@ -101,7 +101,8 @@
           var years = d3.set(snowings.map(function(d){
             var newdate = new Date(d.date);
             return newdate.getFullYear();
-          })).values().reverse();
+          })).values();
+          years.sort().reverse();
           var $input = $('[name=year]', container);
           $("option", $input).remove();
           $.each(years, function(i, year){
