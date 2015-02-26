@@ -171,6 +171,17 @@ TILES_SETTINGS = {
     'GLOBAL_MAP_BBOX': [4.669189453125, 43.69965122967144, 7.9046630859375, 46.464349400461124],  # Whole Alpes
 }
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'thumbnail': {'size': (100, 100), 'crop': 'smart', 'quality': 100},
+        'thumbnail_2x': {'size': (200, 200), 'crop': 'smart', 'quality': 100},
+        'mobile': {'size': (640, 960)},
+        'mobile_2x': {'size': (1280, 1260)},
+        'tablet': {'size': (1024, 768)},
+        'tablet_2w': {'size': (2048, 768)}
+    },
+}
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
