@@ -10,6 +10,15 @@ class UserForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email',)
 
 
+class SnowingForm(forms.ModelForm):
+    class Meta:
+        model = models.Snowing
+        fields = ('height', 'observer', 'remark', 'area', 'date')
+        widgets = {
+            'remark': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
 class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # magic
@@ -25,7 +34,8 @@ class AccountForm(forms.ModelForm):
         self.initial.update(self.uf.initial)
         self.fields.keyOrder = ['last_name', 'first_name', 'organism', 'email',
                                 'fonction', 'adresse', 'codepostal',
-                                'city', 'phone', 'mobile', 'category', 'nationality']
+                                'city', 'phone', 'mobile', 'category',
+                                'nationality']
 
     def save(self, *args, **kwargs):
         # save both forms

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load json_filters %}
+
+{% block title %}{{ form.instance.name }}{% endblock %}
+
+{% block content %}
+  <script type="text/javascript">
+    var phenoclim = phenoclim || {};
+    {% if form %}
+      phenoclim.options = phenoclim.options || {};
+      phenoclim.options.snowings = {{ snowings|jsonify|safe }};
+    {% endif %}
+  </script>
+
+  <div class="row  table-row">
+
+    <div class="col-md-12  table-col">
+      {% buttons %}
+        <a href="{% url 'my-surveys' %}" class="btn btn-default">
+          {% trans "Back" %}
+        </a>
+      {% endbuttons %}
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <h2>Enneigement</h2>
+        </div>
+      </div>
+      <form method="post" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {{ form.errors }}
+        {% bootstrap_field form.remark %}
+        {% bootstrap_field form.height %}
+        {{ form.observer.as_hidden }}
+        {{ form.area.as_hidden }}
+        {% bootstrap_field form.date layout='inline'%}
+        {{ form.area }}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            {% bootstrap_icon "tree-deciduous" %} {% trans 'Validate' %}
+          </button>
+        {% endbuttons %}
+      </form>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+ $(".answer>.radio").on("click", function(event){
+  var $input = $("input", $(this));
+  $input.prop("checked", "checked");
+  var input_value = $input.val();
+  if(input_value=="today"){
+    console.log("today");
+  }
+  else if(input_value=="before"){
+    console.log("before");
+  }
+  return false;
+ });
+</script>
+
+<script src="{% static 'vendor/pickadate.js/lib/picker.js' %}"></script>
+<script src="{% static 'vendor/pickadate.js/lib/picker.date.js' %}"></script>
+<script src="{% static 'vendor/pickadate.js/lib/picker.time.js' %}"></script>
+<link rel="stylesheet" href="{% static 'vendor/pickadate.js/lib/themes/default.css' %}"></link>
+<link rel="stylesheet" href="{% static 'vendor/pickadate.js/lib/themes/default.date.css' %}"></link>
+{% with lang=LANGUAGE_CODE %}
+  {% if lang != "en" %}
+      <script src="{% static 'vendor/pickadate.js/lib/translations/' %}{{lang}}_{{lang|upper}}.js"></script>
+  {% endif %}
+{% endwith %}
+<script type="text/javascript">
+$( document ).ready(function() {
+  $.each(phenoclim.options.snowings, function(i, d){
+    d.timestamp = +moment(d.date);
+  });
+  var cache_date;
+  $('#id_date').pickadate({
+    format: 'dd/mm/yyyy', 
+    formatSubmit: 'dd/mm/yyyy',
+    onStart: function(a, b, c){
+      console.log("start")
+      cache_date = this.component.item.select.pick;
+    },
+    onRender: function(a, b, c) {
+      $.each(phenoclim.options.snowings, function(i, d){
+        $(".picker [data-pick='" + d.timestamp + "']").addClass('snowing').attr("data-snowing", d.id);
+      })
+      console.log('Whoa.. rendered anew', a, b, c, this);
+    }, 
+    onSet: function(context, i) {
+      $node = $(".picker [data-pick='" + context.select + "']");
+      if($node.hasClass('snowing')){
+        window.location.href = $node.attr("data-snowing");
+      }
+    },
+    max: true})
+});
+</script>
+
+{% endblock %}

@@ -15,7 +15,7 @@ from querystring_parser import parser
 from .utils import as_workbook
 from backend import models
 from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
-    CreateIndividualForm, SurveyForm
+    CreateIndividualForm, SurveyForm, SnowingForm
 from django.db.models import Max, Min
 from django.db import connection
 from backoffice.utils import MyTimer, json_serial
@@ -493,8 +493,53 @@ def survey_detail(request, survey_id=-1):
 
 
 @login_required(login_url='login/')
-def user_detail(request):
+def snowing_detail(request, area_id, snowing_id=-1):
+    timer = MyTimer()
+    timer.capture()
+    snowing = models.Snowing.objects.filter(id=snowing_id).first()
+    snowings = []
+    if not snowing:
+        snowing = models.Snowing()
+        area = models.Area.objects.get(id=area_id)
+        if area:
+            snowing.observer = request.user.observer
+            snowing.area = area
+            snowing.date = datetime.date.today()
+    timer.capture()
+    if request.POST:
+        snowing.observer = request.user.observer
+        form = SnowingForm(request.POST,
+                           instance=snowing)
 
+        if form.is_valid():
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 _('Form is successifully updated'))
+            form.save()
+            return redirect('snowing-detail', area_id=form.instance.area.id, snowing_id=form.instance.id)
+        else:
+            print form.errors
+    else:
+        form = SnowingForm(instance=snowing)
+    timer.capture()
+    query = models.Snowing.objects.all().filter(area=snowing.area.id)
+    if(snowing.id):
+        query = query.exclude(id=snowing.id)
+    snowings = [{"date": s.date.strftime("%Y-%m-%d"),
+                 "id": s.id,
+                 "height": s.height}
+                for s in query]
+    #snowings = []
+    timer.capture()
+    print timer.output()
+    return render_to_response("snowing.html", {
+        "form": form,
+        "snowings": snowings
+    }, RequestContext(request))
+
+
+@login_required(login_url='login/')
+def user_detail(request):
     if request.POST:
         form = AccountForm(request.POST,
                            instance=request.user.observer)

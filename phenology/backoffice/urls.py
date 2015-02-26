@@ -38,6 +38,13 @@ urls = patterns(
         {"next_page": reverse_lazy('home')},
         name='logout'),
 
+    # snowing
+    url(r'^area/(?P<area_id>\d+)/snowing/create$', views.snowing_detail,
+        name='snowing-detail'),
+    url(r'^area/(?P<area_id>\d+)/snowing/(?P<snowing_id>\d+)',
+        views.snowing_detail,
+        name='snowing-detail'),
+
     # area
     url(r'^area/create$', views.area_detail, name='area-detail'),
     url(r'^area/(?P<area_id>\d+)', views.area_detail, name='area-detail'),
