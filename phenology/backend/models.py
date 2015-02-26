@@ -46,7 +46,7 @@ def get_thumbnail(picture, options=None):
     if not picture:
         picture = picture.field.default
     if not options:
-        options = {'size': (100, 100)}
+        options = {'size': (200, 200), 'quality': 100}
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
 
