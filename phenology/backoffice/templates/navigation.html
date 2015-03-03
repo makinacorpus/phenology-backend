@@ -21,6 +21,7 @@
           {% endif %}
           ><a href="{% url 'my-surveys' %}">{% trans "My surveys" %}</a>
         </li>
+        {% if user.is_authenticated and user.observer.is_crea %}
 
         <li
         {% if 'allsurveys' in request.get_full_path%}
@@ -28,6 +29,7 @@
         {% endif %}
         ><a href="{% url 'all-surveys' %}">{% trans "All surveys" %}</a>
         </li>
+        {% endif %}
 
       </ul><!-- /.nav-justified -->
 
