@@ -128,6 +128,9 @@ class Area(models.Model):
             results[individual.species].append(individual)
         return results
 
+    def get_individuals_with_species(self):
+        return self.individual_set.select_related('species')
+
     def geojson(self, full=False):
         return {
             "type": "Point",
@@ -308,6 +311,7 @@ class Individual(models.Model):
         date_referer = datetime.date.today()
         previous_date = date_referer + relativedelta(months=-6)
         next_date = date_referer + relativedelta(months=+8)
+        all_surveys = list(self.survey_set.all())
         for stage in self.species.stage_set.all().filter(is_active=True):
             date_start = datetime.date(next_date.year, stage.month_start,
                                        stage.day_start)
@@ -325,14 +329,15 @@ class Individual(models.Model):
                                                           stage.month_start,
                                                           stage.day_start),
                                             date_end)))
-        print "###################"
-        # print "sfsfsfsdfs"
-        all_stages = last_stages + next_stages
         all_stages = [(stage, dates,
-                       self.survey_set.filter(stage=stage,
-                                              date__year=dates[0].year).first()
+                       [s for s in all_surveys
+                        if (s.stage_id is stage.id and
+                            s.date.year == dates[0].year)]
                        )
-                      for (stage, dates) in all_stages]
+                      for (stage, dates) in last_stages + next_stages]
+
+        all_stages = [(s, d, (a[0] if len(a) > 0 else None))
+                      for (s, d, a) in all_stages]
         all_stages = sorted(all_stages, key=lambda stage: stage[1][0])
         return all_stages
 
