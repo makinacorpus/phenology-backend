@@ -208,6 +208,10 @@ class Observer(models.Model):
         return self.user.username
 
     def getAllGeojson(self):
+
+        if not self.id:
+            return None
+
         geojson = {
             "type": "FeatureCollection",
             "features": [],
@@ -402,10 +406,10 @@ class Stage(models.Model):
     picture_before = ThumbnailerImageField(upload_to='picture/stages',
                                            default='no-img.jpg',
                                            verbose_name=_('Before'))
-    picture_current = ThumbnailerImageField(upload_to='pictures/stages',
+    picture_current = ThumbnailerImageField(upload_to='picture/stages',
                                             default='no-img.jpg',
                                             verbose_name=_('Current'))
-    picture_after = ThumbnailerImageField(upload_to='pictures/stages',
+    picture_after = ThumbnailerImageField(upload_to='picture/stages',
                                           default='no-img.jpg',
                                           verbose_name=_('After'))
     is_active = models.BooleanField(verbose_name=_("is activated?"),

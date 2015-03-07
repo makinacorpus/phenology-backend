@@ -47,6 +47,11 @@ class Command(BaseCommand):
                 "stages": stages},
                 fp)
 
+    def fix_picture(self, name):
+        if name.startwith("pictures"):
+            name = name.replace("pictures", "picture")
+        return name
+
     def load(self):
         """ integrate data in new db """
         with open('backup_preprod.json', 'r') as fp:
@@ -58,7 +63,6 @@ class Command(BaseCommand):
                 if sp:
                     sp.description = unicode(s["description"])
                     sp.picture = unicode(s["picture"])
-                    print unicode(sp.name)
                     sp.save()
             for s in data["stages"]:
                 sp = models.Stage.objects.filter(species__name=s["species__name"]).filter(name=s["name"]).first()
