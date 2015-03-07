@@ -37,7 +37,6 @@ class Command(BaseCommand):
         logger.info('Done.')
 
     def integrate_translation(self):
-        #translation.activate('fr')
         """ integrate data in new db """
         cursor = connection.cursor()
 
@@ -45,5 +44,3 @@ class Command(BaseCommand):
             cursor.execute("UPDATE backend_species SET name_fr='" + value +"' WHERE name='"+key +"'")
             cursor.execute("UPDATE backend_stage SET name_fr='" + value +"' WHERE name='"+key +"'")
         cursor.execute("UPDATE backend_stage SET is_active=0 WHERE name='chute_moit' OR name='chute_fin'")
-
-        #translation.deactivate()
