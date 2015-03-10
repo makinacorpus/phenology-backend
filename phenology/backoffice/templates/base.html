@@ -27,7 +27,7 @@
     var phenoclim = phenoclim || {};
     var userLang = navigator.language || navigator.userLanguage;
     moment.locale(userLang);
-    {% if form %}
+    {% if form and form.instance %}
       phenoclim.options = {
         geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
       }
@@ -36,7 +36,9 @@
 
    <body>
      {% block navigation %}
-      {% include "navigation.html" %}
+      {% if user.is_authenticated %}
+        {% include "navigation.html" %}
+      {% endif %}
      {% endblock %}
 
      {% bootstrap_messages messages %}
