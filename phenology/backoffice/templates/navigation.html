@@ -8,15 +8,15 @@
       <ul class="nav nav-justified">
 
         <li
-          {% if 'profile' in request.get_full_path or 'area' in request.get_full_path or 'individual' in request.get_full_path%}
+          {% if 'profile' in request.get_full_path or 'area' in request.get_full_path or 'individual' in request.get_full_path %}
           class="active"
           {% endif %}
           >
-          <a href="{% url 'profile' %}">{% trans "My Profil" %}</a>
+          <a href="{% url 'profile' %}">{% trans "My Profil" %} ({{ user.username }})</a>
         </li>
 
         <li
-          {% if 'mysurveys' in request.get_full_path or '/survey' in request.get_full_path%}
+          {% if 'mysurveys' in request.get_full_path or '/survey' in request.get_full_path %}
           class="active"
           {% endif %}
           ><a href="{% url 'my-surveys' %}">{% trans "My surveys" %}</a>
@@ -24,7 +24,7 @@
         {% if user.is_authenticated and user.observer.is_crea %}
 
         <li
-        {% if 'allsurveys' in request.get_full_path%}
+        {% if 'allsurveys' in request.get_full_path %}
         class="active"
         {% endif %}
         ><a href="{% url 'all-surveys' %}">{% trans "All surveys" %}</a>
@@ -34,11 +34,7 @@
       </ul><!-- /.nav-justified -->
 
       <ul class="nav navbar-nav navbar-right">
-        {% if user.is_authenticated %}
           <a class="btn btn-default navbar-btn" href="{% url 'logout' %}">{% trans "Logout" %}</a>
-        {% else %}
-          <a class="btn btn-default navbar-btn" href="{% url 'login' %}">{% trans "Login" %}</a>
-        {% endif %}
       </ul><!-- /button -->
 
     </div><!-- /.container-fluid -->
