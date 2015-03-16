@@ -104,11 +104,11 @@ class Command(BaseCommand):
             area_file = os.path.join(self.output_folder, 'area_%s.zip' % area.id)
             tmp_area_file = area_file + '.tmp'
 
-            if not (area.lon and area.lat and not(area.lon != 1 and area.lat != -1)):
+            if not (area.lon and area.lat and area.lon != 1 and area.lat != -1):
                 inds = Individual.objects.filter(area=area)
                 for ind in inds:
                     if ind.lon and ind.lat and ind.lat != 1:
-                        coords = [(ind.lon, ind.lon)]
+                        coords = [(ind.lon, ind.lat)]
                         break
             else:
                 coords = [(area.lon, area.lat)]
