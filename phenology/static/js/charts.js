@@ -70,7 +70,6 @@ phenoclim.viz.refreshYears = function(){
     }
   });
   $(".checkbox input").change(function(event){
-    phenoclim.session.linechart.refresh();
     phenoclim.session.barchart.refresh();
     phenoclim.session.timebarchart.refresh();
   });
@@ -297,11 +296,15 @@ phenoclim.viz.barChart = function(params){
   var options = {
     selector: ".graph-bars",
     margin: {top: 20, right: 10, bottom: 30, left: 80},
+    max_width: 700,
   }
   $.extend(true, options, params);
 
   var container = d3.select(options.selector);
   var main_width = options.width || $(options.selector).width();
+  if (main_width > options.max_width){
+    main_width = options.max_width;
+  }
   var width = main_width - options.margin.left - options.margin.right;
   var height = (main_width*3/5) - options.margin.top - options.margin.bottom;
 
@@ -424,11 +427,15 @@ phenoclim.viz.barChart = function(params){
       var options = {
         selector: ".graph-bars-time",
         margin: {top: 20, right: 10, bottom: 30, left: 80},
+        max_width: 700,
       }
       $.extend(true, options, params);
 
       var container = d3.select(options.selector);
       var main_width = options.width || $(options.selector).width();
+      if (main_width > options.max_width){
+        main_width = options.max_width;
+      }
       var width = main_width - options.margin.left - options.margin.right;
       var height = (main_width*3/5) - options.margin.top - options.margin.bottom;
 
