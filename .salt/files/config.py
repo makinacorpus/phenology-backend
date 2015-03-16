@@ -95,6 +95,12 @@ LOGGING = {
 ADDITIONAL_TEMPLATE_DIRS = tuple({{data.ADDITIONAL_TEMPLATE_DIRS}})
 {% endif %}
 
+EMAIL_HOST = {{data.EMAIL_HOST}}
+EMAIL_HOST_USER = {{data.EMAIL_HOST_USER}}
+EMAIL_HOST_PASSWORD = {{data.EMAIL_HOST_PASSWORD}}
+EMAIL_PORT = {{data.EMAIL_PORT}}
+EMAIL_USE_TLS = {{data.EMAIL_USE_TLS}}
+
 # Application specific settings
 {% for param, value in data.get('extra_settings', {}).items() %}
 {{param}} = {{value}}

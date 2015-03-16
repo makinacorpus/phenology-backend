@@ -71,6 +71,11 @@ makina-projects.projectname:
     compile_messages: true
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_secret_key', 64)}}"
+    EMAIL_HOST: 'localhost'
+    EMAIL_HOST_USER: ''
+    EMAIL_HOST_PASSWORD: ''
+    EMAIL_PORT: 25
+    EMAIL_USE_TLS: False
     # http_users:
     #   - root: foo
     #ADDITIONAL_TEMPLATE_DIRS:
