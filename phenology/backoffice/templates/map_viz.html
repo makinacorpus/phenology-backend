@@ -73,6 +73,7 @@
       phenoclim.mapviz.load_layers = function(){
         phenoclim.session.map_layers.clearLayers();
         var species_id = $("[data-id=species]").val();
+        var species_name = $("[data-id=species] :selected").text();
         var stage_id = $("[data-id=stages]").val();
 
         phenoclim.mapviz.get_data(species_id).done(function(data){
@@ -81,8 +82,8 @@
               years = $.getKeys(years);
               if(years.length > 0){
                 var marker = L.circleMarker([item.lat, item.lon], {radius:5, weight:1, opacity: 1, fillOpacity: 0.2, color:"blue"}).addTo(phenoclim.session.map_layers);
-                marker.bindPopup("<div class='container-fluid'><div class='row'><div class='col-xs-12'>"+ item.name +"<p>" +item.organisms+"</br>"+item.city + " - " + 
-                  item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "</br>"+item.nb_individuals+" individus</p></div></div><div class='row'><div class='graph'></div></div></div>")
+                marker.bindPopup("<div class='container-fluid'><div class='row text-center'><div class='col-xs-12'>" +item.organisms+"</br>"+item.city + " - " + 
+                  item.postalcode+" <br/> Altitude : "+item.altitude +"m" + "</br>"+item.nb_individuals+" "+ species_name.toLowerCase() + "(s)</div></div><div class='row'><div class='graph'></div></div></div>")
                 marker.on("click", function(event, toto){
                   phenoclim.session.chart2_Obj.width(300);
                   var popup = this.getPopup()
