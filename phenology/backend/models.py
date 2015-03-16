@@ -42,11 +42,11 @@ def has_changed(instance, field, manager='objects'):
     return not getattr(instance, field) == old
 
 
-def get_thumbnail(picture, options=None):
+def get_thumbnail(picture, options=None, alias=None):
     if not picture:
         picture = picture.field.default
     if not options:
-        options = {'size': (200, 200), 'quality': 100}
+        options = {'size': (200, 200), 'quality': 100, 'crop': 'smart'}
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
 
@@ -58,6 +58,7 @@ class Species(models.Model):
     picture = ThumbnailerImageField(upload_to='picture/species',
                                     default='no-img.jpg')
 
+    """
     def save(self, *args, **kwargs):
         # Save this photo instance
         if has_changed(self, 'picture') and self.picture:
@@ -65,16 +66,16 @@ class Species(models.Model):
             #filename = os.path.splitext(os.path.split(self.picture.name)[-1])[0]
             filename = "%s.png" % unicodedata.normalize('NFD', self.name).lower()
             if(self.picture.file):
-                """
+                ""
                 if image.mode not in ('L', 'RGB'):
                     image = image.convert('RGB')
-                """
+                ""
                 # d'abord la photo elle-même
                 self.picture.save(filename,
                                   self.picture.file,
                                   save=False)
         super(Species, self).save()
-
+    """
     class Meta:
         verbose_name = _("Species")
         verbose_name_plural = _("species")
@@ -416,13 +417,13 @@ class Stage(models.Model):
                                     default=True)
 
     def thumbnail_before(self):
-        return get_thumbnail(self.picture_before, {'size': (200, 200)})
+        return get_thumbnail(self.picture_before, {'size': (1000, 1000)})
 
     def thumbnail_current(self):
-        return get_thumbnail(self.picture_current, {'size': (200, 200)})
+        return get_thumbnail(self.picture_current, {'size': (1000, 1000)})
 
     def thumbnail_after(self):
-        return get_thumbnail(self.picture_after, {'size': (200, 200)})
+        return get_thumbnail(self.picture_after, {'size': (1000, 1000)})
 
     def __str__(self):
         return u"%s" % self.name
