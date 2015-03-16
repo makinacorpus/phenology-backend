@@ -23,10 +23,8 @@ urls = patterns(
     # change password
     url(r'^password_change',
         'django.contrib.auth.views.password_change',
-        {'template_name': base_path + '/templates/generic_form.html'}),
-    url(r'^password_change/done',
-        'django.contrib.auth.views.password_change_done',
-        name='password_change_done'),
+        {'template_name': base_path + '/templates/generic_form.html',
+         'post_change_redirect': reverse_lazy('home')}),
 
     # change password
     url(r'^password_reset', views.password_reset, name="password_reset"),
