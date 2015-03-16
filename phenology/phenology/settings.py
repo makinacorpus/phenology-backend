@@ -49,7 +49,6 @@ INSTALLED_APPS = (
     'modeltranslation',  # allow to translate model field
     'rest_framework',  # Rest api
     'registration',
-    'registration_defaults',
     'corsheaders',  # server headers required for Cross-Origin Resource Sharing
     'django.contrib.admin',
     'django.contrib.auth',
@@ -129,14 +128,14 @@ DATE_FORMAT = 'iso-8601'
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-#LANGUAGE_CODE = 'fr'
+# LANGUAGE_CODE = 'fr'
 
 LANGUAGES = (
     ('fr', _('french')),
     ('it', _('italian')),
     ('en', _('english'))
 )
-#AUTH_USER_MODEL = 'backend.Observer'
+# AUTH_USER_MODEL = 'backend.Observer'
 
 TIME_ZONE = 'Europe/Paris'
 LANGUAGE_CODE = 'fr'
@@ -144,7 +143,7 @@ SITE_ID = 1
 DEFAULT_LANGUAGE = 1
 USE_I18N = True
 USE_L10N = True
-#USE_TZ = True
+# USE_TZ = True
 
 
 LOCALE_PATHS = (
@@ -235,8 +234,13 @@ LOGGING = {
     }
 }
 
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 try:
     from .settings_local import *
 except ImportError:
     pass
-
