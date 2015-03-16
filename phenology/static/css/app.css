@@ -181,6 +181,10 @@ rect:hover{
   margin-bottom: 5px;
 }
 
+.graph{
+  position: relative;
+}
+
 div.tooltip {
   position: absolute;
   text-align: center;
@@ -275,6 +279,22 @@ div.tooltip {
   fill: steelblue;
   fill-opacity: .9;
 }
+
 .snowing-area .bar:hover {
   fill: brown;
+}
+
+.picker__day.picker__day--infocus.snowing{
+  background: #76b729;
+  color: white;
+  border: 1px solid #76b729;
+  opacity: 0.9;
+}
+.picker__day.picker__day--infocus.snowing:hover{
+  opacity: 1;
+}
+
+form {
+  max-width: 500px;
+  margin: auto;
 }
