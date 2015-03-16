@@ -162,7 +162,7 @@ STATIC_URL = '/static/'
 
 TILES_SETTINGS = {
     'TILES_RADIUS_LARGE': 0.01,  # ~1 km
-    'TILES_RADIUS_SMALL': 0.05,  # ~500 m
+    'TILES_RADIUS_SMALL': 0.005,  # ~500 m
     'TILES_GLOBAL_ZOOMS': range(5, 11),  # zoom 7 to 10
     'TILES_AREA_ZOOMS': range(11, 17),  # zoom 11 to 16
     'TILES_ROOT': os.path.join(MEDIA_ROOT, 'tiles'),
