@@ -15,10 +15,14 @@ from querystring_parser import parser
 from .utils import as_workbook
 from backend import models
 from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
-    CreateIndividualForm, SurveyForm, SnowingForm
+    CreateIndividualForm, SurveyForm, SnowingForm, ResetPasswordForm
 from django.db.models import Max, Min
 from django.db import connection
 from backoffice.utils import MyTimer, json_serial
+from django.utils.crypto import get_random_string
+from django.core import mail
+from django.conf import settings
+from django.template.loader import render_to_string
 
 
 @login_required(login_url='login/')
@@ -540,6 +544,9 @@ def snowing_detail(request, area_id, snowing_id=-1):
 
 @login_required(login_url='login/')
 def user_detail(request):
+    if not request.user.observer:
+        request.user.observer = models.Observer()
+        request.user.save()
     if request.POST:
         form = AccountForm(request.POST,
                            instance=request.user.observer)
@@ -661,3 +668,32 @@ def viz_snowings(request):
     areas = sorted(areas, key=lambda a: (int(area_ids[a.id])), reverse=True)
     return render_to_response("viz_snowings.html", {"areas": areas},
                               RequestContext(request))
+
+
+def password_reset(request):
+    template = "password_new_form.html"
+    if request.POST:
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.data["email"]
+            password = get_random_string()
+            user = User.objects.get(email=email)
+            if user:
+                user.set_password(password)
+                message = render_to_string('password_new_email.html',
+                                           {'user': user,
+                                            'password': password})
+                user.save()
+                mail.send_mail(
+                    subject=_(u"New password"),
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False)
+
+                template = "password_new_done.html"
+    else:
+        form = ResetPasswordForm()
+    return render_to_response(template, {
+        "form": form
+    }, RequestContext(request))

@@ -28,6 +28,8 @@ urls = patterns(
         'django.contrib.auth.views.password_change_done',
         name='password_change_done'),
 
+    # change password
+    url(r'^password_reset', views.password_reset, name="password_reset"),
     # authentification
     url(r'^login',
         'django.contrib.auth.views.login',
@@ -87,7 +89,8 @@ urls = patterns(
     url(r'^map_all_snowings$', views.map_all_snowings, name='map-snowings'),
     url(r'^search_snowings', views.search_snowings, name="search-snowings"),
     url(r'^viz_snowings$', views.viz_snowings, name='viz-snowings'),
-    url(r'^get_area_snowings$', views.get_area_snowings, name='viz-area-snowings'),
+    url(r'^get_area_snowings$', views.get_area_snowings,
+        name='viz-area-snowings'),
     url(r'^map_viz$', views.map_viz, name='viz-map'),
 )
 # vim:set et sts=4 ts=4 tw=80:
