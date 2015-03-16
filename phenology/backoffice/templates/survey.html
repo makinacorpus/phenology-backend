@@ -22,15 +22,15 @@
       </div>
       <div class="row preview_pictures">
         <div class="col-xs-4 text-center">
-          <img src="{% thumbnail form.instance.stage.picture_before 200x200 %}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_before 1000x1000 %}"></img>
           <div>{% trans 'before' %}</div>
         </div>
         <div class="col-xs-4 text-center current">
-          <img src="{% thumbnail form.instance.stage.picture_current 200x200 %}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_current 1000x1000 %}"></img>
           <div>{% trans 'current' %}</div>
         </div>
         <div class="col-xs-4 text-center">
-          <img src="{% thumbnail form.instance.stage.picture_after 200x200 %}"></img>
+          <img src="{% thumbnail form.instance.stage.picture_after 1000x1000 %}"></img>
           <div>{% trans 'after' %}</div>
         </div>
       </div>
