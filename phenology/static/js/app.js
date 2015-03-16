@@ -11,7 +11,8 @@ var geojsonMarkerOptions = {
     fillOpacity: 0.3
 };
 var phenoMarker = L.AwesomeMarkers.icon({
-  icon: 'tree-deciduous',
+  icon: 'leaf',
+  prefix: 'ion',
   markerColor: 'green'
 });
 
@@ -50,7 +51,6 @@ phenoclim.map = function(options){
       self.geojson = L.geoJson(options.geojson,{
           pointToLayer: function (feature, latlng) {
             var ftype = feature.properties.object
-            console.log(feature.properties)
             if(ftype)
             {
               if(ftype == "individual"){
