@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email',)
+        fields = ('username', 'first_name', 'last_name', 'email',)
 
 
 class SnowingForm(forms.ModelForm):
@@ -19,10 +19,21 @@ class SnowingForm(forms.ModelForm):
         }
 
 
+class ResetPasswordForm(forms.Form):
+    email = forms.CharField(label='Email', max_length=100)
+
+
 class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # magic
-        self.user = kwargs['instance'].user
+        #import pdb;pdb.set_trace()
+        print kwargs
+        if (not kwargs.get('instance')):
+            observer = models.Observer()
+            observer.user = User()
+            self.user = observer.user
+        else:
+            self.user = kwargs['instance'].user
         user_kwargs = kwargs.copy()
         user_kwargs['instance'] = self.user
         self.uf = UserForm(*args, **user_kwargs)
@@ -32,7 +43,7 @@ class AccountForm(forms.ModelForm):
 
         self.fields.update(self.uf.fields)
         self.initial.update(self.uf.initial)
-        self.fields.keyOrder = ['last_name', 'first_name', 'organism', 'email',
+        self.fields.keyOrder = ['username', 'last_name', 'first_name', 'organism', 'email',
                                 'fonction', 'adresse', 'codepostal',
                                 'city', 'phone', 'mobile', 'category',
                                 'nationality']
