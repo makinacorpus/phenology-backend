@@ -58,7 +58,7 @@
                           {% else %}
                           {% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
                           {% endif %}">
-                          {{ stage }} [{{ dates.0.year}}] - {{survey.date}} - {{stage.month_start}} {{stage.month_end}}
+                          {{ stage }} [{{ dates.0.year}}] {% if survey %}- {{survey.date}}{% endif %}
                         </a>
                       </li>
                       {% endfor %}
@@ -71,6 +71,25 @@
             </ul>
           </li>
         </ul>
+        <h3 class="text-center"> Graphiques </h3>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-8 graph">
+              
+            </div>
+            <div class="col-xs-4">
+              <select name="individual" class="form-control" data-id="individuals">
+                {% for a in area.get_individuals_with_species.all %}
+                  {% if a.survey_set.count > 0 %}
+                    <option rel="{{a.species_id}}" value="{{a.id}}">{{a.name}}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <select name="stage" class="form-control" data-id="stages">
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-xs-6 col-md-7 table-col" style="position:relative">
@@ -78,9 +97,30 @@
       </div>
     </div>
       <script type="text/javascript">
+
         $( document ).ready(function(){
           $("#map").height($("#map").parent().height() - 100);
+
+          /** viz obj **/
+          phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
+
+          // getting area data          
+          $.get("get_area_data?area_id={{user.observer.areas.all.0.id}}").done(function(data){
+            phenoclim.session.area = data;
+            refreshStages();
+            refreshChart();
+            $("[data-id=individuals]").on("change", function(event){
+              refreshStages();
+              refreshChart();
+            });
+            $("[data-id=stages]").on("change", function(event){
+              refreshChart();
+            });
+          });
+
         });
+
+        /** Accordion **/
         $(".display__stage").hide();
         $(".display__area a").on("click", function(event){
           var li = $(this).parent("li");
@@ -96,6 +136,38 @@
             return false;
           }
         });
+
+        /** Viz Combobox **/
+        function refreshStages(){
+          var $stages_field = $("[data-id=stages]");
+          var $individual_option = $("[data-id=individuals] :selected");
+          var individual_id = +$individual_option.attr("value");
+          var species_id = +$individual_option.attr("rel");
+          var data = phenoclim.session.area.species[species_id];
+          $("option", $stages_field).remove();
+          var stages = d3.entries(data.values || {});
+          stages.sort(function(a,b){
+            return a.value.name.localeCompare(b.value.name);
+          })
+          $.each(stages, function(i, item){
+            var option = $("<option>").attr("value", item.key).text(item.value.name);
+            option.appendTo($stages_field);
+          });
+        }
+
+        function refreshChart(){
+          var $individual_option = $("[data-id=individuals] :selected");
+          var individual_id = +$individual_option.attr("value");
+          var species_id = +$individual_option.attr("rel");
+          var stage_id = $("[data-id=stages]").val();
+          var tmp = {
+            label: '',
+            key: individual_id,
+            values: phenoclim.session.area.species[species_id].values[stage_id].values[individual_id]
+          };
+          d3.select(".graph").datum([tmp]).call(phenoclim.session.chart_Obj);
+        }
+
       </script>
     {% endfor %}
 {% endblock %}
