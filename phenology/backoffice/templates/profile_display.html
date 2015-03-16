@@ -24,13 +24,14 @@
     <div class="row  table-row">
 
       <div class=" col-xs-6 col-md-5  table-col">
+        <h3 class="text-center"> Observations </h3>
         {% for area in user.observer.areas.all %}
           <ul class="display__accordeon">
             <li class="display__area">
               <a href="{% url 'area-detail' area.id %}">
-                {{ area }}
+                {{ area }} [ {{ area.commune }} - {{ area.altitude }} m]
               </a>
-              <ul>{% regroup area.individual_set.all by species as area_species %}
+              <ul>{% regroup area.get_individuals_with_species.all|dictsort:"name" by species as area_species %}
                 {% for individuals_by_species in area_species %}
                 <li class="display__species">
                   <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">
