@@ -10,18 +10,22 @@ from backoffice.urls import urls as backoffice_urls
 admin.autodiscover()
 
 router = routers.DefaultRouter()
-#router.register(r'users', views.UserViewSet)
-#router.register(r'groups', views.GroupViewSet)
+# router.register(r'users', views.UserViewSet)
+# router.register(r'groups', views.GroupViewSet)
 router.register(r'areas', views.AreaViewSet)
 router.register(r'species', views.SpeciesViewSet)
 router.register(r'observers', views.ObserverViewSet)
 router.register(r'individuals', views.IndividualViewSet)
 router.register(r'surveys', views.SurveyViewSet)
+# from backoffice.forms import AccountForm
+# from registration.backends.simple.views import RegistrationView
 
 urlpatterns = patterns(
     '',
     # Examples:
-    url(r'^accounts/', include('registration.backends.default.urls')),
+
+    # url(r'^accounts/', include('accounts.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
