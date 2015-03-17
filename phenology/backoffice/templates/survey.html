@@ -10,13 +10,11 @@
   <div class="row  table-row">
 
     <div class="col-md-12  table-col">
-      {% buttons %}
+      <div class="row">
+        <div class="col-xs-12 text-center">
         <a href="{% url 'my-surveys' %}" class="btn btn-default">
           {% trans "Back" %}
         </a>
-      {% endbuttons %}
-      <div class="row">
-        <div class="col-xs-12 text-center">
           <h2>{{ form.instance.stage.name }}</h2>
         </div>
       </div>
