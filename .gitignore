@@ -1,4 +1,7 @@
 *pyc
+/phenology/media/**/*.jpg
+/phenology/media/**/*.png
+/phenology/media/**/*.JPG
 /cache
 /venv/
 /develop_eggs/

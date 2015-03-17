@@ -15,7 +15,6 @@
 makina-projects.projectname:
   data:
     PROJECT: phenology
-    SITE_ID: 1
     app_root: "{project_root}/{PROJECT}"
     htaccess: "/etc/{name}.webaccess"
     py_root: "{project_root}/venv"
@@ -23,39 +22,16 @@ makina-projects.projectname:
     domain: "{fqdn}"
     requirements: "{project_root}/requirements.txt"
     server_aliases: []
-    LANGUAGE_CODE: fr-fr
-    DATE_FORMAT: 'iso-8601'
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
     WSGI: "{PROJECT}.wsgi:application"
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
-    ALLOWED_HOSTS:
-      - localhost
-      - 127.0.0.1
-      - "{domain}"
-      - "{fqdn}"
-      - "10.5.0.1"
-    CORS_ORIGIN_ALLOW_ALL: 'True'
     adminmail: "root@{domain}"
-    timezone: 'Europe/Paris'
     admins:
       - foo:
           mail: "{adminmail}"
           password: {{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_admin')}}
-    #db:
-    #  default:
-    #    ENGINE: 'django.db.backends.sqlite3'
-    #    NAME: "{data_root}/{PROJECT}.sqlite"
-    ###
-    db:
-      default:
-        ENGINE: 'django.db.backends.postgresql_psycopg2'
-        USER: 'phenology'
-        PORT: '5432'
-        HOST: '127.0.0.1'
-        NAME: 'phenology'
-        PASSWORD: '{name}secret'
     static: "{data_root}/static"
     media: "{data_root}/media"
     host: localhost
@@ -63,28 +39,119 @@ makina-projects.projectname:
     workers: 10
     worker_class: sync
     worker_timeout: 9000
-    DEBUG: False
     py: "{py_root}/bin/python"
-    USE_X_FORWARDED_HOST: True
     USER_MODULE: django.contrib.auth.models
     USER_CLASS: User
     compile_messages: true
-    SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
-                           'corpus-django_web_secret_key', 64)}}"
-    EMAIL_HOST: 'localhost'
-    EMAIL_HOST_USER: ''
-    EMAIL_HOST_PASSWORD: ''
-    EMAIL_PORT: 25
-    EMAIL_USE_TLS: False
     # http_users:
     #   - root: foo
-    #ADDITIONAL_TEMPLATE_DIRS:
-    #  - '{project_root}/calanques'
-    # extra django settings to add
-    # to the file
+
     #extra_settings:
     #  FOO: "'bar'"
     #  BAR: "True"
+    django_settings:
+      # order is important
+      ADMINS: "placeholder (totally computed)"
+      SITE_ID: 1
+      DATABASES:
+        default:
+          # SQLITE
+          # ENGINE: 'django.db.backends.sqlite3'
+          # NAME: "{data_root}/{PROJECT}.sqlite"
+          # GEODJANGO BACKEND !
+          #    ENGINE: 'django.contrib.gis.db.backends.postgis'
+          # Classical pg backend
+          ENGINE: 'django.db.backends.postgresql_psycopg2'
+          USER: '{name}'
+          PORT: 5432
+          HOST: '127.0.0.1'
+          NAME: 'db'
+          PASSWORD: '{name}secret'
+      DEFAULT_FROM_EMAIL: '{adminmail}'
+      SERVER_EMAIL: 'root@{fqdn}'
+      MEDIA_ROOT: '{media}'
+      STATIC_ROOT: '{static}'
+      LANGUAGE_CODE: fr-fr
+      DATE_FORMAT: 'iso-8601'
+      ALLOWED_HOSTS:
+        - localhost
+        - 127.0.0.1
+        - "{domain}"
+        - "{fqdn}"
+        - "10.5.0.1"
+      CORS_ORIGIN_ALLOW_ALL: True
+      # Internationalization
+      # https://docs.djangoproject.com/en/1.6/topics/i18n/
+      TIME_ZONE: 'Europe/Paris'
+      DEBUG: False
+      TEMPLATE_DEBUG: False
+      USE_X_FORWARDED_HOST: True
+      USER_MODULE: django.contrib.auth.models
+      USER_CLASS: User
+      SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
+                             'corpus-django_web_secret_key', 64)}}"
+      LOGGING:
+        version: 1
+        disable_existing_loggers: False
+        filters:
+          require_debug_false:
+            '()': django.utils.log.RequireDebugFalse
+        handlers:
+          mail_admins:
+            level: 'ERROR'
+            class: django.utils.log.AdminEmailHandler
+          console:
+            level: 'DEBUG'
+            class: 'logging.StreamHandler'
+        loggers:
+          '':
+            handlers: ['console']
+            level: 'DEBUG'
+            propagate: False
+          django.request:
+             handlers: ['console', 'mail_admins']
+             level: 'ERROR'
+             propagate: True
+          django:
+             handlers: ['console', 'mail_admins']
+             level: 'ERROR'
+             propagate': True
+      EMAIL_HOST: 'localhost'
+      EMAIL_HOST_USER: ''
+      EMAIL_HOST_PASSWORD: ''
+      EMAIL_PORT: 25
+      EMAIL_USE_TLS: False
+      TILES_SETTINGS:
+          'TILES_RADIUS_LARGE': 0.01
+          'TILES_RADIUS_SMALL': 0.005
+          'TILES_GLOBAL_ZOOMS':
+          {% for i in range(5, 11)%}
+            - {{i}}
+          {%endfor%}
+          'TILES_AREA_ZOOMS':
+          {% for i in range(11, 17)%}
+            - {{i}}
+          {%endfor%}
+          'TILES_ROOT': "{media}/tiles"
+          'TILES_URL': 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+          'GLOBAL_MAP_BBOX': [4.669189453125,
+                              43.69965122967144,
+                              7.9046630859375,
+                              46.464349400461124]
+      LANGUAGES:
+        - "('fr', _('French'))"
+        - "('en', _('English'))"
+        - "('it', _('Italia'))"
+      #ADDITIONAL_TEMPLATE_DIRS:
+      #  - '{project_root}/calanques'
+      # add custom extra_settings which will be processed at end only
+      #extra_django_settings:
+      #  FOO: bar
+      #  BAR: true
+      # settings rendered as is (not via the macro
+      #extra_settings:
+      #  FOO: "'bar'"
+      #  BAR: "True"
   env_defaults:
     dev:
       DEBUG: True
