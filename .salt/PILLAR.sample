@@ -40,8 +40,6 @@ makina-projects.projectname:
     worker_class: sync
     worker_timeout: 9000
     py: "{py_root}/bin/python"
-    USER_MODULE: django.contrib.auth.models
-    USER_CLASS: User
     compile_messages: true
     # http_users:
     #   - root: foo
@@ -65,7 +63,7 @@ makina-projects.projectname:
           USER: '{name}'
           PORT: 5432
           HOST: '127.0.0.1'
-          NAME: 'db'
+          NAME: 'phenology'
           PASSWORD: '{name}secret'
       DEFAULT_FROM_EMAIL: '{adminmail}'
       SERVER_EMAIL: 'root@{fqdn}'

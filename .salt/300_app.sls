@@ -1,5 +1,6 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
+{% set ds = cfg.data.django_settings %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
 
 
@@ -18,8 +19,7 @@
     - template: jinja
     - user: {{cfg.user}}
     - defaults:
-      cfg: |
-           {{scfg}}
+        cfg: {{cfg.name}}
     - group: {{cfg.group}}
     - makedirs: true
 
@@ -86,7 +86,7 @@ user-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
+                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
                 User.objects.filter(username='{{admin}}').all()[0]
                 if os.path.isfile("{{f}}"):
                     os.unlink("{{f}}")
@@ -121,7 +121,7 @@ superuser-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
+                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
                 user=User.objects.filter(username='{{admin}}').all()[0]
                 user.set_password('{{udata.password}}')
                 user.email = '{{udata.mail}}'
