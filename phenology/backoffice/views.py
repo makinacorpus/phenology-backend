@@ -614,10 +614,10 @@ def get_surveys(request):
         "stage": "stage__name",
         "answer": "answer"
     }
-    parsed = parser.parse(request.GET.urlencode())
+    parsed = parser.parse(request.GET.urlencode().encode("utf8"))
     start = int(request.GET.get("start", 0))
     length = int(request.GET.get("length", 10))
-    search = request.GET.get("search[value]", "")
+    search = unicode(request.GET.get("search[value]", ""))
     draw = request.GET.get("draw", 1)
     query = models.Survey.objects
     query = query.filter(Q(individual__name__icontains=search)
