@@ -620,6 +620,8 @@ def get_surveys(request):
     search = unicode(request.GET.get("search[value]", ""))
     draw = request.GET.get("draw", 1)
     query = models.Survey.objects
+    if not request.user.observer.is_crea:
+        query = query.filter(individual__area__observer__user=request.user)
     query = query.filter(Q(individual__name__icontains=search)
                          | Q(individual__area__name__icontains=search)
                          | Q(stage__name__icontains=search)
