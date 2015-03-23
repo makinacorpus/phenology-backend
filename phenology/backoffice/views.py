@@ -1,4 +1,6 @@
 # from django.shortcuts import render
+# -*- coding: utf-8 -*-
+
 import datetime
 import simplejson as json
 
@@ -607,6 +609,7 @@ def get_surveys(request):
         "date": "date",
         "species": "individual__species__name",
         "individual": "individual__name",
+        "organisms": "individual__area__observer__organism",
         "area": "individual__area__name",
         "stage": "stage__name",
         "answer": "answer"
@@ -619,8 +622,9 @@ def get_surveys(request):
     query = models.Survey.objects
     query = query.filter(Q(individual__name__icontains=search)
                          | Q(individual__area__name__icontains=search)
+                         | Q(stage__name__icontains=search)
                          | Q(individual__species__name__icontains=search)
-                         | Q(individual__species__name__icontains=search))
+                         | Q(individual__area__observer__organism__icontains=search))
 
     for ord in parsed["order"].values():
         col = parsed["columns"][ord["column"]]["data"]
