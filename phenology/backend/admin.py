@@ -2,9 +2,12 @@ from django.contrib import admin
 from backend import models
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from import_export.admin import ImportExportModelAdmin
 from backend import ressources
+from django.db.models import Count
+
 
 class TabAdmin(TranslationAdmin):
     class Media:
@@ -25,7 +28,8 @@ class StageAdmin(TabAdmin, ImportExportModelAdmin):
 
 
 class SurveyAdmin(ImportExportModelAdmin):
-    list_display = ('date', 'individual', 'species_name', 'stage', 'answer', 'remark', 'area_name')
+    list_display = ('date', 'individual', 'species_name',
+                    'stage', 'answer', 'remark', 'area_name')
 
     def species_name(self, obj):
         return ("%s" % (obj.individual.species.name))
@@ -33,9 +37,15 @@ class SurveyAdmin(ImportExportModelAdmin):
 
     def area_name(self, obj):
         return ("%s" % (obj.individual.area.name))
+    area_name.short_description = _('Area')
 
     def stage_name(self, obj):
         return ("%s" % (obj.observer))
+    stage_name.short_description = _('Stage')
+
+    def answer(self, obj):
+        return ugettext(obj.answer)
+
 admin.site.register(models.Survey, SurveyAdmin)
 
 
@@ -56,7 +66,9 @@ class AreaAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'observer__user__username', 'species__name']
 
     def observers(self, obj):
-        return ",".join([str(o.user.username).strip() for o in obj.observer_set.all().select_related('user')])
+        return ",".join([str(o.user.username).strip()
+                         for o in
+                         obj.observer_set.all().select_related('user')])
 
 admin.site.register(models.Area, AreaAdmin)
 
@@ -83,17 +95,41 @@ class UserInline(admin.StackedInline):
 class ObserverAdmin(ImportExportModelAdmin):
     inlines = (UserInline, )
     resource_class = ressources.ObserverResource
-    list_display = ('last_name', 'first_name', 'city', )
+    list_display = ('username', 'last_name', 'first_name', 'city',
+                    'codepostal', 'nb_inds', 'nb_areas', 'nb_surveys')
     search_fields = ['city', 'user__first_name', 'user__last_name']
-    #list_select_related = ('user', )
-    #search_fields = ('user',)
+    list_select_related = ('user', )
+
+    def queryset(self, request):
+        qs = super(ObserverAdmin, self).queryset(request)
+        qs = qs.annotate(Count('areas__individual__survey'))
+        qs = qs.annotate(Count('areas__individual'))
+        qs = qs.annotate(Count('areas'))
+        return qs
 
     def first_name(self, obj):
         return (obj.user.first_name)
+    first_name.admin_order_field = 'user__first_name'
 
     def last_name(self, obj):
         return (obj.user.last_name)
+    last_name.admin_order_field = 'user__last_name'
 
+    def username(self, obj):
+        return (obj.user.username)
+    username.admin_order_field = 'user__username'
+
+    def nb_inds(self, obj):
+        return models.Individual.objects.filter(area__observer=obj).count()
+    nb_inds.admin_order_field = 'areas__individual__count'
+
+    def nb_areas(self, obj):
+        return models.Area.objects.filter(observer=obj).count()
+    nb_areas.admin_order_field = 'areas__count'
+
+    def nb_surveys(self, obj):
+        return models.Survey.objects.filter(individual__area__observer=obj).count()
+    nb_surveys.admin_order_field = 'areas__individual__survey__count'
 
 admin.site.register(models.Observer, ObserverAdmin)
 
@@ -104,8 +140,20 @@ class StageInline(TranslationTabularInline):
 
 
 class SpeciesAdmin(TabAdmin, ImportExportModelAdmin):
+    list_display = ('name', 'nb_stages', 'nb_surveys', 'nb_observers')
     inlines = (StageInline, )
 
+    def nb_stages(self, obj):
+        return models.Stage.objects.filter(species=obj).count()
+    nb_stages.short_description = "nb " + ugettext('Stages')
+
+    def nb_surveys(self, obj):
+        return models.Survey.objects.filter(individual__species=obj).count()
+    nb_surveys.short_description = "nb " + ugettext('Surveys')
+
+    def nb_observers(self, obj):
+        return models.Observer.objects.filter(areas__individual__species=obj).count()
+    nb_observers.short_description = "nb " + ugettext('Observers')
 
 # Re-register UserAdmin
 # admin.site.unregister(models.User)
