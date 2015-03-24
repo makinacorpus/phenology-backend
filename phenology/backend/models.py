@@ -129,8 +129,8 @@ class Area(models.Model):
             results[individual.species].append(individual)
         return results
 
-    def get_individuals_with_species(self):
-        return self.individual_set.select_related('species')
+    def alive_individuals(self):
+        return self.individual_set.select_related('species').filter(is_dead=True)
 
     def geojson(self, full=False):
         return {
@@ -151,7 +151,7 @@ class Area(models.Model):
         if(self.lon and self.lat):
             geojson["features"].append(self.geojson())
 
-        for ind in self.individual_set.all():
+        for ind in self.alive_individuals().all():
             geojson["features"].append(ind.geojson())
         return geojson
 

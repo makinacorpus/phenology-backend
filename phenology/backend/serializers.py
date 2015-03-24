@@ -111,9 +111,10 @@ class IndividualNestedSerializer(serializers.ModelSerializer):
 
     def get_stages(self, *args, **kwargs):
         individual = args[0]
-        survey_date_minimum = datetime.date.today() - relativedelta(months=9)
+        # TODO if this behaviour is still needed
+        # survey_date_minimum = datetime.date.today() - relativedelta(months=9)
         # stages that we have surveys for this individual
-        #surveys date can't be lower than today - 9 months
+        # surveys date can't be lower than today - 9 months
         indiv_q = models.Stage\
                         .objects\
                         .filter(species__individual=individual)\
@@ -138,6 +139,7 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
         indiv_q = models.Individual\
                         .objects\
                         .filter(Q(species=species)
+                                & Q(is_dead=False)
                                 & Q(area=self.context["area_target"]))\
                         .select_related()
         serializer = IndividualNestedSerializer(instance=indiv_q,
@@ -159,7 +161,8 @@ class AreaNestedSerializer(serializers.ModelSerializer):
         species_q = models.Species\
                           .objects\
                           .filter(Q(area__observer=self.parent.object)
-                                  & Q(individual__area=args[0])
+                                  & Q(individual__area=area)
+                                  & Q(individual__is_dead=False)
                                   & Q(area=area)).distinct().select_related()
         self.context["user_target"] = self.parent.object
         self.context["area_target"] = area
