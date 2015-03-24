@@ -6,7 +6,7 @@ class AreaResource(resources.ModelResource):
 
     class Meta:
         model = models.Area
-        exclude = ('species', )
+        exclude = ('species', 'codezone', )
 
 
 class SpeciesResource(resources.ModelResource):
@@ -31,7 +31,7 @@ class ObserverResource(resources.ModelResource):
             "user__username",
             'user__first_name',
             'user__last_name',
-            "user__password",
+            'user__email',
             "city",
             "fonction",
             "adresse",
