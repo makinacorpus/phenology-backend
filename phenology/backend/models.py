@@ -49,8 +49,10 @@ def get_thumbnail(picture, options=None, alias=None):
         options = {'size': (200, 200), 'quality': 100, 'crop': 'smart'}
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
 
+######################
+# Species
+######################
 
-# espece
 class Species(models.Model):
     name = models.CharField(max_length=100, verbose_name="nom", db_index=True)
     # name_fr = models.CharField(max_length=100, verbose_name="nom")
@@ -452,3 +454,9 @@ class Survey(models.Model):
         verbose_name = _("Survey")
         verbose_name_plural = _("Surveys")
         ordering = ["-date"]
+
+    def save(self, new_image=False, *args, **kwargs):
+        super(Survey, self).save(*args, **kwargs)
+        if self.answer in ("isDead", "isLost"):
+            self.individual.is_dead = True
+            self.individual.save()
