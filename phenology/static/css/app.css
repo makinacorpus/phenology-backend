@@ -8,6 +8,11 @@
   background-color: #e7e7e7;
 }
 
+.page-title{
+  margin-top:39px;
+  min-height: 0;
+}
+
 .table-container {
   display: table;
   width: 100%;
