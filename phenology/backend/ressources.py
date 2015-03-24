@@ -43,7 +43,7 @@ class ObserverResource(resources.ModelResource):
             "mobile",
             "is_crea",
             "is_active",
-            "areas__name",
+            "areas",
             "date_inscription",
         )
         export_order = fields
