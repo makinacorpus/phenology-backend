@@ -2,10 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from backend import models
 from django.db.models import Q
-import datetime
-from dateutil.relativedelta import relativedelta
 from django.db import models as django_db_models
-from django import forms
 from rest_framework import serializers as rest_fields
 
 
@@ -15,10 +12,9 @@ class TranslatedModelSerializer(serializers.ModelSerializer):
 
     def get_field(self, model_field):
         kwargs = {}
-        #print model_field
-        #print dir(self)
         if issubclass(
-                model_field.__class__, (django_db_models.CharField, django_db_models.TextField)):
+                model_field.__class__, (django_db_models.CharField,
+                                        django_db_models.TextField)):
             if model_field.null:
                 kwargs['allow_none'] = True
             kwargs['max_length'] = getattr(model_field, 'max_length')
@@ -27,17 +23,17 @@ class TranslatedModelSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    #groups = serializers.RelatedField()
+    # groups = serializers.RelatedField()
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'groups')
+        fields = ('username', 'email', 'groups', )
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ('url', 'name', )
 
 
 class StageSerializer(TranslatedModelSerializer):
@@ -65,7 +61,6 @@ class SnowingSerializer(serializers.ModelSerializer):
 
 
 class SurveySerializer(serializers.ModelSerializer):
-    #date = serializers.DateField(format="YYYY-MM-DD", source="date")
     species = serializers.SerializerMethodField('get_species')
     area = serializers.SerializerMethodField('get_area')
 
@@ -88,7 +83,6 @@ class IndividualSerializer(serializers.ModelSerializer):
 
 
 class SpeciesSerializer(TranslatedModelSerializer):
-    #individuals = IndividualSerializer(source="individual_set")
     stages = StageSerializer(source="stage_set")
     picture = rest_fields.CharField(source="thumbnail", read_only=True)
 
