@@ -116,10 +116,9 @@ class IndividualNestedSerializer(serializers.ModelSerializer):
         #surveys date can't be lower than today - 9 months
         indiv_q = models.Stage\
                         .objects\
-                        .filter(Q(species__individual=individual) &
-                                Q(survey__individual=individual))\
-                        .exclude(survey__date__lt=survey_date_minimum)\
-                        .select_related()
+                        .filter(species__individual=individual)\
+                        .select_related()\
+                        .order_by("order")
         serializer = SimpleStageSerializer(instance=indiv_q,
                                            many=True,
                                            context=self.context)
