@@ -170,6 +170,11 @@ TILES_SETTINGS = {
     'GLOBAL_MAP_BBOX': [4.669189453125, 43.69965122967144, 7.9046630859375, 46.464349400461124],  # Whole Alpes
 }
 
+DEFAULT_POSITION = {
+    "lat": 44.738718,
+    "lon": 3.725422
+}
+
 THUMBNAIL_ALIASES = {
     '': {
         'thumbnail': {'size': (100, 100), 'crop': 'smart', 'quality': 100},

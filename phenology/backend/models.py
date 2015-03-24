@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.db.models import Q
+from phenology.settings import DEFAULT_POSITION
 
 # Create your models here.
 
@@ -101,8 +102,10 @@ class Area(models.Model):
                             db_index=True)
     codezone = models.CharField(max_length=20, verbose_name=_("codezone"),
                                 blank=True)
-    lat = models.FloatField(verbose_name="latitude", default=-1.00)
-    lon = models.FloatField(verbose_name="longitude", default=1.00)
+    lat = models.FloatField(verbose_name="latitude",
+                            default=DEFAULT_POSITION["lat"])
+    lon = models.FloatField(verbose_name="longitude",
+                            default=DEFAULT_POSITION["lon"])
     altitude = models.FloatField(verbose_name="altitude", null=True,
                                  blank=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
