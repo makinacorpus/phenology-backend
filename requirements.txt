@@ -37,3 +37,4 @@ xlwt == 0.7.5
 querystring-parser == 1.2.0
 six == 1.8.0
 mbutil == 0.2.0
+django-import-export == 0.2.6

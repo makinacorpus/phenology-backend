@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'easy_thumbnails',
+    'import_export',
     'compressor'
 )
 
