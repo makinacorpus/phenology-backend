@@ -6,6 +6,7 @@ from django.utils.translation import ugettext
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from import_export.admin import ImportExportModelAdmin
 from backend import ressources
+from backoffice import forms
 from django.db.models import Count
 
 
@@ -59,11 +60,11 @@ class IndividualAdmin(ImportExportModelAdmin):
 
 admin.site.register(models.Individual, IndividualAdmin)
 
-
 class AreaAdmin(ImportExportModelAdmin):
     resource_class = ressources.AreaResource
     list_display = ('name', 'observers', 'commune')
     search_fields = ['name', 'observer__user__username', 'species__name']
+    form = forms.AreaAdminForm
 
     def observers(self, obj):
         return ",".join([str(o.user.username).strip()
