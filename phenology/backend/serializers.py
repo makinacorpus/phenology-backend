@@ -154,10 +154,9 @@ class AreaNestedSerializer(serializers.ModelSerializer):
         area = args[0]
         species_q = models.Species\
                           .objects\
-                          .filter(Q(area__observer=self.parent.object)
-                                  & Q(individual__area=area)
+                          .filter(Q(individual__area=area)
                                   & Q(individual__is_dead=False)
-                                  & Q(area=area)).distinct().select_related()
+                                  & Q(individual__area=area)).distinct().select_related()
         self.context["user_target"] = self.parent.object
         self.context["area_target"] = area
         serializer = SpeciesNestedSerializer(instance=species_q,
@@ -184,7 +183,7 @@ class ObserverSerializer(serializers.ModelSerializer):
         observer = args[0]
         species_q = models.Species\
                           .objects\
-                          .filter(Q(area__observer=observer))\
+                          .filter(Q(individual__area__observer=observer))\
                           .distinct()
         serializer = SpeciesSerializer(instance=species_q,
                                        many=True, context=self.context)
