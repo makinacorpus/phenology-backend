@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from django.http import HttpResponse
 
 from querystring_parser import parser
@@ -25,6 +26,11 @@ from django.utils.crypto import get_random_string
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
+
+SURVEY_SETTINGS = {
+    'TYPES_ANSWER': [_('isObserved'), _('isDead'),
+                     _('isLost'), _('isNever'), _('isPassed')]
+}
 
 
 @login_required(login_url='login/')
@@ -522,7 +528,8 @@ def snowing_detail(request, area_id, snowing_id=-1):
                                  messages.SUCCESS,
                                  _('Form is successifully updated'))
             form.save()
-            return redirect('snowing-detail', area_id=form.instance.area.id, snowing_id=form.instance.id)
+            return redirect('snowing-detail', area_id=form.instance.area.id,
+                            snowing_id=form.instance.id)
         else:
             print form.errors
     else:
@@ -535,7 +542,6 @@ def snowing_detail(request, area_id, snowing_id=-1):
                  "id": s.id,
                  "height": s.height}
                 for s in query]
-    #snowings = []
     timer.capture()
     print timer.output()
     return render_to_response("snowing.html", {
@@ -578,6 +584,25 @@ def register_user(request):
                                  messages.SUCCESS,
                                  _('Form is successifully updated'))
             form.save()
+            user = form.uf.instance
+
+            # Random passord
+            password = get_random_string()
+            user.set_password(password)
+            user.save()
+            message = render_to_string('registration_email.html',
+                                       {'user': user,
+                                        'password': password})
+            mail.send_mail(
+                subject=ugettext(u"Welcome on Phenoclim website"),
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False)
+
+            return render_to_response("registration_done.html", {
+                "form": form,
+            }, RequestContext(request))
         else:
             print form.errors
     else:
@@ -638,6 +663,7 @@ def get_surveys(request):
     filtered_total = query.count()
     filtered_data = query.select_related('individual').all()[start:
                                                              start + length]
+
     response_data = {
         "draw": int(draw),
         "data": [{"id": o.id,
@@ -650,7 +676,7 @@ def get_surveys(request):
                                          o.individual.area.observer_set.all()]
                                         ),
                   "stage": o.stage.name,
-                  "answer": o.answer,
+                  "answer": _(o.answer),
                   "categorie": ",".join([a.category
                                          for a in
                                          o.individual.area.observer_set.all()]
@@ -691,7 +717,7 @@ def password_reset(request):
                                             'password': password})
                 user.save()
                 mail.send_mail(
-                    subject=_(u"New password"),
+                    subject="%s [Phenoclim]" % ugettext(u"New password"),
                     message=message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[user.email],
