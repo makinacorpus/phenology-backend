@@ -307,3 +307,11 @@ form {
 .awesome-marker  .ion-leaf{
   font-size: 17px;
 }
+
+
+.all_survey .popup-with-graph{
+  //min-width: 300px;
+  //min-height: 250px
+  position: relative;
+}
+/*****************************/
