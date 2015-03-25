@@ -310,8 +310,8 @@ form {
 
 
 .all_survey .popup-with-graph{
-  //min-width: 300px;
-  //min-height: 250px
+  min-width: 300px;
+  min-height: 245;
   position: relative;
 }
 /*****************************/
