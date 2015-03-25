@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-16 08:33+0100\n"
+"POT-Creation-Date: 2015-03-25 13:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:89
+#: forms.py:17
+msgid "Already exists"
+msgstr "Déjà utilisé"
+
+#: forms.py:125
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: views.py:407 views.py:442 views.py:457 views.py:493 views.py:527
-#: views.py:562 views.py:583
+#: views.py:32 templates/survey.html:43
+msgid "isObserved"
+msgstr "Observé"
+
+#: views.py:32
+msgid "isDead"
+msgstr "est Mort"
+
+#: views.py:33 templates/survey.html:50
+msgid "isLost"
+msgstr "Individu perdu ou mort"
+
+#: views.py:33 templates/survey.html:57
+msgid "isNever"
+msgstr "Stade absent"
+
+#: views.py:33 templates/survey.html:64
+msgid "isPassed"
+msgstr "Stade déjà passé"
+
+#: views.py:416 views.py:451 views.py:466 views.py:502 views.py:536
+#: views.py:571 views.py:592
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:449
+#: views.py:458
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
-#: views.py:694
+#: views.py:604
+msgid "Welcome on Phenoclim website"
+msgstr "Bienvenu sur le site Phenoclim"
+
+#: views.py:727
 #, fuzzy
 msgid "New password"
 msgstr "Mot de passe oublié"
@@ -45,7 +73,7 @@ msgstr "Valider"
 msgid "Area"
 msgstr "Zone d'observation"
 
-#: templates/all_surveys.html:28 templates/profile_area.html:49
+#: templates/all_surveys.html:28 templates/profile_area.html:48
 #: templates/profile_individual.html:48
 msgid "Species"
 msgstr "Espèce"
@@ -68,7 +96,7 @@ msgstr "Réponse"
 
 #: templates/generic_form.html:18 templates/profile.html:18
 #: templates/profile_area.html:29 templates/profile_individual.html:26
-#: templates/snowing.html:42 templates/survey.html:77
+#: templates/snowing.html:42 templates/survey.html:75
 msgid "Validate"
 msgstr "Valider"
 
@@ -86,7 +114,7 @@ msgstr "Se connecter"
 msgid "Register"
 msgstr "S'inscrire"
 
-#: templates/login_form.html:29
+#: templates/login_form.html:28
 msgid "Missed password"
 msgstr "Mot de passe oublié"
 
@@ -98,17 +126,21 @@ msgstr "Mon profil"
 msgid "My surveys"
 msgstr "Mes observations"
 
-#: templates/navigation.html:30
+#: templates/navigation.html:28
 msgid "All surveys"
 msgstr "Toutes les observations"
 
-#: templates/navigation.html:37
+#: templates/navigation.html:34
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/password_new_done.html:3
-msgid "Password reset"
+#: templates/password_change_done.html:3
+msgid "Password changed"
 msgstr "Mot de passe réinitialisé"
+
+#: templates/password_change_done.html:5
+msgid "Password successfully changed!"
+msgstr "L'enregistrement s'est bien effectué"
 
 #: templates/password_new_done.html:9
 msgid ""
@@ -118,7 +150,7 @@ msgstr ""
 "Nous vous avons envoyé un nouveau mot de passe. <br/> Veuillez vérifier "
 "votre boite mail."
 
-#: templates/password_new_email.html:1
+#: templates/password_new_email.html:1 templates/registration_email.html:1
 msgid "Greetings"
 msgstr "Bonjour"
 
@@ -148,10 +180,6 @@ msgstr ""
 "Cordialement,\n"
 "%(site_name)s\n"
 
-#: templates/password_new_form.html:5 templates/password_new_form.html:18
-msgid "Reset password"
-msgstr "Réinitialisation mot de passe"
-
 #: templates/password_new_form.html:12
 msgid ""
 "Forgot your password?  Enter your email in the form below and we'll send you "
@@ -159,6 +187,10 @@ msgid ""
 msgstr ""
 "Mot de passe oublié?  Saisissez votre addresse email, afin que nous "
 "puissions vous envoyer un nouveau mot de passe."
+
+#: templates/password_new_form.html:18
+msgid "Reset password"
+msgstr "Réinitialisation mot de passe"
 
 #: templates/profile.html:6
 msgid "My profil"
@@ -172,7 +204,7 @@ msgstr "Changer le mot de passe"
 msgid "My Areas"
 msgstr "Mes zones d'observations"
 
-#: templates/profile.html:36 templates/profile_area.html:48
+#: templates/profile.html:36 templates/profile_area.html:47
 #: templates/profile_individual.html:47
 msgid "name"
 msgstr "Nom"
@@ -193,19 +225,15 @@ msgstr "Nouvelle zone d'observation"
 msgid "Back to my profile"
 msgstr "Retour sur mon profil"
 
-#: templates/profile_area.html:33
-msgid "Change center position"
-msgstr "Changer le centre de la zone"
-
-#: templates/profile_area.html:43
+#: templates/profile_area.html:42
 msgid "Indivuals"
 msgstr "Individus"
 
-#: templates/profile_area.html:50
+#: templates/profile_area.html:49
 msgid "Last survey"
 msgstr "Dernière observation"
 
-#: templates/profile_area.html:70
+#: templates/profile_area.html:69
 msgid "Add a new individual"
 msgstr "Ajouter un nouvel individu"
 
@@ -221,41 +249,83 @@ msgstr "Dernières observations"
 msgid "Add a new survey"
 msgstr "Saisir une nouvelle observation"
 
-#: templates/snowing.html:23 templates/survey.html:15
+#: templates/registration_done.html:9
+msgid ""
+"We have sent you an email with the password. <br/> Please check your email."
+msgstr ""
+"Bienvenu sur Phenoclim ! <br/> Vous recevrez par mail votre mot de passe. "
+"<br/> Cordialement."
+
+#: templates/registration_email.html:3
+msgid "Thank you to have join http://phenoclim.org. "
+msgstr ""
+"Bienvenu sur le projet Phenoclim. Le site est accessible via le lien http://"
+"phenoclim.org."
+
+#: templates/registration_email.html:4
+#, python-format
+msgid ""
+"\n"
+"Your password : %(password)s\n"
+"Your username : %(username)s\n"
+"\n"
+"Best regards,\n"
+"%(site_name)s\n"
+msgstr ""
+"\n"
+"Votre nouveau mot de passe : %(password)s\n"
+"Votre identifiant: %(username)s\n"
+"\n"
+"Cordialement,\n"
+"%(site_name)s\n"
+
+#: templates/snowing.html:23 templates/survey.html:16
 msgid "Back"
 msgstr "Retour"
 
-#: templates/survey.html:26
+#: templates/survey.html:24
 msgid "before"
 msgstr "avant"
 
-#: templates/survey.html:30
+#: templates/survey.html:28
 msgid "current"
 msgstr "à observer"
 
-#: templates/survey.html:34
+#: templates/survey.html:32
 msgid "after"
 msgstr "après"
-
-#: templates/survey.html:45
-msgid "Observed"
-msgstr "Observé"
-
-#: templates/survey.html:52
-msgid "Individual lost ord dead"
-msgstr "Individu perdu ou mort"
-
-#: templates/survey.html:59
-msgid "Stage never happened"
-msgstr "Stade absent"
-
-#: templates/survey.html:66
-msgid "Stage already passed"
-msgstr "Stade déjà passé"
 
 #: templates/viz_snowings.html:9
 msgid "Enneigement"
 msgstr "Enneigement"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Votre mot de passe : %(password)s\n"
+#~ "Votre identifiant : %(username)s\n"
+#~ "\n"
+#~ "Cordialement,\n"
+#~ "L'équipe Phenoclim\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Votre nouveau mot de passe : %(password)s\n"
+#~ "Votre identifiant: %(username)s\n"
+#~ "\n"
+#~ "Cordialement,\n"
+#~ "%(site_name)s\n"
+
+#~ msgid "Change center position"
+#~ msgstr "Changer le centre de la zone"
+
+#~ msgid "Individual lost ord dead"
+#~ msgstr "Individu perdu ou mort"
+
+#~ msgid "Stage never happened"
+#~ msgstr "Stade absent"
+
+#~ msgid "Stage already passed"
+#~ msgstr "Stade déjà passé"
 
 #~ msgid "Login"
 #~ msgstr "Se connecter"

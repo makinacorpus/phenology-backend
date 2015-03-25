@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-19 23:26+0100\n"
+"POT-Creation-Date: 2015-03-24 11:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: backoffice/templates/base.html:21 phenology/settings.py:117
+#: settings.py:140
 msgid "french"
 msgstr "Français"
 
-#: phenology/settings.py:118
+#: settings.py:141
 msgid "italian"
 msgstr "Italien"
 
-#: phenology/settings.py:119
+#: settings.py:142
 msgid "english"
 msgstr "Anglais"
+
+#: settings.py:191
+msgid "isObserved"
+msgstr ""
+
+#: settings.py:191
+msgid "isDead"
+msgstr ""
+
+#: settings.py:191
+msgid "isLost"
+msgstr ""
+
+#: settings.py:191
+msgid "isNever"
+msgstr ""
+
+#: settings.py:191
+msgid "isPassed"
+msgstr ""
