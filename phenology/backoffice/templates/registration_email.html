@@ -1,0 +1,10 @@
+{% load i18n %}{% trans "Greetings" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user }}{% endif %},
+
+{% blocktrans %}Thank you to have join http://phenoclim.org. {% endblocktrans %}
+{% blocktrans with username=user.username %}
+Your password : {{ password }}
+Your username : {{ username }}
+
+Best regards,
+{{ site_name }}
+{% endblocktrans %}
