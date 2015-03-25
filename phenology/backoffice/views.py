@@ -649,7 +649,7 @@ def get_surveys(request):
     search = unicode(request.GET.get("search[value]", ""))
     draw = request.GET.get("draw", 1)
     query = models.Survey.objects
-    if not request.user.is_staff or request.user.is_superuser:
+    if not request.user.is_staff or not request.user.is_superuser:
         if models.Observer.objects.filter(user=request.user)\
            and not request.user.observer.is_crea:
             query = query.filter(individual__area__observer__user=request.user)
