@@ -181,7 +181,7 @@ CATEGORY_CHOICES = (
 class Observer(models.Model):
     user = models.OneToOneField(User)
     city = models.CharField(max_length=100, verbose_name=_("city"))
-    fonction = models.CharField(max_length=70, verbose_name=_("fonction"))
+    fonction = models.CharField(max_length=70, verbose_name=_("fonction"), blank=True, default="")
     adresse = models.TextField(max_length=80, verbose_name=_("adresse"))
     codepostal = models.CharField(max_length=20, verbose_name=_("codepostal"))
     nationality = models.CharField(max_length=100,
@@ -191,8 +191,8 @@ class Observer(models.Model):
                                 blank=True)
     category = models.CharField(max_length=80, verbose_name=_("category"),
                                 choices=CATEGORY_CHOICES)
-    phone = models.CharField(max_length=20, verbose_name=_("phone"))
-    mobile = models.CharField(max_length=20, verbose_name=_("mobile"))
+    phone = models.CharField(max_length=20, verbose_name=_("phone"), default="", blank=True)
+    mobile = models.CharField(max_length=20, verbose_name=_("mobile"), default="", blank=True)
     is_crea = models.BooleanField(verbose_name=_("is a crea member ?"),
                                   default=False)
     is_active = models.BooleanField(verbose_name=_("is activated?"),
