@@ -40,28 +40,28 @@
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isObserved"
             {% if form.instance.answer == 'before' %}checked{% endif %}>
-            {% trans "Observed" %}
+            {% trans "isObserved" %}
           </label>
         </div>
         <div class="btn btn-block btn-lg btn-default radio">
             <label>
               <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isLost"
               {% if form.instance.answer == 'isLost' %}checked{% endif %}>
-              {% trans "Individual lost ord dead" %}
+              {% trans "isLost" %}
             </label>
         </div>
         <div class="btn btn-block btn-lg btn-default radio">
             <label>
               <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isNever"
               {% if form.instance.answer == 'isNever' %}checked{% endif %}>
-              {% trans "Stage never happened" %}
+              {% trans "isNever" %}
             </label>
         </div>
         <div class="btn btn-block btn-lg btn-default radio">
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isPassed"
             {% if form.instance.answer == 'isPassed' %}checked{% endif %}>
-            {% trans "Stage already passed" %}
+            {% trans "isPassed" %}
           </label>
         </div>
       </div>
