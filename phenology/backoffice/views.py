@@ -677,15 +677,16 @@ def get_surveys(request):
                   "area": o.individual.area.name,
                   "species": o.individual.species.name,
                   "individual": "",
-                  "organisms": ",".join([a.organism
-                                         for a in
-                                         o.individual.area.observer_set.all()]
-                                        ),
+                  "organisms": ",".join(set([a.organism
+                                            for a in
+                                             o.individual.area.observer_set.all()
+                                             if a.organism]
+                                            )),
                   "stage": o.stage.name,
-                  "answer": _(o.answer),
+                  "answer": ugettext(o.answer),
                   "categorie": ",".join([a.category
                                          for a in
-                                         o.individual.area.observer_set.all()]
+                                         set(o.individual.area.observer_set.all())]
                                         )
                   }
                  for o in filtered_data],
