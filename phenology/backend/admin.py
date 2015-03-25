@@ -93,7 +93,6 @@ class UserInline(admin.StackedInline):
 
 # Define a new User admin
 class ObserverAdmin(ImportExportModelAdmin):
-    inlines = (UserInline, )
     resource_class = ressources.ObserverResource
     list_display = ('username', 'last_name', 'first_name', 'city',
                     'codepostal', 'nb_inds', 'nb_areas', 'nb_surveys')
