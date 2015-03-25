@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
 from django.template import RequestContext
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render_to_response, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.http import HttpResponse
@@ -36,13 +36,6 @@ SURVEY_SETTINGS = {
 @login_required(login_url='login/')
 def index(request):
     return redirect('my-surveys')
-
-
-@login_required(login_url='login/')
-def register(request):
-    return render(request, 'board.html')
-
-cache_classified = []
 
 
 def map_all_surveys(request):
@@ -408,6 +401,7 @@ def area_detail(request, area_id=-1):
                                      messages.SUCCESS,
                                      _('Form is successifully updated'))
                 form.save()
+                form.instance.observer_set.add(request.user.observer)
                 return redirect('area-detail', area_id=form.instance.id)
         else:
             form = AreaForm(instance=area)
