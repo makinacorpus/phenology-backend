@@ -617,7 +617,11 @@ def register_user(request):
 
 @login_required(login_url='login/')
 def dashboard(request):
-    return render_to_response("profile_display.html", RequestContext(request))
+    if models.Observer.objects.filter(user=request.user):
+        return render_to_response("profile_display.html", RequestContext(request))
+    elif request.user.is_staff or request.user.is_superuser:
+        return redirect('../admin/')
+    return render_to_response("base.html", RequestContext(request))
 
 
 @login_required(login_url='login/')
@@ -645,8 +649,10 @@ def get_surveys(request):
     search = unicode(request.GET.get("search[value]", ""))
     draw = request.GET.get("draw", 1)
     query = models.Survey.objects
-    if not request.user.observer.is_crea:
-        query = query.filter(individual__area__observer__user=request.user)
+    if not request.user.is_staff or request.user.is_superuser:
+        if models.Observer.objects.filter(user=request.user)\
+           and not request.user.observer.is_crea:
+            query = query.filter(individual__area__observer__user=request.user)
     query = query.filter(Q(individual__name__icontains=search)
                          | Q(individual__area__name__icontains=search)
                          | Q(stage__name__icontains=search)
