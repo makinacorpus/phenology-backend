@@ -137,14 +137,15 @@ class Area(models.Model):
     def alive_individuals(self):
         return self.individual_set.select_related('species').filter(is_dead=False)
 
-    def geojson(self, full=False):
+    def geojson(self, draggable=False):
         return {
             "type": "Point",
             "coordinates": [self.lon, self.lat],
             "properties": {
                 "object": "area",
                 "name": self.name,
-                "id": self.id
+                "id": self.id,
+                "draggable": draggable
             }
         }
 
@@ -154,7 +155,7 @@ class Area(models.Model):
             "features": []
         }
         if(self.lon and self.lat):
-            geojson["features"].append(self.geojson())
+            geojson["features"].append(self.geojson(draggable=True))
 
         for ind in self.alive_individuals().all():
             geojson["features"].append(ind.geojson())
