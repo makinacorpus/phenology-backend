@@ -29,11 +29,10 @@
             {% trans "Validate" %}
           </button>
         {% endbuttons %}
-          <a rel="change_position" class="btn btn-link btn-lg">
-            {% trans "Change center position" %}
-          </a>
       </form>
-
+      <a data-rel="area" data-id="{{ formset.instance.id }}" class="change_position btn btn-link btn-lg">
+          {% trans "Change center position" %}
+      </a>
     </div>
 
     <div class="col-md-7 table-col" style="position:relative">
