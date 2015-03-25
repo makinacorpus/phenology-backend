@@ -3,7 +3,7 @@ from backend import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-
+import select2.fields as select2_fields
 
 class CreateUserForm(forms.ModelForm):
     class Meta:
@@ -95,6 +95,33 @@ class AccountForm(forms.ModelForm):
         widgets = {
             'adresse': forms.Textarea(attrs={'rows': 2}),
         }
+
+
+class AreaAdminForm(forms.ModelForm):
+    observers = forms.fields.MultipleChoiceField(
+        choices=[(a.id, unicode(a)) for a in models.Observer.objects.all()])
+
+    class Meta:
+        model = models.Area
+
+    def __init__(self, *args, **kwargs):
+        super(AreaAdminForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            # if this is not a new object, we load related books
+            self.initial['observers'] = self.instance.observer_set.values_list('pk', flat=True)
+
+    def save(self, *args, **kwargs):
+        instance = super(AreaAdminForm, self).save(*args, **kwargs)
+        if instance.pk:
+            for observer in instance.observer_set.all():
+                if observer not in self.cleaned_data['observers']:
+                    # we remove books which have been unselected
+                    instance.observer_set.remove(observer)
+            for observer in self.cleaned_data['observers']:
+                if observer not in instance.observer_set.all():
+                    # we add newly selected books
+                    instance.observer_set.add(observer)
+        return instance
 
 
 class AreaForm(forms.ModelForm):
