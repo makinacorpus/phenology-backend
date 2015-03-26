@@ -311,7 +311,39 @@ form {
 
 .all_survey .popup-with-graph{
   min-width: 300px;
-  min-height: 245;
+  min-height: 245px;
   position: relative;
+}
+
+.no-margin{
+  margin:0;
+}
+
+.no-padding{
+  padding:0;
+}
+
+.padding-10{
+  padding: 10px;
+}
+
+.padding-5{
+  padding: 5px;
+}
+
+.padding-bottom-10{
+  padding-bottom: 10px;
+}
+
+.padding-bottom-20{
+  padding-bottom: 20px;
+}
+
+.missed{
+  color:red;
+}
+
+.found{
+  color:green;
 }
 /*****************************/
