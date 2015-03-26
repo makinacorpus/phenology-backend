@@ -346,4 +346,15 @@ form {
 .found{
   color:green;
 }
+
+
+.ion-leaf:before{
+  font-size:11px;
+}
+
+.icon-bullet{
+  list-style: none;
+  margin-left: -17px;
+}
+
 /*****************************/

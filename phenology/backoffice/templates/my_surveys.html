@@ -30,18 +30,18 @@
               <ul class="display__accordeon">
                 <li class="display__area">
                   <a href="{% url 'area-detail' area.id %}">
-                    {{ area }} [ {{ area.commune }} - {{ area.altitude }} m]
+                    {{ area }} [ {{ area.commune }} - {{ area.altitude|default:'' }} m]
                   </a>
                   <ul>
                     {% regroup area.alive_individuals.all|dictsort:"name" by species as area_species %}
                     {% for individuals_by_species in area_species %}
-                    <li class="display__species">
+                    <li class="display__species ion-load-d icon-bullet">
                       <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">
                         {{ individuals_by_species.grouper }}
                       </a>
-                      <ul>
+                      <ul style="list-style-type:none">
                         {% for individual in individuals_by_species.list %}
-                        <li class="display__individual" data-id="{{ individual.id }}">
+                        <li class="display__individual ion-leaf icon-bullet" data-id="{{ individual.id }}">
                           <a href="" rel="{% url 'individual-detail' individual.id %}">
                             {{ individual }}
                           </a>
@@ -70,6 +70,9 @@
                       </ul>
                     </li>
                     {% endfor %}
+                    <li class="icon ion-ios-medical icon-bullet">
+                      <a class="btn no-padding btn-link" href="{% url 'snowing-detail' area.id %}">Saisir enneigement</a>
+                    </li>
                   </ul>
                 </li>
               </ul>
@@ -108,7 +111,7 @@
     <div class="col-xs-6 col-md-7 table-col" style="position:relative">
       <div id="map"></div>
       <div class="padding-10">
-          <a class="btn btn-default" href="{% url 'export-survey' %}" ><i class="icon ion-document-text"></i> Exporter mes données</a>
+          <a class="btn btn-default btn-sm" href="{% url 'export-survey' %}" ><i class="icon ion-document-text"></i> Exporter mes données</a>
       </div>
     </div>
   

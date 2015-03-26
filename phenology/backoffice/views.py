@@ -660,7 +660,7 @@ def password_reset(request):
 def dashboard(request):
     areas = {a.id: get_area_data(None, a.id) for a in request.user.observer.areas.all()}
     if models.Observer.objects.filter(user=request.user):
-        return render_to_response("profile_display.html",
+        return render_to_response("my_surveys.html",
                                   {
                                       "areas": areas
                                   },
