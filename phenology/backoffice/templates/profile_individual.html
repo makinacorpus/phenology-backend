@@ -11,8 +11,14 @@
 {% endblock %}
 
 {% block content %}
+
+  <script type="text/javascript">
+    phenoclim.options.draggable = true;
+    phenoclim.options.filter_draggable = false;
+  </script>
+
   <div class="row  table-row">
-    <div class="col-md-5  table-col">
+    <div class="col-xs-5  table-col">
       {% buttons %}
         <a href="{% url 'home' %}area/{{ form.instance.area.id }}" class="btn btn-default">
           {% trans "Back to the area" %}
@@ -33,7 +39,7 @@
 
     </div>
 
-    <div class="col-md-7 table-col">
+    <div class="col-xs-7 table-col">
 
     <div id="map"></div>
 

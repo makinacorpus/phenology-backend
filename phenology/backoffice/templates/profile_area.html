@@ -15,7 +15,7 @@
 
   <div class="row  table-row">
 
-    <div class="col-md-5  table-col">
+    <div class="col-xs-5  table-col">
       {% buttons %}
         <a href="{% url 'profile' %}" class="btn btn-default">
           {% trans "Back to my profile" %}
@@ -30,12 +30,9 @@
           </button>
         {% endbuttons %}
       </form>
-      <a data-rel="area" data-id="{{ formset.instance.id }}" class="change_position btn btn-link btn-lg">
-          {% trans "Change center position" %}
-      </a>
     </div>
 
-    <div class="col-md-7 table-col" style="position:relative">
+    <div class="col-xs-7 table-col" style="position:relative">
 
       <div id="map"></div>
       {% if form.instance.id %}
