@@ -124,6 +124,12 @@
           phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
           refreshStages();
           refreshChart();
+          $("[data-id=individuals]").on("change", function(event){
+              if(refreshStages() !== false){refreshChart();}
+          });
+          $("[data-id=stages]").on("change", function(event){
+              refreshChart();
+          });
         });
 
         /** Accordion **/
