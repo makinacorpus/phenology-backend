@@ -120,23 +120,8 @@
 
         $( document ).ready(function(){
           $("#map").height($("#map").parent().height() - 100);
-
           /** viz obj **/
           phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
-
-          // getting area data          
-          $.get("get_area_data?area_id={{user.observer.areas.all.0.id}}").done(function(data){
-            phenoclim.session.area = data;
-            var passed = refreshStages();
-            if(refreshStages() !== false){refreshChart();}
-            $("[data-id=individuals]").on("change", function(event){
-              if(refreshStages() !== false){refreshChart();}
-            });
-            $("[data-id=stages]").on("change", function(event){
-              refreshChart();
-            });
-          });
-
         });
 
         /** Accordion **/
@@ -157,7 +142,7 @@
           }
         });
 
-        /** Viz Combobox **/
+        /** Stage Combobox **/
         function refreshStages(){
           var $stages_field = $("[data-id=stages]");
           var $individual_option = $("[data-id=individuals] :selected");
