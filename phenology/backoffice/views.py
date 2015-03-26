@@ -73,6 +73,8 @@ def viz_region_surveys(request):
 def get_area_data(request=None, area_id=None):
     if not area_id:
         area_id = request.GET.get("area_id")
+    if not area_id:
+        return {}
 
     area = models.Area.objects.get(id=area_id)
     area_dict = {'lon': area.lon, 'lat': area.lat, 'city': area.commune,
