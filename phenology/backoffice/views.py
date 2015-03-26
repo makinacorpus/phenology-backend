@@ -302,14 +302,11 @@ def search_snowings(request):
         used to get data for map rendering
         can be filtered by species (species_id)
     """
-    # observers = models.Observer.objects.all()
     timer = MyTimer()
     cursor = connection.cursor()
     timer.capture()
     classified = {}
 
-    # species_id = request.GET.get("species_id")
-    # individuals = models.Individual.objects.all()
     areas = models.Area.objects.all()
 
     area_organism = {}
@@ -329,14 +326,6 @@ def search_snowings(request):
                          'organisms': ','.join(area_organism.get(a.id, [])),
                          'values': {}, 'postalcode': a.postalcode}
                   for a in areas}
-
-    # for ind in individuals:
-    #     tmp = classified[ind.area_id]
-    #     if (tmp['lat'] == 1 or tmp['lat'] == -1) and\
-    #        (ind.lat != 1 and ind.lat != -1):
-    #         tmp['lat'] = ind.lat
-    #         tmp['lon'] = ind.lon
-    #     tmp['nb_individuals'] += 1
 
     timer.capture()
     snowing_sql = 'SELECT ' + year_query() + ' as year,  area_id, MAX(height) ' +\
