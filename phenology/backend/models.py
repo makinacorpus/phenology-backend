@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from easy_thumbnails.files import get_thumbnailer
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from cStringIO import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
-import unicodedata
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from select2 import fields as select2_fields
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -15,11 +16,12 @@ from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.db.models import Q
 from phenology.settings import DEFAULT_POSITION
-# Create your models here.
-
 
 #########
-
+#
+#  TOOLS
+#
+#########
 def create_thumb(image, size):
     """Returns the image resized to fit inside a box of the given size"""
     image.thumbnail(size, Image.ANTIALIAS)
@@ -48,6 +50,44 @@ def get_thumbnail(picture, options=None, alias=None):
     if not options:
         options = {'size': (200, 200), 'quality': 100, 'crop': 'smart'}
     return ".." + get_thumbnailer(picture).get_thumbnail(options).url
+
+##########
+
+CATEGORY_CHOICES = (
+    ('particulier', _('particulier')),
+    ('etablissement_scolaire', _('etablissement_scolaire')),
+    ('espace_protege', _('espace_protege')),
+    ('association', _('association')),
+    ('professionnelle', _('professionnelle')),
+    ('centre_decouverte', _('centre_decouverte')),
+    ('autre', _('autre')),
+)
+
+EXPOSITION_CHOICES = (
+    ('aucune', _('aucune')),
+    ('est', _('est')),
+    ('nord', _('nord')),
+    ('nordest', _('nordest')),
+    ('nordouest', _('nordouest')),
+    ('sudest', _('sudest')),
+    ('sudouest', _('sudouest')),
+    ('sud', _('sud')),
+    ('ouest', _('ouest'))
+)
+
+NATIONALITY_CHOICES = (
+    ('france', _('french')),
+    ('italie', _('italian')),
+)
+
+MILIEU_CHOICES = (
+    ('champ', _('champ')),
+    ('foret', _('foret')),
+    ('jardin', _('jardin')),
+    ('zoneurbaine', _('zoneurbaine')),
+    ('autres', _('autres'))
+)
+
 
 ######################
 # Species
@@ -123,9 +163,6 @@ class Area(models.Model):
         verbose_name = _("Area")
         verbose_name_plural = _("Areas")
 
-    def __str__(self):
-        return "%s" % (self.name)
-
     def get_data(self):
         results = {}
         for individual in self.individual_set.all():
@@ -160,20 +197,11 @@ class Area(models.Model):
             geojson["features"].append(ind.geojson())
         return geojson
 
-NATIONALITY_CHOICES = (
-    ('france', _('french')),
-    ('italie', _('italian')),
-)
+    def __str__(self):
+        return "%s" % self.name
 
-CATEGORY_CHOICES = (
-    ('particulier', _('particulier')),
-    ('etablissement_scolaire', _('etablissement_scolaire')),
-    ('espace_protege', _('espace_protege')),
-    ('association', _('association')),
-    ('professionnelle', _('professionnelle')),
-    ('centre_decouverte', _('centre_decouverte')),
-    ('autre', _('autre')),
-)
+    def __unicode__(self):
+        return self.name
 
 
 # observateur
@@ -207,12 +235,6 @@ class Observer(models.Model):
         verbose_name_plural = _("Observers")
         ordering = ("user__username",)
 
-    def __str__(self):
-        return u"%s" % self.user.username
-
-    def __unicode__(self):
-        return self.user.username
-
     def getAllGeojson(self):
 
         if not self.id:
@@ -226,30 +248,17 @@ class Observer(models.Model):
             geojson["features"].append(area.getAllGeojson())
         return geojson
 
+    def __str__(self):
+        return u"%s" % self.user.username
+
+    def __unicode__(self):
+        return self.user.username
+
+
+##########
+# Individu
 ##########
 
-MILIEU_CHOICES = (
-    ('champ', _('champ')),
-    ('foret', _('foret')),
-    ('jardin', _('jardin')),
-    ('zoneurbaine', _('zoneurbaine')),
-    ('autres', _('autres'))
-)
-
-EXPOSITION_CHOICES = (
-    ('aucune', _('aucune')),
-    ('est', _('est')),
-    ('nord', _('nord')),
-    ('nordest', _('nordest')),
-    ('nordouest', _('nordouest')),
-    ('sudest', _('sudest')),
-    ('sudouest', _('sudouest')),
-    ('sud', _('sud')),
-    ('ouest', _('ouest'))
-)
-
-
-# individu
 class Individual(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"),
                             db_index=True)
@@ -277,13 +286,7 @@ class Individual(models.Model):
     class Meta:
         verbose_name = _("individual")
         verbose_name_plural = _("individuals")
-        ordering = ['species', 'name']
-
-    def __unicode__(self):
-        return "%s" % (self.name)
-
-    def __str__(self):
-        return "%s" % (self.name)
+        # ordering = ['species', 'name']
 
     def geojson(self, draggable=False):
         picture_url = ""
@@ -372,6 +375,12 @@ class Snowing(models.Model):
     class Meta:
         verbose_name = _("Snowing")
         verbose_name_plural = _("Snowings")
+
+    def __unicode__(self):
+        return "%s cm" % self.height
+
+    def __str__(self):
+        return "%s cm" % self.height
 
 
 # temperature
@@ -466,3 +475,9 @@ class Survey(models.Model):
         if self.answer in ("isDead", "isLost"):
             self.individual.is_dead = True
             self.individual.save()
+
+    def __str__(self):
+        return u"%s" % self.answer
+
+    def unicode(self):
+        return ugettext(self.answer)
