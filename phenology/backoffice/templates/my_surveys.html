@@ -122,6 +122,8 @@
           $("#map").height($("#map").parent().height() - 100);
           /** viz obj **/
           phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
+          refreshStages();
+          refreshChart();
         });
 
         /** Accordion **/
