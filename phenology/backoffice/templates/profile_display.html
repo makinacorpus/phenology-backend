@@ -7,101 +7,113 @@
 {% block title %}{{ form.instance.name }}{% endblock %}
 
 {% block content %}
-    <style>
-      .missed{
-        color:red;
-      }
-      .found{
-        color:green;
-      }
-    </style>
+
     <script type="text/javascript">
     phenoclim.options = {
       geojson: {{ user.observer.getAllGeojson|jsonify|safe }},
+      areas: {{ areas|jsonify|safe }},
       isLinked: true,
     }
     </script>
+
     <div class="row  table-row">
 
       <div class=" col-xs-6 col-md-5  table-col">
-        <h3 class="text-center"> Observations </h3>
+
+        <h4 class="text-center no-margin padding-bottom-20"> Observations </h4>
+
+        <div class="container-fluid">
+
         {% for area in user.observer.areas.all %}
-          <ul class="display__accordeon">
-            <li class="display__area">
-              <a href="{% url 'area-detail' area.id %}">
-                {{ area }} [ {{ area.commune }} - {{ area.altitude }} m]
-              </a>
-              <ul>{% regroup area.alive_individuals.all|dictsort:"name" by species as area_species %}
-                {% for individuals_by_species in area_species %}
-                <li class="display__species">
-                  <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">
-                    {{ individuals_by_species.grouper }}
+          <div class="row">
+            <div class="col col-xs-12 no-margin no-padding">
+              <ul class="display__accordeon">
+                <li class="display__area">
+                  <a href="{% url 'area-detail' area.id %}">
+                    {{ area }} [ {{ area.commune }} - {{ area.altitude }} m]
                   </a>
                   <ul>
-                    {% for individual in individuals_by_species.list %}
-                    <li class="display__individual" data-id="{{ individual.id }}">
-                      <a href="" rel="{% url 'individual-detail' individual.id %}">
-                        {{ individual }}
+                    {% regroup area.alive_individuals.all|dictsort:"name" by species as area_species %}
+                    {% for individuals_by_species in area_species %}
+                    <li class="display__species">
+                      <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">
+                        {{ individuals_by_species.grouper }}
                       </a>
                       <ul>
-                        {% for stage, dates, survey in individual.get_tasks %}
-                        <li class="display__stage">
-                          <a class="
-                          {% if survey %}
-                          found
-                          {% else %}
-                          missed
-                          {% endif %}"
-                          href="
-                          {% if survey %}
-                          {% url 'survey-detail' survey.id %}
-                          {% else %}
-                          {% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
-                          {% endif %}">
-                          {{ stage }} [{{ dates.0.year}}] {% if survey %}- {{survey.date}}{% endif %}
-                        </a>
-                      </li>
+                        {% for individual in individuals_by_species.list %}
+                        <li class="display__individual" data-id="{{ individual.id }}">
+                          <a href="" rel="{% url 'individual-detail' individual.id %}">
+                            {{ individual }}
+                          </a>
+                          <ul>
+                            {% for stage, dates, survey in individual.get_tasks %}
+                            <li class="display__stage">
+                              <a class="
+                              {% if survey %}
+                              found
+                              {% else %}
+                              missed
+                              {% endif %}"
+                              href="
+                              {% if survey %}
+                              {% url 'survey-detail' survey.id %}
+                              {% else %}
+                              {% url 'survey-detail' %}?stage_id={{stage.id}}&ind_id={{individual.id}}
+                              {% endif %}">
+                              {{ stage }} [{{ dates.0.year}}] {% if survey %}- {{survey.date}}{% endif %}
+                              </a>
+                            </li>
+                            {% endfor %}
+                          </ul>
+                        </li>
                       {% endfor %}
-                    </ul>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </li>
-              {% endfor %}
-            </ul>
-          </li>
-        </ul>
-        {% if area.alive_individuals.count > 0 %}
-        <h3 class="text-center"> Graphique </h3>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-xs-8 graph">
-              
-            </div>
-            <div class="col-xs-4">
-              <select name="individual" class="form-control" data-id="individuals">
-                {% for a in area.alive_individuals.all %}
-                  {% if a.survey_set.count > 0 %}
-                    <option rel="{{a.species_id}}" value="{{a.id}}">{{a.name}}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-              <select name="stage" class="form-control" data-id="stages">
-              </select>
+                      </ul>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
-        {% endif %}
-        <p>
-          <a class="btn btn-default" href="{% url 'export-survey' %}" >Exporter mes données</a>
-        </p>
-      </div>
+        {% endfor %}
 
-      <div class="col-xs-6 col-md-7 table-col" style="position:relative">
-        <div id="map"></div>
+          <div class="row">
+            <div class="col-xs-12 no-padding">
+                <h4 class="text-center padding-10"> Graphique </h4>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-xs-9 graph no-padding">
+                    </div>
+                    <div class="col-xs-3 no-padding">
+                      <select name="individual" class="form-control" data-id="individuals">
+                        {% for area in user.observer.areas.all %}
+                          {% for a in area.alive_individuals.all %}
+                            {% if a.survey_set.count > 0 %}
+                              <option rel="{{a.species_id}}" data-area="{{area.id}}" value="{{a.id}}">{{a.name}}</option>
+                            {% endif %}
+                          {% endfor %}
+                        {% endfor %}
+                      </select>
+                      <select name="stage" class="form-control" data-id="stages">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+       </div>
+    </div>
+  
+    <div class="col-xs-6 col-md-7 table-col" style="position:relative">
+      <div id="map"></div>
+      <div class="padding-10">
+          <a class="btn btn-default" href="{% url 'export-survey' %}" ><i class="icon ion-document-text"></i> Exporter mes données</a>
       </div>
     </div>
-      <script type="text/javascript">
+  
+  </div>
+        <script type="text/javascript">
 
         $( document ).ready(function(){
           $("#map").height($("#map").parent().height() - 100);
@@ -147,11 +159,12 @@
           var $stages_field = $("[data-id=stages]");
           var $individual_option = $("[data-id=individuals] :selected");
           var individual_id = +$individual_option.attr("value");
+          var area_id = +$individual_option.attr("data-area");
           var species_id = +$individual_option.attr("rel");
           if(isNaN(species_id)){
             return false;
           }
-          var data = phenoclim.session.area.species[species_id];
+          var data = phenoclim.options.areas[area_id].species[species_id];
           $("option", $stages_field).remove();
           var stages = d3.entries(data.values || {});
           stages.sort(function(a,b){
@@ -167,15 +180,15 @@
           var $individual_option = $("[data-id=individuals] :selected");
           var individual_id = +$individual_option.attr("value");
           var species_id = +$individual_option.attr("rel");
+          var area_id = +$individual_option.attr("data-area");
           var stage_id = $("[data-id=stages]").val();
           var tmp = {
             label: '',
             key: individual_id,
-            values: phenoclim.session.area.species[species_id].values[stage_id].values[individual_id]
+            values: phenoclim.options.areas[area_id].species[species_id].values[stage_id].values[individual_id]
           };
           d3.select(".graph").datum([tmp]).call(phenoclim.session.chart_Obj);
         }
 
       </script>
-    {% endfor %}
 {% endblock %}
