@@ -4,6 +4,7 @@ import time
 from django.forms.forms import pretty_name
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
+from django.db import connection
 
 HEADER_STYLE = xlwt.easyxf('font: bold on')
 DEFAULT_STYLE = xlwt.easyxf()
@@ -28,6 +29,8 @@ class MyTimer:
     def output(self):
         return """### %s ### \n%s \n ######""" % (self.name,
                                                   "\n".join(self.times))
+
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
@@ -35,6 +38,7 @@ def json_serial(obj):
         return obj.isoformat()
     elif isinstance(obj, datetime.timedelta):
         return (datetime.datetime.min + obj).time().isoformat()
+
 
 def multi_getattr(obj, attr, default=None):
     attributes = attr.split(".")
@@ -100,3 +104,25 @@ def as_workbook(queryset, columns,
             sheet.write(x, y, value, style)
 
     return workbook
+
+
+#######
+# MANAGE PARTIAL SQL RELATED TO WEEK DATE
+#######
+
+def week_query():
+    if "sqlite" in connection.vendor:
+        return 'CAST((strftime("%j", date(date, "-3 days", "weekday 4")) - 1) / 7 + 1 AS INTEGER)'
+    else:
+        return 'CAST(extract(week from date) AS INTEGER)'
+
+
+#######
+# MANAGE PARTIAL SQL RELATED TO YEAR DATE
+#######
+
+def year_query():
+    if "sqlite" in connection.vendor:
+        return 'CAST(STRFTIME("%Y", date) AS INTEGER)'
+    else:
+        return 'CAST(extract(year from date) AS INTEGER)'

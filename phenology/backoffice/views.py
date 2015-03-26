@@ -21,7 +21,7 @@ from backoffice.forms import AccountForm, AreaForm, IndividualForm,\
     CreateIndividualForm, SurveyForm, SnowingForm, ResetPasswordForm
 from django.db.models import Max, Min
 from django.db import connection
-from backoffice.utils import MyTimer, json_serial
+from backoffice.utils import MyTimer, json_serial, week_query, year_query
 from django.utils.crypto import get_random_string
 from django.core import mail
 from django.conf import settings
@@ -41,20 +41,6 @@ def index(request):
 def map_all_surveys(request):
     return render_to_response("map_all_surveys.html", {},
                               RequestContext(request))
-
-
-def week_query():
-    if "sqlite" in connection.vendor:
-        return 'CAST((strftime("%j", date(date, "-3 days", "weekday 4")) - 1) / 7 + 1 AS INTEGER)'
-    else:
-        return 'CAST(extract(week from date) AS INTEGER)'
-
-
-def year_query():
-    if "sqlite" in connection.vendor:
-        return 'CAST(STRFTIME("%Y", date) AS INTEGER)'
-    else:
-        return 'CAST(extract(year from date) AS INTEGER)'
 
 
 def map_viz(request):
@@ -78,8 +64,16 @@ def viz_area_surveys(request):
                               RequestContext(request))
 
 
-def get_area_data(request):
-    area_id = request.GET.get("area_id")
+def viz_region_surveys(request):
+    areas = models.Area.objects.all().values_list('id', 'headline')
+    return render_to_response("viz_region_surveys.html", {"areas": areas},
+                              RequestContext(request))
+
+
+def get_area_data(request=None, area_id=None):
+    if not area_id:
+        area_id = request.GET.get("area_id")
+
     area = models.Area.objects.get(id=area_id)
     area_dict = {'lon': area.lon, 'lat': area.lat, 'city': area.commune,
                  'altitude': area.altitude, 'name': area.name, 'species': {},
@@ -99,8 +93,11 @@ def get_area_data(request):
         individual_dict.append({
             "year": survey.date.year,
             "date": survey.date})
-    return HttpResponse(json.dumps(area_dict, default=json_serial),
-                        content_type="application/json")
+    if request:
+        return HttpResponse(json.dumps(area_dict, default=json_serial),
+                            content_type="application/json")
+    else:
+        return area_dict
 
 
 def get_data_for_viz(request):
@@ -386,6 +383,10 @@ def export_surveys(request):
     return response
 
 
+##########
+# AREA
+##########
+
 @login_required(login_url='login/')
 def area_detail(request, area_id=-1):
     area = models.Area.objects.filter(id=area_id).first()
@@ -411,6 +412,10 @@ def area_detail(request, area_id=-1):
     else:
         return redirect(index)
 
+
+########
+# INDIVIDUAL
+########
 
 @login_required(login_url='login/')
 def individual_detail(request, ind_id=-1):
@@ -462,6 +467,10 @@ def individual_detail(request, ind_id=-1):
     }, RequestContext(request))
 
 
+#######
+# SURVEY
+#######
+
 @login_required(login_url='login/')
 def survey_detail(request, survey_id=-1):
     survey = models.Survey.objects.filter(id=survey_id).first()
@@ -497,6 +506,10 @@ def survey_detail(request, survey_id=-1):
         "form": form,
     }, RequestContext(request))
 
+
+#######
+# SWOWCOVER/SNOWING FEATURE
+#######
 
 @login_required(login_url='login/')
 def snowing_detail(request, area_id, snowing_id=-1):
@@ -544,6 +557,10 @@ def snowing_detail(request, area_id, snowing_id=-1):
     }, RequestContext(request))
 
 
+#####
+# EDIT PROFILE
+#####
+
 @login_required(login_url='login/')
 def user_detail(request):
     if not request.user.observer:
@@ -566,6 +583,10 @@ def user_detail(request):
         "form": form,
     }, RequestContext(request))
 
+
+#######
+# REGISTER USER
+#######
 
 def register_user(request):
     if request.user and request.user.username:
@@ -609,14 +630,60 @@ def register_user(request):
     }, RequestContext(request))
 
 
+#######
+# PASSWORD RESET FEATURE
+#######
+
+def password_reset(request):
+    template = "password_new_form.html"
+    if request.POST:
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.data["email"]
+            password = get_random_string()
+            user = User.objects.get(email=email)
+            if user:
+                user.set_password(password)
+                message = render_to_string('password_new_email.html',
+                                           {'user': user,
+                                            'password': password})
+                user.save()
+                mail.send_mail(
+                    subject="%s [Phenoclim]" % ugettext(u"New password"),
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False)
+
+                template = "password_new_done.html"
+    else:
+        form = ResetPasswordForm()
+    return render_to_response(template, {
+        "form": form
+    }, RequestContext(request))
+
+
+#####
+# MY SURVEYS
+#####
+
 @login_required(login_url='login/')
 def dashboard(request):
+    areas = {a.id: get_area_data(None, a.id) for a in request.user.observer.areas.all()}
     if models.Observer.objects.filter(user=request.user):
-        return render_to_response("profile_display.html", RequestContext(request))
+        return render_to_response("profile_display.html",
+                                  {
+                                      "areas": areas
+                                  },
+                                  RequestContext(request))
     elif request.user.is_staff or request.user.is_superuser:
         return redirect('../admin/')
     return render_to_response("base.html", RequestContext(request))
 
+
+######
+# VIZ ALL SURVEYS VIEW
+######
 
 @login_required(login_url='login/')
 def all_surveys(request):
@@ -624,6 +691,10 @@ def all_surveys(request):
     return render_to_response("all_surveys.html", {
         "surveys": surveys}, RequestContext(request))
 
+
+####
+# DATATABLE TOOL
+####
 
 def get_surveys(request):
     mapping = {
@@ -673,14 +744,16 @@ def get_surveys(request):
                   "individual": "",
                   "organisms": ",".join(set([a.organism
                                             for a in
-                                             o.individual.area.observer_set.all()
+                                             o.individual.area.
+                                             observer_set.all()
                                              if a.organism]
                                             )),
                   "stage": o.stage.name,
                   "answer": ugettext(o.answer),
                   "categorie": ",".join([a.category
                                          for a in
-                                         set(o.individual.area.observer_set.all())]
+                                         set(o.individual.area.
+                                             observer_set.all())]
                                         )
                   }
                  for o in filtered_data],
@@ -692,6 +765,10 @@ def get_surveys(request):
 from django.db.models import Count
 
 
+#######
+# MAP ALL SNOWINGS
+#######
+
 def viz_snowings(request):
     query = models.Snowing.objects.filter(height__gt=0).\
         filter(height__lt=999).values("area").annotate(count=Count('id'))
@@ -701,32 +778,3 @@ def viz_snowings(request):
     areas = sorted(areas, key=lambda a: (int(area_ids[a.id])), reverse=True)
     return render_to_response("viz_snowings.html", {"areas": areas},
                               RequestContext(request))
-
-
-def password_reset(request):
-    template = "password_new_form.html"
-    if request.POST:
-        form = ResetPasswordForm(request.POST)
-        if form.is_valid():
-            email = form.data["email"]
-            password = get_random_string()
-            user = User.objects.get(email=email)
-            if user:
-                user.set_password(password)
-                message = render_to_string('password_new_email.html',
-                                           {'user': user,
-                                            'password': password})
-                user.save()
-                mail.send_mail(
-                    subject="%s [Phenoclim]" % ugettext(u"New password"),
-                    message=message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False)
-
-                template = "password_new_done.html"
-    else:
-        form = ResetPasswordForm()
-    return render_to_response(template, {
-        "form": form
-    }, RequestContext(request))
