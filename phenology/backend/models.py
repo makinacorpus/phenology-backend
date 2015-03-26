@@ -15,7 +15,6 @@ from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.db.models import Q
 from phenology.settings import DEFAULT_POSITION
-
 # Create your models here.
 
 
@@ -287,8 +286,11 @@ class Individual(models.Model):
         return "%s" % (self.name)
 
     def geojson(self, draggable=False):
-        filename = settings.MEDIA_URL + get_thumbnail(self.species.picture)
-        picture_url = filename
+        picture_url = ""
+        species_name = ""
+        if(Species.objects.filter(id=self.species_id).first()):
+            species_name = self.species.name
+            picture_url = settings.MEDIA_URL + get_thumbnail(self.species.picture)
         return {
             "type": "Point",
             "coordinates": [self.lon, self.lat],
@@ -297,7 +299,7 @@ class Individual(models.Model):
                 "name": self.name,
                 "id": self.id,
                 "draggable": draggable,
-                "species": self.species.name,
+                "species": species_name,
                 "picture": picture_url
             }
         }
