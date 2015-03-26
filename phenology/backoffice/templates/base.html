@@ -26,12 +26,11 @@
 
   <script type="text/javascript">
     var phenoclim = phenoclim || {};
+    phenoclim.options = phenoclim.options || {};
     var userLang = navigator.language || navigator.userLanguage;
     moment.locale(userLang);
     {% if form and form.instance %}
-      phenoclim.options = {
-        geojson: {{ form.instance.getAllGeojson|jsonify|safe }},
-      }
+      phenoclim.options.geojson = {{ form.instance.getAllGeojson|jsonify|safe }};
     {% endif %}
   </script>
 
@@ -46,7 +45,7 @@
 
      <div class="container-fluid page-title">
       <div class="row">
-        <h2 class="col-md-12 text-center">{% block title %}{% endblock %}</h2>
+        <h2 class="col-xs-12 text-center">{% block title %}{% endblock %}</h2>
       </div>
      </div>
 

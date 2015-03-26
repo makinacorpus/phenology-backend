@@ -9,19 +9,38 @@ var geojsonMarkerOptions = {
     opacity: 1,
     fillOpacity: 0.3
 };
+
 var phenoMarker = L.AwesomeMarkers.icon({
   icon: 'leaf',
   prefix: 'ion',
   markerColor: 'green'
 });
 
+var areaMarker = L.AwesomeMarkers.icon({
+  icon: 'ios-analytics',
+  prefix: 'ion',
+  markerColor: 'blue'
+});
+
 phenoclim.map = function(options){
   self = this;
 
+  var defaults = {
+    draggable: false,
+    filter_draggable: false,
+  };
+  options = $.extend(defaults, options);
+
+  self.draggableLayer;
+
   function onEachFeature(feature, layer) {
       // does this feature have a property named popupContent?
-      if (feature.properties && feature.properties.draggable === true) {
-          layer.options.draggable = true;
+      if (feature.properties
+          && feature.properties.draggable === true
+          && options.draggable === true) {
+        layer.options.draggable = true;
+        self.draggableLayer = layer;
+
         layer.on("dragend", function(e){
           var latlng = e.target.getLatLng();
           $("[name=lat]").val(latlng.lat);
@@ -36,6 +55,7 @@ phenoclim.map = function(options){
         zoom: 11,
         maxZoom: 19
     });
+
     this.geojson = undefined;
     // add an OpenStreetMap tile layer
     // 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
@@ -48,17 +68,31 @@ phenoclim.map = function(options){
     var bounds2 = [[46.38, -1.51],[42.71, 7.95]];
     if(options.geojson && options.geojson.features && options.geojson.features.length > 0){
       self.geojson = L.geoJson(options.geojson,{
+          filter: function(feature){
+            if (options.filter_draggable === true) {
+              return (feature.properties && feature.properties.draggable === true);
+            }
+            return true;
+          },
           pointToLayer: function (feature, latlng) {
             var ftype = feature.properties.object
+            var layer;
             if(ftype)
             {
               if(ftype == "individual"){
-                  return L.marker(latlng, {icon: phenoMarker});
+                  layer = L.marker(latlng, {icon: phenoMarker});
               }
               else{
-                  return L.circle(latlng, 500, geojsonMarkerOptions);
+                  if (feature.properties
+                    && feature.properties.draggable === true){
+                    layer = L.marker(latlng, {icon: areaMarker});
+                  }
+                  else{
+                    layer = L.circle(latlng, 500, geojsonMarkerOptions);
+                  }
               }
             }
+            return layer;
           },
           onEachFeature: onEachFeature
       }
@@ -93,7 +127,7 @@ phenoclim.map = function(options){
         layer.on("click", function(event){
           var prop = event.target.feature.geometry.properties;
           if(prop.object=="individual" && prop.id){
-            setTimeout(function(){ $(".display__individual[data-id=" + prop.id + "]>a").click(); }, 10);
+            setTimeout(function(){ $(".display__individual[data-id=" + prop.id + "]").show();$(".display__individual[data-id=" + prop.id + "]>a").click(); }, 10);
             };
         });
       });
@@ -130,3 +164,4 @@ $( document ).ready(function() {
     $(".map").trigger( "map_init");
   }
 });
+
