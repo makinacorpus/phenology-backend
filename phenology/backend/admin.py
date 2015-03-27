@@ -32,23 +32,35 @@ class StageAdmin(TabAdmin, ImportExportModelAdmin):
 
 
 class SurveyAdmin(ImportExportModelAdmin):
-    list_display = ('date', 'individual', 'species_name',
-                    'stage', 'answer', 'remark', 'area_name')
+    list_display = ('date', 'ind_name', 'species_name',
+                    'stage', '_answer', 'remark', 'area_name')
+    search_fields = ['date', 'individual__name', 'individual__species__name',
+                     'stage__name', 'answer', 'individual__area__name']
+
+    def _answer(self, obj):
+        return _(obj.answer)
+    _answer.short_description = _('Answer')
+    _answer.admin_order_field = 'answer'
+
+    def ind_name(self, obj):
+        return ("%s" % (obj.individual.name))
+    ind_name.short_description = _('Individual')
+    ind_name.admin_order_field = 'individual__name'
 
     def species_name(self, obj):
         return ("%s" % (obj.individual.species.name))
     species_name.short_description = _('Species')
+    species_name.admin_order_field = 'individual__species__name'
 
     def area_name(self, obj):
         return ("%s" % (obj.individual.area.name))
     area_name.short_description = _('Area')
+    area_name.admin_order_field = 'individual__area__name'
 
     def stage_name(self, obj):
         return ("%s" % (obj.observer))
     stage_name.short_description = _('Stage')
-
-    def answer(self, obj):
-        return ugettext(obj.answer)
+    area_name.admin_order_field = 'stage__name'
 
 admin.site.register(models.Survey, SurveyAdmin)
 
