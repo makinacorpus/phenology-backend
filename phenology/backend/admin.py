@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.contrib import admin
 from backend import models
 from django.contrib.auth.admin import UserAdmin
@@ -60,16 +63,27 @@ class IndividualAdmin(ImportExportModelAdmin):
 
 admin.site.register(models.Individual, IndividualAdmin)
 
+
 class AreaAdmin(ImportExportModelAdmin):
     resource_class = ressources.AreaResource
-    list_display = ('name', 'observers', 'commune')
-    search_fields = ['name', 'observer__user__username', 'species__name']
+    list_display = ('name', 'commune', 'altitude', 'species', 'observers',)
+    search_fields = ['name', 'observer__user__username',
+                     'individual__species__name', 'commune']
+    ordering = ('name', 'commune', 'altitude', )
     form = forms.AreaAdminForm
 
     def observers(self, obj):
         return ",".join([str(o.user.username).strip()
                          for o in
                          obj.observer_set.all().select_related('user')])
+    observers.short_description = _('Observers')
+
+    def species(self, obj):
+        return ",".join(set([unicode(o.species.name).strip()
+                             for o in
+                             obj.individual_set.all().
+                             select_related('species')]))
+    species.short_description = _('species')
 
 admin.site.register(models.Area, AreaAdmin)
 
