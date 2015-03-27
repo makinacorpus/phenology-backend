@@ -759,10 +759,19 @@ from django.db.models import Count
 
 def viz_snowings(request):
     query = models.Snowing.objects.filter(height__gt=0).\
-        filter(height__lt=999).values("area").annotate(count=Count('id'))
+        filter(height__lt=999).values("area", "area__postalcode").\
+        annotate(count=Count('id'))
 
-    area_ids = {s["area"]: s["count"] for s in query if int(s["count"]) > 50}
+    area_ids = {s["area"]: s["area__postalcode"] for s in query
+                if int(s["count"]) > 50}
+
+    def compare_postalcode(postalcode):
+        if postalcode.isdigit():
+            return float(postalcode)
+        else:
+            return postalcode
+
     areas = list(models.Area.objects.filter(pk__in=area_ids.keys()))
-    areas = sorted(areas, key=lambda a: (int(area_ids[a.id])), reverse=True)
+    areas = sorted(areas, key=lambda a: compare_postalcode(area_ids[a.id]))
     return render_to_response("viz_snowings.html", {"areas": areas},
                               RequestContext(request))

@@ -5,11 +5,8 @@ __docformat__ = 'restructuredtext en'
 from django.conf.urls import patterns, url
 from backoffice import views
 from django.core.urlresolvers import reverse_lazy
-
 import os
 base_path = os.path.join(os.path.dirname(__file__))
-
-print base_path
 
 urls = patterns(
     '',
