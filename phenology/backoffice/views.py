@@ -640,7 +640,7 @@ def password_reset(request):
                                             'password': password})
                 user.save()
                 mail.send_mail(
-                    subject="%s [Phenoclim]" % ugettext(u"New password"),
+                    subject=u"%s Phénoclim" % ugettext(u"New password"),
                     message=message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[user.email],
