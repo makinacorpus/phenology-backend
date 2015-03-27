@@ -705,9 +705,7 @@ def get_surveys(request):
     draw = request.GET.get("draw", 1)
     query = models.Survey.objects
     if not request.user.is_staff or not request.user.is_superuser:
-        if models.Observer.objects.filter(user=request.user)\
-           and not request.user.observer.is_crea:
-            query = query.filter(individual__area__observer__user=request.user)
+        query = query.filter(individual__area__observer__user=request.user)
     query = query.filter(Q(individual__name__icontains=search)
                          | Q(individual__area__name__icontains=search)
                          | Q(stage__name__icontains=search)
@@ -731,7 +729,7 @@ def get_surveys(request):
                   "date": str(o.date),
                   "area": o.individual.area.name,
                   "species": o.individual.species.name,
-                  "individual": "",
+                  "individual": o.individual.name,
                   "organisms": ",".join(set([a.organism
                                             for a in
                                              o.individual.area.
