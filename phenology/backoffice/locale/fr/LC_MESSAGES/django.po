@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 21:59+0100\n"
+"POT-Creation-Date: 2015-03-27 22:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -110,13 +110,25 @@ msgstr ""
 msgid "Connect"
 msgstr "Se connecter"
 
-#: templates/login_form.html:26
+#: templates/login_form.html:25
 msgid "Register"
 msgstr "S'inscrire"
 
-#: templates/login_form.html:28
+#: templates/login_form.html:26
 msgid "Missed password"
 msgstr "Mot de passe oublié"
+
+#: templates/my_surveys.html:74
+msgid "Fill new snowing"
+msgstr "Enneigement"
+
+#: templates/my_surveys.html:85
+msgid "Vizualisation"
+msgstr "Date d’apparition des stades par année"
+
+#: templates/my_surveys.html:114
+msgid "Export my surveys"
+msgstr "Exporter mes données"
 
 #: templates/navigation.html:15
 msgid "My Profil"
