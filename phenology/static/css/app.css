@@ -365,5 +365,8 @@ form {
     content: ' *';
     display:inline;
 }
+.form-group .picker__input, .picker__input:hover{
+  cursor: pointer;
+}
 
 /*****************************/
