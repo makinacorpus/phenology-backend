@@ -357,4 +357,13 @@ form {
   margin-left: -17px;
 }
 
+.required label{
+    font-weight: bold;
+}
+.required label:after{
+    color: #e32;
+    content: ' *';
+    display:inline;
+}
+
 /*****************************/

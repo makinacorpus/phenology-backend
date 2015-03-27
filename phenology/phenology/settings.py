@@ -87,17 +87,19 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.i18n'
 )
 
+"""
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
     )),
 )
-
+"""
 # Default settings
 BOOTSTRAP3 = {
     'horizontal_label_class': 'col-md-3',
     'horizontal_field_class': 'col-md-8',
+    'required_css_class': 'required',
 }
 
 ROOT_URLCONF = 'phenology.urls'
