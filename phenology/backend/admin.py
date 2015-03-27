@@ -67,11 +67,13 @@ admin.site.register(models.Survey, SurveyAdmin)
 
 class IndividualAdmin(ImportExportModelAdmin):
     list_display = ('name', 'species', 'area', 'area_city')
-    search_fields = ['name', 'species__name', 'area__name', 'area__codezone']
+    search_fields = ['name', 'species__name', 'area__name', 'area__commune']
     ordering = ('area', 'species', 'name',)
 
     def area_city(self, obj):
         return ("%s" % (obj.area.commune))
+    area_city.short_description = _('Commune')
+    area_city.admin_order_field = 'area__commune'
 
 admin.site.register(models.Individual, IndividualAdmin)
 
@@ -107,6 +109,7 @@ class SnowingAdmin(ImportExportModelAdmin):
 
     def area_city(self, obj):
         return ("%s" % (obj.area.commune))
+    area_city.short_description = _('Commune')
 
 admin.site.register(models.Snowing, SnowingAdmin)
 
