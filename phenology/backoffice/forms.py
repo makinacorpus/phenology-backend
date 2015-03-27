@@ -25,6 +25,8 @@ class UserForm(forms.ModelForm):
 
 
 class SnowingForm(forms.ModelForm):
+    date = forms.DateField()
+
     class Meta:
         model = models.Snowing
         fields = ('height', 'observer', 'remark', 'area', 'date')
