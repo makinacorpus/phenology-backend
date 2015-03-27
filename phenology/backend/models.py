@@ -139,16 +139,13 @@ class Species(models.Model):
 class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"),
                             db_index=True, unique=True)
-    codezone = models.CharField(max_length=20, verbose_name=_("codezone"),
-                                blank=True)
     lat = models.FloatField(verbose_name="latitude",
                             default=DEFAULT_POSITION["lat"])
     lon = models.FloatField(verbose_name="longitude",
                             default=DEFAULT_POSITION["lon"])
-    altitude = models.FloatField(verbose_name="altitude", null=True,
-                                 blank=True)
+    altitude = models.FloatField(verbose_name="altitude")
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
-                              blank=True)
+                              blank=True, default="")
     commune = models.CharField(max_length=100, verbose_name=_("city"))
     postalcode = models.CharField(max_length=20, verbose_name=_("codepostal"))
     region = models.CharField(max_length=100, verbose_name=_("region"),
@@ -156,8 +153,6 @@ class Area(models.Model):
     departement = models.CharField(max_length=100,
                                    verbose_name=_("departement"),
                                    blank=True, default="")
-    species = select2_fields.ManyToManyField(Species, blank=True,
-                                             verbose_name=_("species"))
 
     class Meta:
         verbose_name = _("Area")
