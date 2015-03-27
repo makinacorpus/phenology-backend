@@ -138,7 +138,7 @@ class Species(models.Model):
 # zone:
 class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"),
-                            db_index=True)
+                            db_index=True, unique=True)
     codezone = models.CharField(max_length=20, verbose_name=_("codezone"),
                                 blank=True)
     lat = models.FloatField(verbose_name="latitude",
@@ -260,8 +260,7 @@ class Observer(models.Model):
 ##########
 
 class Individual(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("name"),
-                            db_index=True)
+    name = models.CharField(max_length=100, verbose_name=_("name"))
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
@@ -356,6 +355,12 @@ class Individual(models.Model):
                       for (s, d, a) in all_stages]
         all_stages = sorted(all_stages, key=lambda stage: stage[1][0])
         return all_stages
+
+    def __unicode__(self):
+        return "%s" % (self.name)
+
+    def __str__(self):
+        return "%s" % (self.name)
 
 
 # enneigement
