@@ -67,7 +67,7 @@ admin.site.register(models.Individual, IndividualAdmin)
 class AreaAdmin(ImportExportModelAdmin):
     resource_class = ressources.AreaResource
     list_display = ('name', 'commune', 'altitude', 'species', 'observers',)
-    search_fields = ['name', 'observer__user__username',
+    search_fields = ['name', 'observer__user__username', 'altitude',
                      'individual__species__name', 'commune']
     ordering = ('name', 'commune', 'altitude', )
     form = forms.AreaAdminForm
@@ -109,9 +109,11 @@ class UserInline(admin.StackedInline):
 # Define a new User admin
 class ObserverAdmin(ImportExportModelAdmin):
     resource_class = ressources.ObserverResource
-    list_display = ('username', 'last_name', 'first_name', 'city',
-                    'codepostal', 'nb_inds', 'nb_areas', 'nb_surveys')
-    search_fields = ['city', 'user__first_name', 'user__last_name']
+    list_display = ('username', 'last_name', 'first_name', 'city', 'organism',
+                    'category', 'codepostal', 'nb_inds', 'nb_areas',
+                    'nb_surveys')
+    search_fields = ['city', 'user__first_name', 'user__last_name',
+                     'codepostal']
     list_select_related = ('user', )
 
     def queryset(self, request):
@@ -124,14 +126,18 @@ class ObserverAdmin(ImportExportModelAdmin):
     def first_name(self, obj):
         return (obj.user.first_name)
     first_name.admin_order_field = 'user__first_name'
+    first_name.short_description = _('first name')
 
     def last_name(self, obj):
         return (obj.user.last_name)
     last_name.admin_order_field = 'user__last_name'
+    last_name.short_description = ugettext('last name')
 
     def username(self, obj):
-        return (obj.user.username)
+        if(obj.user):
+            return obj.user.last_name
     username.admin_order_field = 'user__username'
+    username.short_description = ugettext('username')
 
     def nb_inds(self, obj):
         return models.Individual.objects.filter(area__observer=obj).count()
