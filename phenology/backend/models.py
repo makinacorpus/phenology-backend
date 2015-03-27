@@ -375,7 +375,7 @@ class Snowing(models.Model):
     date = models.DateTimeField(verbose_name=_("date"))
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
                               default="", blank=True)
-    height = models.FloatField(verbose_name=_("height"))
+    height = models.PositiveIntegerField(verbose_name=_("height"))
 
     class Meta:
         verbose_name = _("Snowing")
