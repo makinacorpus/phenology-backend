@@ -261,8 +261,7 @@ class Individual(models.Model):
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
     lat = models.FloatField(verbose_name=_("latitude"))
     lon = models.FloatField(verbose_name=_("longitude"))
-    altitude = models.FloatField(verbose_name=_("altitude"),
-                                 null=True, blank=True)
+    altitude = models.FloatField(verbose_name=_("altitude"))
     circonference = models.FloatField(verbose_name=_("circonference"),
                                       null=True, blank=True)
     milieu = models.CharField(max_length=100,
