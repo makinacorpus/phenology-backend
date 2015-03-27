@@ -71,9 +71,9 @@ class AccountForm(forms.ModelForm):
             ['last_name',
              'first_name',
              'organism', 'email',
-             'fonction', 'adresse', 'codepostal',
-             'city', 'phone', 'mobile', 'category',
-             'nationality']
+             'fonction', 'nationality', 'adresse',
+             'codepostal', 'city', 'phone', 'mobile',
+             'category', ]
 
     def is_valid(self):
         # save both forms
@@ -177,3 +177,11 @@ class IndividualForm(CreateIndividualForm):
         widgets = {
             'remark': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+class ObserverForm(forms.ModelForm):
+    class Meta:
+        model = models.Observer
+
+    def __init__(self, *args, **kwargs):
+        super(ObserverForm, self).__init__(*args, **kwargs)
