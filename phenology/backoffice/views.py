@@ -418,7 +418,6 @@ def individual_detail(request, ind_id=-1):
         individual.area = area
         individual.lat = area.lat
         individual.lon = area.lon
-
     surveys = sorted(individual.survey_set.all(),
                      key=lambda survey: survey.date,
                      reverse=True)

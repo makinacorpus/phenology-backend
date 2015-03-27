@@ -58,7 +58,7 @@ CATEGORY_CHOICES = (
     ('etablissement_scolaire', _('etablissement_scolaire')),
     ('espace_protege', _('espace_protege')),
     ('association', _('association')),
-    ('professionnelle', _('professionnelle')),
+    ('professionnelle', _('professionnel')),
     ('centre_decouverte', _('centre_decouverte')),
     ('autre', _('autre')),
 )
@@ -76,8 +76,11 @@ EXPOSITION_CHOICES = (
 )
 
 NATIONALITY_CHOICES = (
+    ('allemagne', _('deutsch')),
+    ('autriche', _('austrian')),
     ('france', _('french')),
     ('italie', _('italian')),
+    ('suisse', _('swiss')),
 )
 
 MILIEU_CHOICES = (
@@ -203,18 +206,21 @@ class Area(models.Model):
 class Observer(models.Model):
     user = models.OneToOneField(User)
     city = models.CharField(max_length=100, verbose_name=_("city"))
-    fonction = models.CharField(max_length=70, verbose_name=_("fonction"), blank=True, default="")
-    adresse = models.TextField(max_length=80, verbose_name=_("adresse"))
-    codepostal = models.CharField(max_length=20, verbose_name=_("codepostal"))
+    fonction = models.CharField(max_length=70, verbose_name=_("fonction"),
+                                blank=True, default="")
     nationality = models.CharField(max_length=100,
                                    verbose_name=_("nationality"),
                                    choices=NATIONALITY_CHOICES)
+    adresse = models.TextField(max_length=80, verbose_name=_("adresse"))
+    codepostal = models.CharField(max_length=20, verbose_name=_("codepostal"))
     organism = models.CharField(max_length=150, verbose_name=_("organism"),
                                 blank=True)
     category = models.CharField(max_length=80, verbose_name=_("category"),
                                 choices=CATEGORY_CHOICES)
-    phone = models.CharField(max_length=20, verbose_name=_("phone"), default="", blank=True)
-    mobile = models.CharField(max_length=20, verbose_name=_("mobile"), default="", blank=True)
+    phone = models.CharField(max_length=20, verbose_name=_("phone"),
+                             default="", blank=True)
+    mobile = models.CharField(max_length=20, verbose_name=_("mobile"),
+                              default="", blank=True)
     is_crea = models.BooleanField(verbose_name=_("is a crea member ?"),
                                   default=False)
     is_active = models.BooleanField(verbose_name=_("is activated?"),
