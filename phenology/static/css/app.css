@@ -369,4 +369,7 @@ form {
   cursor: pointer;
 }
 
+th:first-letter {
+   text-transform:uppercase;
+}
 /*****************************/
