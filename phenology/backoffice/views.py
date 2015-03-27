@@ -383,6 +383,15 @@ def area_detail(request, area_id=-1):
     area = models.Area.objects.filter(id=area_id).first()
     if not area:
         area = models.Area()
+        existed = request.user.observer.areas.first()
+        if(existed):
+            area.lat = existed.lat
+            area.lon = existed.lon
+            area.region = existed.region
+            area.departement = existed.departement
+            area.commune = existed.commune
+            area.altitude = existed.altitude
+            area.postalcode = existed.postalcode
         area.observer = request.user.observer
 
     if area_id == -1 or request.user.observer in area.observer_set.all():
