@@ -1,10 +1,24 @@
 {% load i18n %}{% trans "Greetings" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user }}{% endif %},
 
-{% blocktrans %}Thank you to have join http://phenoclim.org. {% endblocktrans %}
-{% blocktrans with username=user.username %}
+{% blocktrans with username=user.username%}
+
+Thank you to have join phenoclim.
+
+You can access to your account on the website http://phenoclim.org, create your area and add individuals that you observe along the year.
+
+We invite you to navigate to your personnal space and modify your password in the "My profil" section.
+
 Your password : {{ password }}
 Your username : {{ username }}
 
-Best regards,
-{{ site_name }}
+Welcome to the community !
+
+Phenoclim team.
+
+Centre de Recherches sur les Ecosystèmes d'Altitude (CREA Mont-Blanc) [http://creamontblanc.org]
+Observatoire du Mont-Blanc, 74400 Chamonix, France 
+
+phenoclim@creamontblanc.org
+Tél : +33 (0)4 50 53 45 16
+
 {% endblocktrans %}
