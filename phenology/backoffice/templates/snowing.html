@@ -31,11 +31,11 @@
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         {{ form.errors }}
-        {% bootstrap_field form.remark %}
         {% bootstrap_field form.height %}
         {{ form.observer.as_hidden }}
         {{ form.area.as_hidden }}
         {% bootstrap_field form.date layout='inline'%}
+        {% bootstrap_field form.remark %}
         {{ form.area }}
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg btn-block">
