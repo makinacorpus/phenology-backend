@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 14:17+0100\n"
+"POT-Creation-Date: 2015-03-27 21:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -258,7 +258,11 @@ msgstr "Dernière observation"
 msgid "Add a new individual"
 msgstr "Ajouter un nouvel individu"
 
-#: templates/profile_individual.html:18
+#: templates/profile_individual.html:7
+msgid "New individual"
+msgstr "Nouvel individu"
+
+#: templates/profile_individual.html:24
 msgid "Back to the area"
 msgstr "Retour sur la zone"
 

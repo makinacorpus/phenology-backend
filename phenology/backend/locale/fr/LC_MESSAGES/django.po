@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 18:03+0100\n"
+"POT-Creation-Date: 2015-03-27 22:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,7 +251,7 @@ msgstr "Observateur"
 
 #: models.py:267
 msgid "is dead?"
-msgstr "Est-il mort ?"
+msgstr "mort"
 
 #: models.py:268
 msgid "latitude"
@@ -295,7 +295,7 @@ msgstr "Date"
 
 #: models.py:376
 msgid "height"
-msgstr "Hauteur observée"
+msgstr "Hauteur de neige en cm"
 
 #: models.py:379
 msgid "Snowing"
