@@ -3,7 +3,7 @@ from backend import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-import select2.fields as select2_fields
+
 
 class CreateUserForm(forms.ModelForm):
     class Meta:
@@ -13,7 +13,8 @@ class CreateUserForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
-        if email and User.objects.filter(email=email).exclude(username=username).count():
+        if email and User.objects.filter(email=email).\
+                exclude(username=username).count():
             raise forms.ValidationError(ugettext('Already exists'))
         return email
 
@@ -110,7 +111,8 @@ class AreaAdminForm(forms.ModelForm):
         super(AreaAdminForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             # if this is not a new object, we load related books
-            self.initial['observers'] = self.instance.observer_set.values_list('pk', flat=True)
+            self.initial['observers'] = self.instance.observer_set.\
+                values_list('pk', flat=True)
 
     def save(self, *args, **kwargs):
         instance = super(AreaAdminForm, self).save(*args, **kwargs)
@@ -171,14 +173,20 @@ class CreateIndividualForm(forms.ModelForm):
             'area': forms.HiddenInput()
         }
 
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        free = self.instance.area.individual_set.\
+            exclude(id=self.instance.id).filter(name=data).count() == 0
+        if not free:
+            raise forms.ValidationError(
+                _("This name is already found in your area"))
+        return data
+
 
 class IndividualForm(CreateIndividualForm):
     class Meta:
         exclude = ('area',)
         model = models.Individual
-        widgets = {
-            'remark': forms.Textarea(attrs={'rows': 4}),
-        }
 
 
 class ObserverForm(forms.ModelForm):

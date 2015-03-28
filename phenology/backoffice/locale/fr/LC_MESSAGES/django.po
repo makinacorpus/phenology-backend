@@ -26,13 +26,17 @@ msgstr "Déjà utilisé"
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: views.py:32 templates/survey.html:43
+#: forms.py:182
+msgid "This name is already found in your area"
+msgstr "Ce nom est déjà attribué à un individu de votre zone"
+
+#: views.py:31 templates/survey.html:43
 msgid "isObserved"
 msgstr "Observé"
 
-#: views.py:32
+#: views.py:31
 msgid "isDead"
-msgstr "est Mort"
+msgstr "Mort"
 
 #: views.py:33 templates/survey.html:50
 msgid "isLost"

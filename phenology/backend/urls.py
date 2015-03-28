@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 __docformat__ = 'restructuredtext en'
 from django.conf.urls import patterns
 
