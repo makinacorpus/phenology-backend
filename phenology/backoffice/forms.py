@@ -187,6 +187,9 @@ class IndividualForm(CreateIndividualForm):
     class Meta:
         exclude = ('area',)
         model = models.Individual
+        widgets = {
+            'remark': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class ObserverForm(forms.ModelForm):
