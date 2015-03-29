@@ -72,6 +72,10 @@
                     {% endfor %}
                     <li class="icon ion-ios-medical icon-bullet">
                       <a class="btn no-padding btn-link" href="{% url 'snowing-detail' area.id %}">{% trans 'Fill new snowing' %}</a>
+                      {% if area.last_snowing %}
+                        <br/>
+                        <i style="font-style:italic;font-size:0.9em">{{ area.last_snowing.date|date:"D d F Y"}}</i>
+                      {% endif %}
                     </li>
                   </ul>
                 </li>
