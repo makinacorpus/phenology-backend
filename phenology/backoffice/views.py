@@ -424,6 +424,8 @@ def individual_detail(request, ind_id=-1):
         individual = models.Individual()
         area_id = request.GET.get("area_id")
         area = models.Area.objects.get(id=area_id)
+        nb_ind = area.individual_set.count()
+        individual.name = "individu %s" % (nb_ind + 1)
         individual.area = area
         individual.lat = area.lat
         individual.lon = area.lon
