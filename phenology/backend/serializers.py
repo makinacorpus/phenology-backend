@@ -152,6 +152,7 @@ class SpeciesNestedSerializer(serializers.ModelSerializer):
 # used in observers endpoint
 class AreaNestedSerializer(serializers.ModelSerializer):
     species = serializers.SerializerMethodField('get_species_for_area')
+    last_snowing = serializers.SerializerMethodField('get_last_snowing')
 
     def get_species_for_area(self, *args, **kwargs):
         area = args[0]
@@ -159,11 +160,24 @@ class AreaNestedSerializer(serializers.ModelSerializer):
                           .objects\
                           .filter(Q(individual__area=area)
                                   & Q(individual__is_dead=False)
-                                  & Q(individual__area=area)).distinct().select_related()
+                                  & Q(individual__area=area)).\
+            distinct().select_related()
         self.context["user_target"] = self.parent.object
         self.context["area_target"] = area
         serializer = SpeciesNestedSerializer(instance=species_q,
                                              many=True, context=self.context)
+        return serializer.data
+
+    def get_last_snowing(self, *args, **kwargs):
+        area = args[0]
+        snowing_q = models.Snowing\
+                          .objects\
+                          .filter(Q(area=area))\
+                          .order_by("-date")\
+                          .select_related()\
+                          .first()
+        serializer = SnowingSerializer(instance=snowing_q,
+                                       context=self.context)
         return serializer.data
 
     def get_geojson(self, *args, **kwargs):
