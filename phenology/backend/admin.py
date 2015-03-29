@@ -174,9 +174,13 @@ class StageInline(TranslationTabularInline):
     extra = 0
 
 
+class StageInline2(StageInline):
+    ordering = ("order",)
+
+
 class SpeciesAdmin(TabAdmin, ImportExportModelAdmin):
     list_display = ('name', 'nb_stages', 'nb_surveys', 'nb_observers')
-    inlines = (StageInline, )
+    inlines = (StageInline2, )
 
     def nb_stages(self, obj):
         return models.Stage.objects.filter(species=obj).count()
