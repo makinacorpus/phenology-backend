@@ -176,9 +176,10 @@ class AreaNestedSerializer(serializers.ModelSerializer):
                           .order_by("-date")\
                           .select_related()\
                           .first()
-        serializer = SnowingSerializer(instance=snowing_q,
-                                       context=self.context)
-        return serializer.data
+        if(snowing_q):
+            serializer = SnowingSerializer(instance=snowing_q,
+                                           context=self.context)
+            return serializer.data
 
     def get_geojson(self, *args, **kwargs):
         area = args[0]
