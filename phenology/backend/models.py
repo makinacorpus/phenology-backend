@@ -331,26 +331,30 @@ class Individual(models.Model):
         last_stages = []
         next_stages = []
         date_referer = datetime.date.today()
-        previous_date = date_referer + relativedelta(months=-6)
-        next_date = date_referer + relativedelta(months=+8)
+
+        min_date = date_referer + relativedelta(months=-6)
+        max_date = date_referer + relativedelta(months=+8)
+
         all_surveys = list(self.survey_set.all())
-        for stage in self.species.stage_set.all().filter(is_active=True):
-            date_start = datetime.date(next_date.year, stage.month_start,
+        for stage in self.species.stage_set.all().filter(is_active=True).order_by("order"):
+            next_start = datetime.date(max_date.year, stage.month_start,
                                        stage.day_start)
             # if (stage.month_start > stage.month_start):
             #    year_start = date_refer.
-            date_end = datetime.date(previous_date.year, stage.month_end,
-                                     stage.day_end)
-            if(date_referer <= date_start < next_date):
-                last_stages.append((stage, (date_start,
-                                            datetime.date(date_start.year,
+            previous_end = datetime.date(min_date.year, stage.month_end,
+                                         stage.day_end)
+
+            if(min_date <= next_start <= max_date):
+                next_stages.append((stage, (next_start,
+                                            datetime.date(next_start.year,
                                                           stage.month_end,
                                                           stage.day_end))))
-            if(date_referer >= date_end > previous_date):
-                next_stages.append((stage, (datetime.date(date_end.year,
+
+            if(date_referer >= previous_end > min_date):
+                last_stages.append((stage, (datetime.date(previous_end.year,
                                                           stage.month_start,
                                                           stage.day_start),
-                                            date_end)))
+                                            previous_end)))
         all_stages = [(stage, dates,
                        [s for s in all_surveys
                         if (s.stage_id is stage.id and
@@ -360,7 +364,6 @@ class Individual(models.Model):
 
         all_stages = [(s, d, (a[0] if len(a) > 0 else None))
                       for (s, d, a) in all_stages]
-        all_stages = sorted(all_stages, key=lambda stage: stage[1][0])
         return all_stages
 
     def __unicode__(self):
