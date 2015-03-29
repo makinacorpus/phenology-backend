@@ -195,6 +195,13 @@ class Area(models.Model):
             geojson["features"].append(ind.geojson())
         return geojson
 
+    def last_snowing(self):
+        return self.snowing_set.order_by("-date").first()
+
+    def last_survey(self):
+        return models.Survey.objects.\
+            filter(individual__area=self).order_by("-date").first()
+
     def __str__(self):
         return "%s" % self.name
 

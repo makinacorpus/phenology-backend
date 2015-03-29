@@ -516,13 +516,22 @@ def snowing_detail(request, area_id, snowing_id=-1):
     timer.capture()
     snowing = models.Snowing.objects.filter(id=snowing_id).first()
     snowings = []
+
     if not snowing:
-        snowing = models.Snowing()
         area = models.Area.objects.get(id=area_id)
-        if area:
-            snowing.observer = request.user.observer
-            snowing.area = area
-            snowing.date = datetime.date.today()
+        last_snowing = area.last_snowing()
+        today = datetime.date.today()
+        if(last_snowing.date.year == today.year and
+           last_snowing.date.month == today.month and
+           last_snowing.date.day == today.day):
+            return redirect('snowing-detail', area_id=area.id,
+                            snowing_id=last_snowing.id)
+        else:
+            snowing = models.Snowing()
+            if area:
+                snowing.observer = request.user.observer
+                snowing.area = area
+                snowing.date = datetime.date.today()
     timer.capture()
     if request.POST:
         snowing.observer = request.user.observer
