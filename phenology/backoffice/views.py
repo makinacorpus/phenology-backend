@@ -523,7 +523,7 @@ def snowing_detail(request, area_id, snowing_id=-1):
         area = models.Area.objects.get(id=area_id)
         last_snowing = area.last_snowing()
         today = datetime.date.today()
-        if(last_snowing.date.year == today.year and
+        if(last_snowing and last_snowing.date.year == today.year and
            last_snowing.date.month == today.month and
            last_snowing.date.day == today.day):
             return redirect('snowing-detail', area_id=area.id,
