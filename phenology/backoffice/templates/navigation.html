@@ -19,13 +19,13 @@
           {% if 'mysurveys' in request.get_full_path or '/survey' in request.get_full_path %}
           class="active"
           {% endif %}
-          ><a href="{% url 'my-surveys' %}">{% trans "My surveys" %}</a>
+          ><a href="{% url 'my-surveys' %}">{% trans "Dashboard" %}</a>
         </li>
         <li
         {% if 'allsurveys' in request.get_full_path %}
         class="active"
         {% endif %}
-        ><a href="{% url 'all-surveys' %}">{% trans "All surveys" %}</a>
+        ><a href="{% url 'all-surveys' %}">{% trans "All my surveys" %}</a>
         </li>
 
       </ul><!-- /.nav-justified -->
