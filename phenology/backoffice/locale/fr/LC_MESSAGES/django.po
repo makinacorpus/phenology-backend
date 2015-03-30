@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 09:24+0200\n"
+"POT-Creation-Date: 2015-03-30 13:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,10 @@ msgstr "S'inscrire"
 msgid "Missed password"
 msgstr "Mot de passe oublié"
 
+#: templates/my_surveys.html:23
+msgid "My surveys"
+msgstr "Mes observations"
+
 #: templates/my_surveys.html:74
 msgid "Fill new snowing"
 msgstr "Enneigement"
@@ -139,12 +143,12 @@ msgid "My Profil"
 msgstr "Mon profil"
 
 #: templates/navigation.html:22
-msgid "My surveys"
-msgstr "Mes observations"
+msgid "Dashboard"
+msgstr "Saisir mes observations"
 
 #: templates/navigation.html:28
-msgid "All surveys"
-msgstr "Toutes les observations"
+msgid "All my surveys"
+msgstr "Toutes mes observations"
 
 #: templates/navigation.html:34
 msgid "Logout"
@@ -371,9 +375,33 @@ msgstr "à observer"
 msgid "after"
 msgstr "après"
 
-#: templates/viz_snowings.html:9
-msgid "Enneigement"
-msgstr "Enneigement"
+#~ msgid "Enneigement"
+#~ msgstr "Enneigement"
+
+#~ msgid ""
+#~ "You are receiving this email because you (or someone pretending to be "
+#~ "you)\n"
+#~ "requested that your password be reset on http://phenoclim.org. "
+#~ msgstr ""
+#~ "Vous avez reçu cet email car vous (ou quelqu'un qui se pretend être "
+#~ "vous)\n"
+#~ "a demandé la réinitialisation de votre mot de passe sur http://phenoclim."
+#~ "org. "
+
+#~ msgid ""
+#~ "\n"
+#~ "Your new password : %(password)s\n"
+#~ "Your username, in case you've forgotten: %(username)s\n"
+#~ "\n"
+#~ "Best regards,\n"
+#~ "%(site_name)s\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Votre nouveau mot de passe : %(password)s\n"
+#~ "Votre identifiant: %(username)s\n"
+#~ "\n"
+#~ "Cordialement,\n"
+#~ "%(site_name)s\n"
 
 #~ msgid "Thank you to have join http://phenoclim.org. "
 #~ msgstr ""
