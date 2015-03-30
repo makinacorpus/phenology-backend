@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 22:16+0100\n"
+"POT-Creation-Date: 2015-03-30 09:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:17
+#: forms.py:18
 msgid "Already exists"
 msgstr "Déjà utilisé"
 
-#: forms.py:125
+#: forms.py:156
 msgid "Change stage"
 msgstr "changer stade de développement"
 
@@ -38,32 +38,32 @@ msgstr "Observé"
 msgid "isDead"
 msgstr "Mort"
 
-#: views.py:33 templates/survey.html:50
+#: views.py:32 templates/survey.html:50
 msgid "isLost"
 msgstr "Individu perdu ou mort"
 
-#: views.py:33 templates/survey.html:57
+#: views.py:32 templates/survey.html:57
 msgid "isNever"
 msgstr "Stade absent"
 
-#: views.py:33 templates/survey.html:64
+#: views.py:32 templates/survey.html:64
 msgid "isPassed"
 msgstr "Stade déjà passé"
 
-#: views.py:416 views.py:451 views.py:466 views.py:502 views.py:536
-#: views.py:571 views.py:592
+#: views.py:403 views.py:444 views.py:459 views.py:499 views.py:546
+#: views.py:585 views.py:610
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:458
+#: views.py:451
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
-#: views.py:602
+#: views.py:622
 msgid "Welcome on Phenoclim website"
 msgstr "Bienvenue dans la communauté Phénoclim !"
 
-#: views.py:727
+#: views.py:662
 #, fuzzy
 msgid "New password"
 msgstr "Mot de passe oublié"
@@ -78,7 +78,7 @@ msgid "Area"
 msgstr "Zone d'observation"
 
 #: templates/all_surveys.html:28 templates/profile_area.html:48
-#: templates/profile_individual.html:48
+#: templates/profile_individual.html:54
 msgid "Species"
 msgstr "Espèce"
 
@@ -99,7 +99,7 @@ msgid "Answer"
 msgstr "Réponse"
 
 #: templates/generic_form.html:18 templates/profile.html:18
-#: templates/profile_area.html:29 templates/profile_individual.html:26
+#: templates/profile_area.html:32 templates/profile_individual.html:32
 #: templates/snowing.html:42 templates/survey.html:75
 msgid "Validate"
 msgstr "Valider"
@@ -126,11 +126,11 @@ msgstr "Mot de passe oublié"
 msgid "Fill new snowing"
 msgstr "Enneigement"
 
-#: templates/my_surveys.html:85
+#: templates/my_surveys.html:89
 msgid "Vizualisation"
 msgstr "Date d’apparition des stades par année"
 
-#: templates/my_surveys.html:114
+#: templates/my_surveys.html:118
 msgid "Export my surveys"
 msgstr "Exporter mes données"
 
@@ -242,7 +242,7 @@ msgid "My Areas"
 msgstr "Mes zones d'observations"
 
 #: templates/profile.html:36 templates/profile_area.html:47
-#: templates/profile_individual.html:47
+#: templates/profile_individual.html:53
 msgid "name"
 msgstr "Nom"
 
@@ -254,11 +254,11 @@ msgstr "commune"
 msgid "Add a new area"
 msgstr "Ajouter une nouvelle zone d'observation"
 
-#: templates/profile_area.html:8 templates/profile_individual.html:7
+#: templates/profile_area.html:8
 msgid "New area"
 msgstr "Nouvelle zone d'observation"
 
-#: templates/profile_area.html:21
+#: templates/profile_area.html:24
 msgid "Back to my profile"
 msgstr "Retour sur mon profil"
 
@@ -282,11 +282,11 @@ msgstr "Nouvel individu"
 msgid "Back to the area"
 msgstr "Retour sur la zone"
 
-#: templates/profile_individual.html:42
+#: templates/profile_individual.html:48
 msgid "Last surveys"
 msgstr "Dernières observations"
 
-#: templates/profile_individual.html:67
+#: templates/profile_individual.html:73
 msgid "Add a new survey"
 msgstr "Saisir une nouvelle observation"
 
