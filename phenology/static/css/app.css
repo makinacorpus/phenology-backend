@@ -372,4 +372,8 @@ form {
 th:first-letter {
    text-transform:uppercase;
 }
+
+.alert{
+  margin-bottom: 0;
+}
 /*****************************/
