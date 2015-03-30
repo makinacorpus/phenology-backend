@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'select2',  # allow to use select2 field at model level
     'modeltranslation',  # allow to translate model field
     'rest_framework',  # Rest api
-    'registration',
     'corsheaders',  # server headers required for Cross-Origin Resource Sharing
     'django.contrib.admin',
     'django.contrib.auth',
