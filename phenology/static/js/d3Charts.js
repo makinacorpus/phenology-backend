@@ -179,6 +179,15 @@ phenoclim.viz.chart = function chart(params) {
 
         chart.options.yScale.domain([minDate, maxDate]);
         chart.options.xScale.domain(years);
+        chart.options.yAxis = chart.options.yAxis.ticks(5).tickFormat(function(d){
+          var date = moment(d);
+          if(date.date() === 1){
+            return date.format("MMMM");
+          }
+          else{
+            return date.format("D MMM");
+          }
+        })
 
         parentDraw(d3.select(this));
 
