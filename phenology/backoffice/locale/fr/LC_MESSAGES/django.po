@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 13:12+0200\n"
+"POT-Creation-Date: 2015-03-31 16:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,20 +50,20 @@ msgstr "Stade absent"
 msgid "isPassed"
 msgstr "Stade déjà passé"
 
-#: views.py:403 views.py:444 views.py:459 views.py:499 views.py:546
-#: views.py:585 views.py:610
+#: views.py:404 views.py:445 views.py:460 views.py:500 views.py:547
+#: views.py:586 views.py:611
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:451
+#: views.py:452
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
-#: views.py:622
+#: views.py:623
 msgid "Welcome on Phenoclim website"
 msgstr "Bienvenue dans la communauté Phénoclim !"
 
-#: views.py:662
+#: views.py:663
 #, fuzzy
 msgid "New password"
 msgstr "Mot de passe oublié"
@@ -121,6 +121,14 @@ msgstr "S'inscrire"
 #: templates/login_form.html:26
 msgid "Missed password"
 msgstr "Mot de passe oublié"
+
+#: templates/map_viz.html:33
+msgid "above 1000m"
+msgstr "Au dessus de 1000m"
+
+#: templates/map_viz.html:38
+msgid "below 1000m"
+msgstr "En dessous de 1000m"
 
 #: templates/my_surveys.html:23
 msgid "My surveys"
