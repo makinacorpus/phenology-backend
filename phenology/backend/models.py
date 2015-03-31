@@ -76,11 +76,12 @@ EXPOSITION_CHOICES = (
 )
 
 NATIONALITY_CHOICES = (
-    ('allemagne', _('deutsch')),
-    ('autriche', _('austrian')),
-    ('france', _('french')),
-    ('italie', _('italian')),
-    ('suisse', _('swiss')),
+    ('allemagne', _('deutschland')),
+    ('autriche', _('austria')),
+    ('espagne', _('spain')),
+    ('france', _('france')),
+    ('italie', _('italia')),
+    ('suisse', _('switzerland')),
 )
 
 MILIEU_CHOICES = (
@@ -299,7 +300,8 @@ class Individual(models.Model):
         species_name = ""
         if(Species.objects.filter(id=self.species_id).first()):
             species_name = self.species.name
-            picture_url = settings.MEDIA_URL + get_thumbnail(self.species.picture)
+            picture_url = "%s%s" % (settings.MEDIA_URL,
+                                    get_thumbnail(self.species.picture))
         return {
             "type": "Point",
             "coordinates": [self.lon, self.lat],
@@ -336,7 +338,8 @@ class Individual(models.Model):
         max_date = date_referer + relativedelta(months=+8)
 
         all_surveys = list(self.survey_set.all())
-        for stage in self.species.stage_set.all().filter(is_active=True).order_by("order"):
+        for stage in self.species.stage_set.all().filter(is_active=True).\
+                order_by("order"):
             next_start = datetime.date(max_date.year, stage.month_start,
                                        stage.day_start)
             # if (stage.month_start > stage.month_start):

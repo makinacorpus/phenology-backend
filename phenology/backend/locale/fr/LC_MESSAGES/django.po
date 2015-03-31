@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 22:03+0100\n"
+"POT-Creation-Date: 2015-03-31 19:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,15 +26,15 @@ msgstr "Observation"
 msgid "Individual"
 msgstr "Individu"
 
-#: admin.py:52 models.py:125 models.py:265 models.py:417
+#: admin.py:52 models.py:126 models.py:273 models.py:430
 msgid "Species"
 msgstr "espèce"
 
-#: admin.py:57 models.py:161 models.py:266 models.py:368 models.py:391
+#: admin.py:57 models.py:162 models.py:274 models.py:381 models.py:404
 msgid "Area"
 msgstr "Zone d'observation"
 
-#: admin.py:62 models.py:412 models.py:460
+#: admin.py:62 models.py:425 models.py:473
 msgid "Stage"
 msgstr "Stade de dévelopement"
 
@@ -42,11 +42,11 @@ msgstr "Stade de dévelopement"
 msgid "Commune"
 msgstr ""
 
-#: admin.py:93 admin.py:192 models.py:236
+#: admin.py:93 admin.py:196 models.py:244
 msgid "Observers"
 msgstr "Observateurs"
 
-#: admin.py:100 models.py:126
+#: admin.py:100 models.py:127
 msgid "species"
 msgstr "Espèces"
 
@@ -64,11 +64,11 @@ msgstr "Nom"
 msgid "username"
 msgstr "Nom"
 
-#: admin.py:184 models.py:413
+#: admin.py:188 models.py:426
 msgid "Stages"
 msgstr "Stades de dévelopement"
 
-#: admin.py:188 models.py:473
+#: admin.py:192 models.py:485
 msgid "Surveys"
 msgstr "Observations"
 
@@ -138,240 +138,250 @@ msgid "ouest"
 msgstr ""
 
 #: models.py:79
-msgid "deutsch"
-msgstr "Allemand"
+msgid "deutschland"
+msgstr "Allemagne"
 
 #: models.py:80
-msgid "austrian"
-msgstr "Autrichien"
+msgid "austria"
+msgstr "Autriche"
 
 #: models.py:81
-msgid "french"
-msgstr "Français"
+msgid "spain"
+msgstr "Espagne"
 
 #: models.py:82
-msgid "italian"
-msgstr "Italien"
+msgid "france"
+msgstr "France"
 
 #: models.py:83
-msgid "swiss"
+msgid "italia"
+msgstr "Italie"
+
+#: models.py:84
+msgid "switzerland"
 msgstr "Suisse"
 
-#: models.py:87
+#: models.py:88
 msgid "champ"
 msgstr "Champ"
 
-#: models.py:88
+#: models.py:89
 msgid "foret"
 msgstr "Forêt"
 
-#: models.py:89
+#: models.py:90
 msgid "jardin"
 msgstr "Jardin"
 
-#: models.py:90
+#: models.py:91
 msgid "zoneurbaine"
 msgstr "Zone urbaine"
 
-#: models.py:91
+#: models.py:92
 msgid "autres"
 msgstr "Autre"
 
-#: models.py:143 models.py:264 models.py:461
+#: models.py:144 models.py:272 models.py:474
 msgid "name"
 msgstr "Nom"
 
-#: models.py:150 models.py:282 models.py:374 models.py:399 models.py:468
+#: models.py:151 models.py:290 models.py:387 models.py:412 models.py:480
 msgid "remark"
 msgstr "Remarque"
 
-#: models.py:152 models.py:208
+#: models.py:153 models.py:216
 msgid "city"
 msgstr "Commune"
 
-#: models.py:153 models.py:215
+#: models.py:154 models.py:223
 msgid "codepostal"
 msgstr "Code postal"
 
-#: models.py:154
+#: models.py:155
 msgid "region"
 msgstr "Région"
 
-#: models.py:157
+#: models.py:158
 msgid "departement"
 msgstr "Département"
 
-#: models.py:162 models.py:228
+#: models.py:163 models.py:236
 msgid "Areas"
 msgstr "Zones d'observations"
 
-#: models.py:209
+#: models.py:217
 msgid "fonction"
 msgstr "Fonction"
 
-#: models.py:212
+#: models.py:220
 msgid "nationality"
 msgstr "Pays"
 
-#: models.py:214
+#: models.py:222
 msgid "adresse"
 msgstr "Adresse"
 
-#: models.py:216
+#: models.py:224
 msgid "organism"
 msgstr "Organisme"
 
-#: models.py:218
+#: models.py:226
 msgid "category"
 msgstr "Catégorie"
 
-#: models.py:220
+#: models.py:228
 msgid "phone"
 msgstr "Téléphone"
 
-#: models.py:222
+#: models.py:230
 msgid "mobile"
 msgstr "Mobile"
 
-#: models.py:224
+#: models.py:232
 msgid "is a crea member ?"
 msgstr "Membre de la crea ?"
 
-#: models.py:226 models.py:436
+#: models.py:234 models.py:449
 msgid "is activated?"
 msgstr "Est actif ?"
 
-#: models.py:231
+#: models.py:239
 msgid "Date joined"
 msgstr "Date d'inscription"
 
-#: models.py:235 models.py:370 models.py:393
+#: models.py:243 models.py:383 models.py:406
 msgid "Observer"
 msgstr "Observateur"
 
-#: models.py:267
+#: models.py:275
 msgid "is dead?"
 msgstr "mort"
 
-#: models.py:268
+#: models.py:276
 msgid "latitude"
 msgstr ""
 
-#: models.py:269
+#: models.py:277
 msgid "longitude"
 msgstr ""
 
-#: models.py:270
+#: models.py:278
 msgid "altitude"
 msgstr "altitude"
 
-#: models.py:271
+#: models.py:279
 msgid "circonference"
 msgstr "circonférence"
 
-#: models.py:274
+#: models.py:282
 msgid "milieu"
 msgstr ""
 
-#: models.py:277
+#: models.py:285
 msgid "pente"
 msgstr ""
 
-#: models.py:279
+#: models.py:287
 msgid "exposition"
 msgstr ""
 
-#: models.py:286
+#: models.py:294
 msgid "individual"
 msgstr "Individu"
 
-#: models.py:287
+#: models.py:295
 msgid "individuals"
 msgstr "Individus"
 
-#: models.py:373 models.py:398
+#: models.py:386 models.py:411
 msgid "date"
 msgstr "Date"
 
-#: models.py:376
+#: models.py:389
 msgid "height"
 msgstr "Hauteur de neige en cm"
 
-#: models.py:379
+#: models.py:392
 msgid "Snowing"
 msgstr "Enneigement"
 
-#: models.py:380
+#: models.py:393
 msgid "Snowings"
 msgstr "Enneigements"
 
-#: models.py:401
+#: models.py:414
 msgid "temperature"
 msgstr "Température relevée"
 
-#: models.py:404
+#: models.py:417
 #, fuzzy
 msgid "Temperature"
 msgstr "Température relevée"
 
-#: models.py:405
+#: models.py:418
 #, fuzzy
 msgid "Temperatures"
 msgstr "Température relevée"
 
-#: models.py:415
+#: models.py:428
 msgid "Name"
 msgstr "Nom"
 
-#: models.py:419
+#: models.py:432
 msgid "Start day"
 msgstr "Jour du début"
 
-#: models.py:421
+#: models.py:434
 msgid "Start month"
 msgstr "Mois du début"
 
-#: models.py:423
+#: models.py:436
 msgid "En day"
 msgstr "Jour de fin"
 
-#: models.py:425
+#: models.py:438
 msgid "End month"
 msgstr "Mois de fin"
 
-#: models.py:426
+#: models.py:439
 msgid "Order"
 msgstr "Ordre"
 
-#: models.py:429
+#: models.py:442
 msgid "Before"
 msgstr "Avant"
 
-#: models.py:432
+#: models.py:445
 msgid "Current"
 msgstr "A observer"
 
-#: models.py:435
+#: models.py:448
 msgid "After"
 msgstr "Après"
 
-#: models.py:458
+#: models.py:471
 msgid "observer"
 msgstr "observateur"
 
-#: models.py:464
+#: models.py:477
 #, fuzzy
 msgid "firstname"
 msgstr "Nom"
 
-#: models.py:465
+#: models.py:478
 msgid "reponse"
 msgstr "observation"
 
-#: models.py:467
+#: models.py:479
 msgid "survey date"
 msgstr "date de saisie"
 
-#: models.py:472
+#: models.py:484
 msgid "Survey"
 msgstr "Observation"
+
+#~ msgid "french"
+#~ msgstr "Français"
+
+#~ msgid "swiss"
+#~ msgstr "Suisse"
