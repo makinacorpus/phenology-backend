@@ -58,7 +58,7 @@
               </td>
               <td>{{ individual.name }}</td>
               <td>{{ individual.species.name }}</td>
-              <td>{% if individual.lastSurvey %}{{ individual.lastSurvey.stage.name }}  -  {{ individual.lastSurvey.date|date:'d M Y' }}{% endif %}</td>
+              <td>{% if individual.last_survey %}{{ individual.last_survey.stage.name }}  -  {{ individual.last_survey.date|date:'d M Y' }}{% endif %}</td>
             </tr>
           {% endfor %}
 

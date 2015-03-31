@@ -325,8 +325,9 @@ class Individual(models.Model):
         geojson["features"].append(self.area.geojson())
         return geojson
 
-    def lastSurvey(self):
-        last_survey = self.survey_set.first()
+    # get last survey
+    def last_survey(self):
+        last_survey = self.survey_set.order_by("-date").first()
         return last_survey
 
     def get_tasks(self):
