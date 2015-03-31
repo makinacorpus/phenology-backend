@@ -30,10 +30,12 @@
            <select data-id="stages" class="form-control">
            </select>
         </div>
+        <h5><u>{% above 1000m %}:</u></h5>
         <div class="graph graph-above">
         </div>
         <div class="graph graph-below">
         </div>
+        <h5><u>{% below 1000m %}:</u></h5>
       </div>
     </div>
 
@@ -105,6 +107,7 @@
           //phenoclim.session.map._map.fitBounds(phenoclim.session.map_layers.getBounds());
         });
       }
+
       phenoclim.mapviz.refreshWidgets = function(){
         var species_id = $("select[data-id=species]").val();
         phenoclim.mapviz.get_data(species_id).done(function(data){
@@ -112,6 +115,7 @@
           phenoclim.mapviz.refreshCharts();
         });
       }
+
       phenoclim.mapviz.refreshCharts = function(){
         var species_id = $("select[data-id=species]").val();
         var stages_id = $("select[data-id=stages]").val();
@@ -212,11 +216,14 @@
             $.get("/portail/get_species_list", function(data){
               phenoclim.session.species_list = data;
 
+              // populate species criteria
               var species_field = $("select[data-id=species]");
               $.each(data, function(i, item){
                 var option = $("<option>").attr("value", item.id).text(item.label);
                 option.appendTo(species_field);
               });
+
+              // default species to "noisetier"
               $("option[value='5']", species_field).attr("selected", "selected");
 
               phenoclim.session.map_layers = L.featureGroup().addTo(phenoclim.session.map._map);
@@ -225,6 +232,7 @@
                 phenoclim.mapviz.refreshWidgets();
               });
 
+              // change on species criteria
               $("select[data-id=species]").on("change", function(event){
                 phenoclim.mapviz.refreshStages();
                 var species_id = +$(this).val();
@@ -232,16 +240,16 @@
                   phenoclim.mapviz.refreshWidgets();
                 });
               })
+
+              // change on stage criteria
               $("select[data-id=stages]").on("change", function(event){
                 phenoclim.mapviz.refreshWidgets()
               })
 
-              phenoclim.session.map._map.on("zoomend", function(event, toto){
-                phenoclim.mapviz.refreshCharts();
-              })
-
-              phenoclim.session.map._map.on("drag", function(event, toto){
-                phenoclim.mapviz.refreshCharts();
+              // events on map
+              phenoclim.session.map._map.on({
+                zoomend: phenoclim.mapviz.refreshCharts,
+                drag: phenoclim.mapviz.refreshCharts
               })
 
             })
