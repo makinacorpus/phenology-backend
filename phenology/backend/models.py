@@ -474,8 +474,7 @@ class Survey(models.Model):
                                 blank=True)
     firstname_obs = models.CharField(max_length=100,
                                      verbose_name=_("firstname"), blank=True)
-    answer = models.CharField(max_length=300, verbose_name=_("reponse"),
-                              blank=True)
+    answer = models.CharField(max_length=300, verbose_name=_("reponse"))
     date = models.DateField(verbose_name=_("survey date"), db_index=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
                               blank=True)
