@@ -38,7 +38,7 @@ class SurveyAdmin(ImportExportModelAdmin):
                      'stage__name', 'answer', 'individual__area__name']
 
     def _answer(self, obj):
-        return _(obj.answer)
+        return ugettext(obj.answer)
     _answer.short_description = _('Answer')
     _answer.admin_order_field = 'answer'
 
