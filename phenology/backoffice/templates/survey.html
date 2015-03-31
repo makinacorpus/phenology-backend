@@ -34,12 +34,12 @@
       </div>
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
-        {{ form.errors }}
-        <div class="form_group answer">
+        <div class="form_group answer {% if form.errors.answer %} has-error {% endif %}">
+        {{ form.errors.answer}}
         <div class="btn btn-block btn-lg btn-default radio left-block">
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isObserved"
-            {% if form.instance.answer == 'before' %}checked{% endif %}>
+            {% if form.instance.answer == 'isObserved' %}checked{% endif %}>
             {% trans "isObserved" %}
           </label>
         </div>
