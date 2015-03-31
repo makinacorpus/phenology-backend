@@ -330,7 +330,29 @@ class Individual(models.Model):
         last_survey = self.survey_set.order_by("-date").first()
         return last_survey
 
+    # Get its tasks for the current year
     def get_tasks(self):
+        date_referer = datetime.date.today()
+        stages = []
+
+        for stage in self.species.stage_set.all().filter(is_active=True).\
+                order_by("order"):
+            survey = self.survey_set.filter(stage_id=stage.id).\
+                filter(date__year=date_referer.year).first()
+
+            year_end = date_referer.year
+            if stage.month_start > stage.month_start:
+                year_end += 1
+
+            min_date = datetime.date(date_referer.year,
+                                     stage.month_start, stage.day_start)
+            max_date = datetime.date(year_end, stage.month_end, stage.day_end)
+
+            stages.append((stage, [min_date, max_date], survey))
+        return stages
+
+    # Get larger tasks containing delta (months)
+    def get_large_tasks(self):
         last_stages = []
         next_stages = []
         date_referer = datetime.date.today()
