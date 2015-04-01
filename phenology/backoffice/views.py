@@ -273,26 +273,29 @@ def get_area_snowings(request):
         can be filtered by species (species_id)
     """
     area_id = request.GET.get("area_id")
-    area = models.Area.objects.get(id=area_id)
-    snowings = list(area.snowing_set.all().
-                    filter(height__gt=0).
-                    filter(height__lt=999).
-                    values("height", "date"))
-    timer = MyTimer()
-    # cursor = connection.cursor()
-    timer.capture()
-    max_height = 1
-    if snowings:
-        max_height = max([float(s["height"]) for s in snowings])
+    area = models.Area.objects.filter(id=area_id).first()
+    classified = {}
 
-    classified = {"id": area_id,
-                  "maxHeight": max_height,
-                  "name": area.name,
-                  "altitude": area.altitude,
-                  "snowings": snowings
-                  }
-    timer.capture()
-    print timer.output()
+    if area:
+        snowings = list(area.snowing_set.all().
+                        filter(height__gt=0).
+                        filter(height__lt=999).
+                        values("height", "date"))
+        timer = MyTimer()
+        # cursor = connection.cursor()
+        timer.capture()
+        max_height = 1
+        if snowings:
+            max_height = max([float(s["height"]) for s in snowings])
+
+        classified = {"id": area_id,
+                      "maxHeight": max_height,
+                      "name": area.name,
+                      "altitude": area.altitude,
+                      "snowings": snowings
+                      }
+        timer.capture()
+        print timer.output()
 
     return HttpResponse(json.dumps(classified, use_decimal=True,
                                    default=json_serial),
