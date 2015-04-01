@@ -149,7 +149,7 @@ def get_species_list(request):
                 "label": species.name,
                 "stages": [{"id": stage.id,
                             "label": stage.name,
-                            "years": stage_years[stage.id],
+                            "years": stage_years.get(stage.id, []),
                             "order": stage.order}
                            for stage in
                            species.stage_set.all().order_by("order")]}
