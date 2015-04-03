@@ -242,7 +242,7 @@ LOGGING = {
     }
 }
 
-DEFAULT_FROM_EMAIL = 'contact@phenoclim.org'
+FROM_EMAIL = 'contact@phenoclim.org'
 EMAIL_HOST = 'localhost'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''

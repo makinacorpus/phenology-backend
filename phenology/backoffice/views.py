@@ -626,7 +626,7 @@ def register_user(request):
             mail.send_mail(
                 subject=ugettext(u"Welcome on Phenoclim website"),
                 message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.FROM_EMAIL,
                 recipient_list=[user.email],
                 fail_silently=False)
 
@@ -666,7 +666,7 @@ def password_reset(request):
                 mail.send_mail(
                     subject=u"%s Phénoclim" % ugettext(u"New password"),
                     message=message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    from_email=settings.FROM_EMAIL,
                     recipient_list=[user.email],
                     fail_silently=False)
 
