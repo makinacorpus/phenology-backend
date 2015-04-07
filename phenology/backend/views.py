@@ -27,7 +27,7 @@ def user_surveys(request):
     return Response(serializer.data)
 
 
-class UserSnowCoverList(generics.GenericAPIView):
+class UserSnowCoverList(generics.ListCreateAPIView):
     serializer_class = serializers.SnowingSerializer
 
     def get_queryset(self):
