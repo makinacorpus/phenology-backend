@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 10:48+0200\n"
+"POT-Creation-Date: 2015-04-08 12:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,14 @@ msgstr "Aucun utilisateur n'a été trouvé avec cette adresse email."
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: forms.py:189
+#: forms.py:174
+#, python-format
+msgid "There is already a survey with same stage, same individual in %(year)s"
+msgstr ""
+"Il existe déjà une observation pour ce stade de developpement, cet individu "
+"en %(year)s."
+
+#: forms.py:203
 msgid "This name is already found in your area"
 msgstr "Ce nom est déjà attribué à un individu de votre zone"
 
@@ -102,7 +109,7 @@ msgstr "Stade de développement"
 msgid "Answer"
 msgstr "Réponse"
 
-#: templates/generic_form.html:18 templates/profile.html:18
+#: templates/generic_form.html:14 templates/profile.html:18
 #: templates/profile_area.html:32 templates/profile_individual.html:32
 #: templates/snowing.html:42 templates/survey.html:75
 msgid "Validate"

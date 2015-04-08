@@ -163,6 +163,20 @@ class SurveyForm(forms.ModelForm):
         self.base_fields['stage'].label = _("Change stage")
         super(SurveyForm, self).__init__(*args, **kwargs)
 
+    def clean_date(self):
+        date = self.cleaned_data['date']
+        surveys = models.Survey.objects.\
+            filter(date__year=date.year,
+                   individual=self.instance.individual,
+                   stage=self.instance.stage)
+        surveys_id = [s.id for s in surveys]
+        if(self.instance.id not in surveys_id and surveys.count() > 0):
+            raise forms.ValidationError(ugettext('There is already a survey '
+                                                 'with same stage, '
+                                                 'same individual '
+                                                 'in %(year)s') % {"year": date.year})
+        return date
+
     def save(self, commit=True):
         if(self.cleaned_data["answer"] in ("today", "before")):
             self.cleaned_data["answer"] = "isObserved"
