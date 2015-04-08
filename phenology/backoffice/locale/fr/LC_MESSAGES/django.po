@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-31 16:23+0200\n"
+"POT-Creation-Date: 2015-04-08 10:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,15 @@ msgstr ""
 msgid "Already exists"
 msgstr "Déjà utilisé"
 
-#: forms.py:156
+#: forms.py:46
+msgid "User with this email doesnt exist"
+msgstr "Aucun utilisateur n'a été trouvé avec cette adresse email."
+
+#: forms.py:163
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: forms.py:182
+#: forms.py:189
 msgid "This name is already found in your area"
 msgstr "Ce nom est déjà attribué à un individu de votre zone"
 
@@ -50,20 +54,20 @@ msgstr "Stade absent"
 msgid "isPassed"
 msgstr "Stade déjà passé"
 
-#: views.py:404 views.py:445 views.py:460 views.py:500 views.py:547
-#: views.py:586 views.py:611
+#: views.py:410 views.py:451 views.py:466 views.py:506 views.py:553
+#: views.py:592 views.py:617
 msgid "Form is successifully updated"
 msgstr "L'enregistrement s'est bien effectué"
 
-#: views.py:452
+#: views.py:458
 msgid "Your are not allowed to see this form"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
 
-#: views.py:623
+#: views.py:629
 msgid "Welcome on Phenoclim website"
 msgstr "Bienvenue dans la communauté Phénoclim !"
 
-#: views.py:663
+#: views.py:669
 #, fuzzy
 msgid "New password"
 msgstr "Mot de passe oublié"

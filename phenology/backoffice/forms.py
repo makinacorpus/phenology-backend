@@ -39,6 +39,13 @@ class SnowingForm(forms.ModelForm):
 class ResetPasswordForm(forms.Form):
     email = forms.CharField(label='Email', max_length=100)
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        found = User.objects.filter(email=email).first()
+        if not found:
+            raise forms.ValidationError(_("User with this email doesnt exist"))
+        return email
+
 
 class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
