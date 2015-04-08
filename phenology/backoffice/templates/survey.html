@@ -35,7 +35,9 @@
       <form method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         <div class="form_group answer {% if form.errors.answer %} has-error {% endif %}">
-        {{ form.errors.answer}}
+          {% if form.errors.answer %}
+          <span class="help-block">{{ form.errors.answer.as_text }}</span>
+          {% endif %}
         <div class="btn btn-block btn-lg btn-default radio left-block">
           <label>
             <input type="radio" name="{{ form.answer.html_name }}" id="{{ form.answer.id_for_label }}" value="isObserved"
@@ -66,10 +68,20 @@
         </div>
       </div>
         <br/>
+
         {% bootstrap_field form.remark layout='inline' %}
         {% bootstrap_field form.individual %}
-        {% bootstrap_field form.date %}
+
+        <div class="form-group required {% if form.errors.date %} has-error {% endif %}">
+          {{ form.date.label_tag }}
+          <input class="form-control" id="id_date" name="date" required="required" type="text" data-value="{{ form.instance.date|date:'d/m/Y' }}" value="{{ form.instance.date }}"></input>
+          {% if form.errors.date %}
+          <span class="help-block">{{ form.errors.date.as_text }}</span>
+          {% endif %}
+        </div>
+
         {% bootstrap_field form.stage %}
+
         {% buttons %}
           <button type="submit" class="btn btn-primary btn-lg btn-block">
             {% bootstrap_icon "tree-deciduous" %} {% trans 'Validate' %}
@@ -107,8 +119,7 @@
 {% endwith %}
 <script type="text/javascript">
 $( document ).ready(function() {
-  $('#id_date').pickadate({format: 'dd/mm/yyyy', formatSubmit: 'dd/mm/yyyy', max: true})
+  $('#id_date').pickadate({format: 'dddd d mmmm yyyy', formatSubmit: 'dd/mm/yyyy', max: true, hiddenName: true})
 });
 </script>
-
 {% endblock %}
