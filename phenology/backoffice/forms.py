@@ -26,7 +26,8 @@ class UserForm(forms.ModelForm):
 
 
 class SnowingForm(forms.ModelForm):
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'),
+                           input_formats=('%d/%m/%Y',))
 
     class Meta:
         model = models.Snowing
@@ -145,6 +146,9 @@ class AreaForm(forms.ModelForm):
 
 
 class SurveyForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'),
+                           input_formats=('%d/%m/%Y',))
+
     class Meta:
         exclude = ('is_dead',)
         model = models.Survey
