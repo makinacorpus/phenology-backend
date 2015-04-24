@@ -35,8 +35,11 @@ SURVEY_SETTINGS = {
 
 @login_required(login_url='login/')
 def index(request):
-    if(request.user.observer.areas.count() > 0):
+    if(models.Observer.objects.filter(user=request.user).count > 0 and
+       request.user.observer.areas.count() > 0):
         return redirect('my-surveys')
+    else:
+        return redirect('allsurveys')
 
 
 def map_all_surveys(request):
@@ -657,7 +660,7 @@ def password_reset(request):
         if form.is_valid():
             email = form.data["email"]
             password = get_random_string()
-            user = User.objects.get(email=email)
+            user = User.objects.filter(email=email).first()
             if user:
                 user.set_password(password)
                 message = render_to_string('password_new_email.html',
@@ -686,7 +689,7 @@ def password_reset(request):
 @login_required(login_url='login/')
 def dashboard(request):
     areas = {a.id: get_area_data(None, a.id) for a in request.user.observer.areas.all()}
-    if models.Observer.objects.filter(user=request.user):
+    if models.Observer.objects.filter(user=request.user).count > 0:
         return render_to_response("my_surveys.html",
                                   {
                                       "areas": areas
@@ -694,6 +697,8 @@ def dashboard(request):
                                   RequestContext(request))
     elif request.user.is_staff or request.user.is_superuser:
         return redirect('../admin/')
+    else:
+        return redirect('allsurveys')
     return render_to_response("base.html", RequestContext(request))
 
 
