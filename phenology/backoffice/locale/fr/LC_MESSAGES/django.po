@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 12:59+0200\n"
+"POT-Creation-Date: 2015-04-24 13:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,26 +22,26 @@ msgstr ""
 msgid "Already exists"
 msgstr "Déjà utilisé"
 
-#: forms.py:46
+#: forms.py:47
 msgid "User with this email doesnt exist"
 msgstr "Aucun utilisateur n'a été trouvé avec cette adresse email."
 
-#: forms.py:163
+#: forms.py:167
 msgid "Change stage"
 msgstr "changer stade de développement"
 
-#: forms.py:174
+#: forms.py:178
 #, python-format
 msgid "There is already a survey with same stage, same individual in %(year)s"
 msgstr ""
 "Il existe déjà une observation pour ce stade de developpement, cet individu "
 "en %(year)s."
 
-#: forms.py:203
+#: forms.py:207
 msgid "This name is already found in your area"
 msgstr "Ce nom est déjà attribué à un individu de votre zone"
 
-#: views.py:31 templates/survey.html:43
+#: views.py:31 templates/survey.html:44
 msgid "isObserved"
 msgstr "Observé"
 
@@ -49,15 +49,15 @@ msgstr "Observé"
 msgid "isDead"
 msgstr "Mort"
 
-#: views.py:32 templates/survey.html:50
+#: views.py:32 templates/survey.html:51
 msgid "isLost"
 msgstr "Individu perdu ou mort"
 
-#: views.py:32 templates/survey.html:57
+#: views.py:32 templates/survey.html:58
 msgid "isNever"
 msgstr "Stade absent"
 
-#: views.py:32 templates/survey.html:64
+#: views.py:32 templates/survey.html:65
 msgid "isPassed"
 msgstr "Stade déjà passé"
 
@@ -111,7 +111,7 @@ msgstr "Réponse"
 
 #: templates/generic_form.html:14 templates/profile.html:18
 #: templates/profile_area.html:32 templates/profile_individual.html:32
-#: templates/snowing.html:42 templates/survey.html:75
+#: templates/snowing.html:42 templates/survey.html:86
 msgid "Validate"
 msgstr "Valider"
 
@@ -378,19 +378,19 @@ msgstr ""
 "Tél : +33 (0)4 50 53 45 16\n"
 "\n"
 
-#: templates/snowing.html:23 templates/survey.html:16
+#: templates/snowing.html:23 templates/survey.html:15
 msgid "Back"
 msgstr "Retour"
 
-#: templates/survey.html:24
+#: templates/survey.html:23
 msgid "before"
 msgstr "avant"
 
-#: templates/survey.html:28
+#: templates/survey.html:27
 msgid "current"
 msgstr "à observer"
 
-#: templates/survey.html:32
+#: templates/survey.html:31
 msgid "after"
 msgstr "après"
 

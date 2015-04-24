@@ -144,10 +144,12 @@ class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("name"),
                             db_index=True, unique=True)
     lat = models.FloatField(verbose_name="latitude",
-                            default=DEFAULT_POSITION["lat"])
+                            default=DEFAULT_POSITION["lat"],
+                            help_text=_("In degree, decimal."))
     lon = models.FloatField(verbose_name="longitude",
-                            default=DEFAULT_POSITION["lon"])
-    altitude = models.FloatField(verbose_name="altitude")
+                            default=DEFAULT_POSITION["lon"],
+                            help_text=_("In degree, decimal."))
+    altitude = models.FloatField(verbose_name="altitude", null=True, blank=True)
     remark = models.TextField(max_length=100, verbose_name=_("remark"),
                               blank=True, default="")
     commune = models.CharField(max_length=100, verbose_name=_("city"))
@@ -273,9 +275,11 @@ class Individual(models.Model):
     species = models.ForeignKey(Species, verbose_name=_("Species"))
     area = models.ForeignKey(Area, verbose_name=_("Area"))
     is_dead = models.BooleanField(verbose_name=_("is dead?"), default=False)
-    lat = models.FloatField(verbose_name=_("latitude"))
-    lon = models.FloatField(verbose_name=_("longitude"))
-    altitude = models.FloatField(verbose_name=_("altitude"))
+    lat = models.FloatField(verbose_name=_("latitude"),
+                            help_text=_("In degree, decimal."))
+    lon = models.FloatField(verbose_name=_("longitude"),
+                            help_text=_("In degree, decimal."))
+    altitude = models.FloatField(verbose_name=_("altitude"), null=True, blank=True)
     circonference = models.FloatField(verbose_name=_("circonference"),
                                       null=True, blank=True)
     milieu = models.CharField(max_length=100,
