@@ -92,7 +92,7 @@
         }
 
         phenoclim.vizsnowings.refreshYears = function(data, container){
-          var snowings = data.snowings;
+          var snowings = data.snowings || [];
           var years = d3.set(snowings.map(function(d){
             var newdate = new Date(d.date);
             return newdate.getFullYear();
