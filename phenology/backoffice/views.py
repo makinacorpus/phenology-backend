@@ -35,7 +35,8 @@ SURVEY_SETTINGS = {
 
 @login_required(login_url='login/')
 def index(request):
-    return redirect('my-surveys')
+    if(request.user.observer.areas.count() > 0):
+        return redirect('my-surveys')
 
 
 def map_all_surveys(request):
