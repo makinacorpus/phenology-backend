@@ -35,11 +35,11 @@ SURVEY_SETTINGS = {
 
 @login_required(login_url='login/')
 def index(request):
-    if(models.Observer.objects.filter(user=request.user).count > 0 and
+    if(models.Observer.objects.filter(user=request.user).count() > 0 and
        request.user.observer.areas.count() > 0):
         return redirect('my-surveys')
     else:
-        return redirect('allsurveys')
+        return redirect('all-surveys')
 
 
 def map_all_surveys(request):
@@ -361,7 +361,7 @@ def search_snowings(request):
 
 
 def export_surveys(request):
-    columns = ['stage', 'date', 'individual.species',
+    columns = ['stage', 'date', 'individual.species', 'individual.area',
                'individual.area.commune', 'answer']
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))

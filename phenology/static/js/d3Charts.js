@@ -38,7 +38,6 @@ phenoclim.viz.chart = function chart(params) {
         console.log(height);
         chart._xScale();
         var svg = d3.select(this).selectAll("svg").data([data]);
-
         var gEnter = svg.enter().append("svg").append("g")
         gEnter.append("g").attr("class", "x axis")
             .append("text")
