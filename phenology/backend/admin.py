@@ -105,7 +105,8 @@ admin.site.register(models.Area, AreaAdmin)
 class SnowingAdmin(ImportExportModelAdmin):
     resource_class = ressources.SnowingResource
     list_display = ('date', 'area_city', 'height', 'remark')
-    list_select_related = ('area', )
+    list_select_related = ('area', 'height', 'remark', 'area__commune')
+    search_fields = ['date', 'area_city', 'height', 'remark']
 
     def area_city(self, obj):
         return ("%s" % (obj.area.commune))
