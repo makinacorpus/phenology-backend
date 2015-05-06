@@ -194,7 +194,7 @@ def search_surveys(request):
     species_id = request.GET.get("species_id")
     individuals = models.Individual.objects.all()
     areas = models.Area.objects.all()
-    if species_id:
+    if species_id and species_id.isdigit():
         individuals = individuals.filter(species__id=species_id)
         areas = areas.filter(individual__species__id=species_id)
         observers = observers.filter(areas__individual__species__id=species_id)
@@ -230,7 +230,7 @@ def search_surveys(request):
         survey_sql = 'SELECT ' + year_query() + ' as year, ' +\
                      'COUNT(*), MAX(date), MIN(date), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
                      ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
-                     'backend_individual.species_id = %d ' % species_id +\
+                     'backend_individual.species_id = %s ' % species_id +\
                      'GROUP BY area_id, species_id, stage_id, year ' +\
                      'ORDER BY area_id, species_id, stage_id,year;'
         cursor.execute(survey_sql)
@@ -252,7 +252,7 @@ def search_surveys(request):
         survey_sql = 'SELECT ' + year_query() + ' as year, ' + week_query() + ' as week, ' +\
                      'COUNT(*), stage_id, species_id, area_id FROM backend_survey, backend_individual ' +\
                      ' WHERE backend_survey.individual_id=backend_individual.id AND ' +\
-                     'backend_individual.species_id = %d ' % species_id +\
+                     'backend_individual.species_id = %s ' % species_id +\
                      'GROUP BY area_id, species_id, stage_id, year,  week ' +\
                      'ORDER BY area_id, species_id, stage_id,year,week;'
         cursor.execute(survey_sql)
