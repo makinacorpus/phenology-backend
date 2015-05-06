@@ -101,7 +101,7 @@ def as_workbook(queryset, columns,
             for value_type, cell_style in cell_style_map:
                 if isinstance(value, value_type):
                     style = cell_style
-            sheet.write(x, y, _(value), style)
+            sheet.write(x, y, value, style)
 
     return workbook
 
