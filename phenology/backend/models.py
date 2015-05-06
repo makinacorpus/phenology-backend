@@ -413,9 +413,9 @@ class Snowing(models.Model):
                                          if q is not None else "",
                                          ajax=True,)
     date = models.DateTimeField(verbose_name=_("date"))
-    remark = models.TextField(max_length=100, verbose_name=_("remark"),
+    remark = models.TextField(max_length=100, verbose_name=_("Remark"),
                               default="", blank=True)
-    height = models.PositiveIntegerField(verbose_name=_("height"))
+    height = models.PositiveIntegerField(verbose_name=_("Height"))
 
     class Meta:
         verbose_name = _("Snowing")
