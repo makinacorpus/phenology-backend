@@ -378,3 +378,13 @@ th:first-letter {
   margin-bottom: 0;
 }
 /*****************************/
+
+.display__stage, .display__individual{
+  display: none;
+}
+
+.graph-controls select{
+  font-size: 0.85em;
+  padding-left: 0.1em;
+  padding-right: 0.1em;
+}

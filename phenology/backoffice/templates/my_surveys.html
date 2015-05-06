@@ -9,6 +9,7 @@
 {% block content %}
 
     <script type="text/javascript">
+    // general options related to map // app.js
     phenoclim.options = {
       geojson: {{ user.observer.getAllGeojson|jsonify|safe }},
       areas: {{ areas|jsonify|safe }},
@@ -91,7 +92,12 @@
                   <div class="row">
                     <div class="col-xs-9 graph no-padding">
                     </div>
-                    <div class="col-xs-3 no-padding">
+                    <div class="col-xs-3 no-padding graph-controls">
+                      <select name="area" class="form-control" data-id="areas">
+                        {% for area in user.observer.areas.all %}
+                            <option value="{{area.id}}">{{area.name}}</option>
+                        {% endfor %}
+                      </select>
                       <select name="individual" class="form-control" data-id="individuals">
                         {% for area in user.observer.areas.all %}
                           {% for a in area.alive_individuals.all %}
@@ -121,41 +127,65 @@
     </div>
 
   </div>
-        <script type="text/javascript">
+
+  <script type="text/javascript">
 
         $( document ).ready(function(){
+
+          // Accordion
+          $(".display__area a").on("click", function(event){
+            var li = $(this).parent("li");
+            var children = $(li).children("ul").children("li");
+            var is_hidden = children.filter(":hidden").length > 0;
+            if ($(li).children("ul").length > 0){
+              if(is_hidden === false){
+                children.slideUp(300);
+              }
+              else{
+                children.slideDown(300);
+              }
+              return false;
+            }
+          });
+
+          // set map height
           $("#map").height($("#map").parent().height() - 100);
-          /** viz obj **/
-          phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 40}});
-          refreshStages();
-          refreshChart();
+
+          // viz obj
+          phenoclim.session.chart_Obj = phenoclim.viz.areaChart({margin : {top: 20, right: 20, bottom: 20, left: 60}});
+
+          // hide areas combobox if there is just one option
+          if ($("[data-id=areas] option").length === 1) {
+            $("[data-id=areas]").hide();
+          }
+
+          // handler
+          $("[data-id=areas]").on("change", function(event){
+            var individual_field = $("[data-id=individuals]")
+            $("option", individual_field).hide();
+            // get area_id
+            var area_id = $(this).val();
+
+            var area_individuals = $("option[data-area=" + area_id + "]", individual_field);
+            area_individuals.show();
+
+            $("[data-id=individuals]").val(area_individuals.first().attr("value"));
+            $("[data-id=individuals]").trigger("change");
+          });
+
+          // handler
           $("[data-id=individuals]").on("change", function(event){
               if(refreshStages() !== false){refreshChart();}
           });
-          $("[data-id=stages]").on("change", function(event){
-              refreshChart();
-          });
+
+          // handler
+          $("[data-id=stages]").on("change", refreshChart);
+
+          // init
+          $("[data-id=areas]").trigger("change");
         });
 
-        /** Accordion **/
-        $(".display__stage").hide();
-        $(".display__individual").hide();
-        $(".display__area a").on("click", function(event){
-          var li = $(this).parent("li");
-          var children = $(li).children("ul").children("li");
-          var is_hidden = children.filter(":hidden").length > 0;
-          if ($(li).children("ul").length > 0){
-            if(is_hidden === false){
-              children.slideUp(300);
-            }
-            else{
-              children.slideDown(300);
-            }
-            return false;
-          }
-        });
-
-        /** Stage Combobox **/
+        // function to refresh stages
         function refreshStages(){
           var $stages_field = $("[data-id=stages]");
           var $individual_option = $("[data-id=individuals] :selected");
@@ -177,6 +207,7 @@
           });
         }
 
+        // function to refresh chart
         function refreshChart(){
           var $individual_option = $("[data-id=individuals] :selected");
           var individual_id = +$individual_option.attr("value");
@@ -191,5 +222,6 @@
           d3.select(".graph").datum([tmp]).call(phenoclim.session.chart_Obj);
         }
 
-      </script>
+  </script>
+
 {% endblock %}
