@@ -79,6 +79,7 @@ urls = patterns(
 
     # export
     url(r'^export_surveys', views.export_surveys, name="export-survey"),
+    url(r'^export_snowings', views.export_snowings, name="export-snowing"),
 
     # map
     url(r'^map_all_snowings$', views.map_all_snowings, name='map-snowings'),

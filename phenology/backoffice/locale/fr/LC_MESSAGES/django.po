@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-24 13:36+0200\n"
+"POT-Creation-Date: 2015-05-06 12:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,6 +156,10 @@ msgstr "Date d’apparition des stades par année"
 #: templates/my_surveys.html:118
 msgid "Export my surveys"
 msgstr "Exporter mes données"
+
+#: templates/my_surveys.html:119
+msgid "Export my snowings"
+msgstr "Exporter mes enneigements"
 
 #: templates/navigation.html:15
 msgid "My Profil"
