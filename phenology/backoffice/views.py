@@ -388,7 +388,7 @@ def export_snowings(request):
         (current observer by default)
     '''
 
-    columns = ['area', 'date', 'remark', 'height']
+    columns = ['area', 'area.commune', 'date', 'remark', 'height']
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))
     else:

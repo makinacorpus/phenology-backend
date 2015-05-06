@@ -99,6 +99,8 @@ def as_workbook(queryset, columns,
             value = get_column_cell(obj, column)
             style = default_style
             for value_type, cell_style in cell_style_map:
+                if isinstance(value, unicode):
+                    value = _(value)
                 if isinstance(value, value_type):
                     style = cell_style
             sheet.write(x, y, value, style)
