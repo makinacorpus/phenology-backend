@@ -32,6 +32,7 @@ class StageAdmin(TabAdmin, ImportExportModelAdmin):
 
 
 class SurveyAdmin(ImportExportModelAdmin):
+    resource_class = ressources.SurveyResource
     list_display = ('date', 'ind_name', 'species_name',
                     'stage_name', '_answer', 'remark', 'area_name')
     search_fields = ['date', 'individual__name', 'individual__species__name',
