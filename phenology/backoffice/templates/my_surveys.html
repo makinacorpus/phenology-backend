@@ -217,7 +217,7 @@
           var tmp = {
             label: '',
             key: individual_id,
-            values: phenoclim.options.areas[area_id].species[species_id].values[stage_id].values[individual_id]
+            values: phenoclim.options.areas[area_id].species[species_id].values[stage_id].values[individual_id] || []
           };
           d3.select(".graph").datum([tmp]).call(phenoclim.session.chart_Obj);
         }
