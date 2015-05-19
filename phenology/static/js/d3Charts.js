@@ -20,7 +20,7 @@ phenoclim.viz.chart = function chart(params) {
   chart.options = options;
   chart.tooltip = {}
   chart.draw = function(selection){
-    selection.each(function(data) { 
+    selection.each(function(data) {
         chart.options.xAxis.scale(chart.options.xScale);
         chart.options.yAxis.scale(chart.options.yScale);
 
@@ -57,7 +57,7 @@ phenoclim.viz.chart = function chart(params) {
         // Update the x-axis.
         var xGraphAxis = g.select(".x.axis")
             .attr("transform", "translate(0," + (height) + ")")
-            .call(options.xAxis);        
+            .call(options.xAxis);
 
         var yGraphAxis = g.select(".y.axis")
             .call(chart.options.yAxis);
@@ -75,7 +75,7 @@ phenoclim.viz.chart = function chart(params) {
           .style("text-anchor", "end");
     });
   }
-  
+
   chart.tooltip.hide = function() {
     chart.tooltip.object.transition()
         .style("opacity", 1e-6);
@@ -138,7 +138,7 @@ phenoclim.viz.chart = function chart(params) {
 }
 
  phenoclim.viz.minMaxChart = function(params) {
- 
+
     var chart = phenoclim.viz.chart(params)
     var parentDraw = chart.draw;
     var currentYear = moment().year();
@@ -152,17 +152,19 @@ phenoclim.viz.chart = function chart(params) {
     chart._xScale = function(d){
         chart.xScale().rangeBands([0, chart._width()]);
     }
-    
+
     chart.draw = function(selection){
       selection.each(function(data) {
         data = data || [];
+        console.log("chart-data", data);
         chart.options.colors.domain(data.map(function(d){
           return d.key;
         }))
         var dates = [];
         var years = [];
         $.each(data, function(i, item){
-          var tmp = item.values.map(function(d){ 
+          console.log("chart-item", item, i);
+          var tmp = item.values.map(function(d){
             var date1 = new Date(d.date);
             if(years.indexOf(d.year) == -1){
               years.push(d.year);
@@ -202,7 +204,7 @@ phenoclim.viz.chart = function chart(params) {
           var gEnter = group.enter()
                .append("g")
                .attr("class", "values");
-          
+
           gEnter.append("path")
               .style('stroke-width', 1)
               .style("stroke-opacity", 0.7)
@@ -282,7 +284,7 @@ phenoclim.viz.chart = function chart(params) {
               if(last)
                 return chart.options.yScale(last.date);
               else
-               { 
+               {
                 example = chart;
                 return chart._height();
                 }
@@ -299,7 +301,7 @@ phenoclim.viz.chart = function chart(params) {
   }
 
  phenoclim.viz.areaChart = function(params) {
- 
+
     var chart = phenoclim.viz.minMaxChart(params)
     var parentDraw = chart.draw;
     var currentYear = moment().year();
@@ -366,7 +368,7 @@ phenoclim.viz.SnowingChart2 = function(params){
           .attr("height", function(d) { return height - chart.options.yScale(+d.height); });
       })
     }
-    
+
     chart.options.x2 =  d3.scale.ordinal();
     chart.options.xScale = d3.time.scale();
     chart.options.yScale = d3.scale.linear();
