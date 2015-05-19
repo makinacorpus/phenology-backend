@@ -34,7 +34,7 @@
                     {{ area }} [ {{ area.commune }} - {{ area.altitude|default:'' }} m]
                   </a>
                   <ul>
-                    {% regroup area.alive_individuals.all|dictsort:"name" by species as area_species %}
+                    {% regroup area.alive_individuals.all by species as area_species %}
                     {% for individuals_by_species in area_species %}
                     <li class="display__species ion-load-d icon-bullet">
                       <a href="" rel="{% url 'species-detail' individuals_by_species.grouper.id %}">

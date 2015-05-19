@@ -172,7 +172,7 @@ class Area(models.Model):
         return results
 
     def alive_individuals(self):
-        return self.individual_set.select_related('species').filter(is_dead=False)
+        return self.individual_set.select_related('species').filter(is_dead=False).order_by("species__name")
 
     def geojson(self, draggable=False):
         return {
