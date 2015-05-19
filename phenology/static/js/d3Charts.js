@@ -164,7 +164,8 @@ phenoclim.viz.chart = function chart(params) {
         var years = [];
         $.each(data, function(i, item){
           console.log("chart-item", item, i);
-          var tmp = item.values.map(function(d){
+          var values = item.values || [];
+          var tmp = values.map(function(d){
             var date1 = new Date(d.date);
             if(years.indexOf(d.year) == -1){
               years.push(d.year);
