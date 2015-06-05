@@ -136,10 +136,12 @@ makina-projects.projectname:
                               43.69965122967144,
                               7.9046630859375,
                               46.464349400461124]
-      #LANGUAGES:
-      #  - "('fr', _('French'))"
-      #  - "('en', _('English'))"
-      #  - "('it', _('Italia'))"
+      LANGUAGES:
+        - "('fr', _('French'))"
+        - "('en', _('English'))"
+        - "('it', _('Italia'))"
+        - "('ca', _('Catalan'))"
+
       #ADDITIONAL_TEMPLATE_DIRS:
       #  - '{project_root}/calanques'
       # add custom extra_settings which will be processed at end only
