@@ -135,8 +135,10 @@ DATE_FORMAT = 'iso-8601'
 LANGUAGES = (
     ('fr', _('french')),
     ('it', _('italian')),
-    ('en', _('english'))
+    ('en', _('english')),
+    ('ca', _('catalan')),
 )
+
 # AUTH_USER_MODEL = 'backend.Observer'
 
 TIME_ZONE = 'Europe/Paris'
