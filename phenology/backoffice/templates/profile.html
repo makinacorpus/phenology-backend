@@ -26,7 +26,6 @@
   </div>
 
   <div class="col-xs-7 table-col">
-    <div id="map"></div>
 
     <h4><u>{% trans "My Areas" %} :</u></h4>
 
@@ -49,10 +48,13 @@
       {% endfor %}
     </table>
     {% buttons %}
-      <a href="{% url 'area-detail' %}" class="pull-right btn btn-primary">
+      <a href="{% url 'area-detail' %}" class="pull-right btn btn-primary" style="margin-bottom: 10px;">
         {% bootstrap_icon "plus" %} {% trans "Add a new area" %}
       </a>
     {% endbuttons %}
+
+    <div id="map"></div>
+
     </div>
  </div>
 
