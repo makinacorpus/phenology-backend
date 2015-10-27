@@ -10,6 +10,11 @@
 
 {% load i18n %}
 
+<div style="padding-bottom: 10px;">
+      <a class="btn btn-default btn-sm" href="{% url 'export-survey' %}" ><i class="icon ion-document-text"></i> {% trans 'Export my surveys' %}</a>
+      <a class="btn btn-default btn-sm" href="{% url 'export-snowing' %}" ><i class="icon ion-document-text"></i> {% trans 'Export my snowings' %}</a>
+</div>
+
 <div class="row  table-row">
 
   <table class="mytable">
