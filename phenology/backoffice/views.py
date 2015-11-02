@@ -764,6 +764,7 @@ def get_surveys(request):
     query = models.Survey.objects
     if not request.user.is_staff or not request.user.is_superuser:
         query = query.filter(individual__area__observer__user=request.user)
+    # If search is empty, do we really need to do this??
     query = query.filter(Q(individual__name__icontains=search)
                          | Q(individual__area__name__icontains=search)
                          | Q(stage__name__icontains=search)
@@ -777,6 +778,12 @@ def get_surveys(request):
             query_1 = "-" + query_1
         query = query.order_by(query_1)
 
+    # "Search query" add a lot of joins and duplicate rows. Using distinct() is
+    # risky but is an optimistic approach: easier than grouping by each
+    # columns (which is a better alternative but hard to maintains without
+    # tests).
+    # https://docs.djangoproject.com/fr/1.8/ref/models/querysets/#django.db.models.query.QuerySet.distinct
+    query = query.distinct()
     filtered_total = query.count()
     filtered_data = query.select_related('individual').all()[start:
                                                              start + length]
