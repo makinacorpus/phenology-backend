@@ -141,7 +141,7 @@ makina-projects.projectname:
         - "('en', _('English'))"
         - "('it', _('Italia'))"
         - "('ca', _('Catalan'))"
-
+      
       #ADDITIONAL_TEMPLATE_DIRS:
       #  - '{project_root}/calanques'
       # add custom extra_settings which will be processed at end only
