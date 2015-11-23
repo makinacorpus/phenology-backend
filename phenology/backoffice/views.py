@@ -363,7 +363,7 @@ def search_snowings(request):
 
 def export_surveys(request):
     columns = ['stage', 'date', 'individual.species', 'individual.area',
-               'individual.area.commune', 'answer']
+               'individual.area.commune', 'answer', 'observer.user.id']
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))
     else:
@@ -389,7 +389,7 @@ def export_snowings(request):
         (current observer by default)
     '''
 
-    columns = ['area', 'area.commune', 'date', 'remark', 'height']
+    columns = ['area', 'area.commune', 'date', 'remark', 'height', 'observer.user.id']
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))
     else:
