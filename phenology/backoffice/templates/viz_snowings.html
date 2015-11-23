@@ -93,10 +93,15 @@
 
         phenoclim.vizsnowings.refreshYears = function(data, container){
           var snowings = data.snowings || [];
+          console.log(snowings)
           var years = d3.set(snowings.map(function(d){
             var newdate = new Date(d.date);
+            if (newdate.getMonth() >= 10) {
+              return newdate.getFullYear() + 1;
+            }
             return newdate.getFullYear();
           })).values();
+          console.log(years)
           years.sort().reverse();
           var $input = $('[name=year]', container);
           $("option", $input).remove();
