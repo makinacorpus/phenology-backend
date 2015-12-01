@@ -559,17 +559,12 @@ def snowing_detail(request, area_id, snowing_id=-1):
         area = models.Area.objects.get(id=area_id)
         last_snowing = area.last_snowing()
         today = datetime.date.today()
-        if(last_snowing and last_snowing.date.year == today.year and
-           last_snowing.date.month == today.month and
-           last_snowing.date.day == today.day):
-            return redirect('snowing-detail', area_id=area.id,
-                            snowing_id=last_snowing.id)
-        else:
-            snowing = models.Snowing()
-            if area:
-                snowing.observer = request.user.observer
-                snowing.area = area
-                snowing.date = datetime.date.today()
+
+        snowing = models.Snowing()
+        if area:
+            snowing.observer = request.user.observer
+            snowing.area = area
+            snowing.date = datetime.date.today()
     timer.capture()
     if request.POST:
         snowing.observer = request.user.observer
@@ -581,8 +576,7 @@ def snowing_detail(request, area_id, snowing_id=-1):
                                  messages.SUCCESS,
                                  _('Form is successifully updated'))
             form.save()
-            return redirect('snowing-detail', area_id=form.instance.area.id,
-                            snowing_id=form.instance.id)
+            return redirect('snowing-detail', area_id=form.instance.area.id)
         else:
             print form.errors
     else:
@@ -597,9 +591,14 @@ def snowing_detail(request, area_id, snowing_id=-1):
                 for s in query]
     timer.capture()
     print timer.output()
+
+    last_five = models.Snowing.objects.filter(observer=request.user.observer)[:10]
+
     return render_to_response("snowing.html", {
         "form": form,
-        "snowings": snowings
+        "snowings": snowings,
+        "last_five": last_five,
+        "area_id": area_id,
     }, RequestContext(request))
 
 
