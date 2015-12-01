@@ -595,12 +595,12 @@ def snowing_detail(request, area_id, snowing_id=-1):
     timer.capture()
     print timer.output()
 
-    last_five = models.Snowing.objects.filter(observer=request.user.observer)[:10]
+    lasts_inputs = models.Snowing.objects.filter(observer=request.user.observer)[:10]
 
     return render_to_response("snowing.html", {
         "form": form,
         "snowings": snowings,
-        "last_five": last_five,
+        "last_five": lasts_inputs,
         "area_id": area_id,
     }, RequestContext(request))
 
