@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-xs-12 text-center">
                 <h3>Saisies précédentes</h3>
-                <ul>
+                <ul style="list-style-type: none;">
                     {% for entry in last_five %}
                         <li>
                             <a href="{% url 'snowing-detail' entry.area.pk entry.pk %}">{{ entry }} -
