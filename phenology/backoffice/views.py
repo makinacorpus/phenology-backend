@@ -7,6 +7,7 @@ import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
@@ -576,7 +577,7 @@ def snowing_detail(request, area_id, snowing_id=-1):
                         area=snowing.area
                     )
                     form = SnowingForm(request.POST, instance=snowing)
-                except:
+                except ObjectDoesNotExist:
                     pass
             messages.add_message(request,
                                  messages.SUCCESS,
