@@ -569,12 +569,15 @@ def snowing_detail(request, area_id, snowing_id=-1):
                            instance=snowing)
         if form.is_valid():
             if snowing.id is None:
-                snowing = models.Snowing.objects.get(
-                    observer=request.user.observer,
-                    date=form.cleaned_data['date'],
-                    area=snowing.area
-                )
-                form = SnowingForm(request.POST, instance=snowing)
+                try:
+                    snowing = models.Snowing.objects.get(
+                        observer=request.user.observer,
+                        date=form.cleaned_data['date'],
+                        area=snowing.area
+                    )
+                    form = SnowingForm(request.POST, instance=snowing)
+                except:
+                    pass
             messages.add_message(request,
                                  messages.SUCCESS,
                                  _('Form is successifully updated'))
