@@ -365,6 +365,7 @@ def search_snowings(request):
 def export_surveys(request):
     columns = ['stage', 'date', 'individual.species', 'individual.area',
                'individual.area.commune', 'answer', 'observer.user.id']
+    workbook = None
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))
     else:
@@ -372,13 +373,15 @@ def export_surveys(request):
     queryset = models.Survey.objects.\
         filter(individual__area__observer=observer).all()
     years = queryset.aggregate(Min('date'), Max('date'))
-    min_year = years["date__min"].year
-    max_year = years["date__max"].year
-    workbook = None
-    for year in range(min_year, max_year + 1):
-        queryset_tmp = queryset.filter(date__year=year)
-        workbook = as_workbook(queryset_tmp, columns,
-                               workbook=workbook, sheet_name=str(year))
+    if years['date__min'] and years['date__max']:
+        min_year = years["date__min"].year
+        max_year = years["date__max"].year
+        for year in range(min_year, max_year + 1):
+            queryset_tmp = queryset.filter(date__year=year)
+            workbook = as_workbook(queryset_tmp, columns,
+                                   workbook=workbook, sheet_name=str(year))
+    else:
+        workbook = as_workbook(queryset, columns,workbook=workbook, sheet_name=str(datetime.date.today().year))
     response = HttpResponse(mimetype='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="export.xls"'
     workbook.save(response)
@@ -389,22 +392,24 @@ def export_snowings(request):
     ''' Function to export all snowings from an observer
         (current observer by default)
     '''
-
     columns = ['area', 'area.commune', 'date', 'remark', 'height', 'observer.user.id']
+    workbook = None
     if(request.GET.get("id")):
         observer = models.Observer.objects.get(id=int(request.GET.get("id")))
     else:
         observer = request.user.observer
-    queryset = models.Snowing.objects.\
+    queryset = models.Snowing.objects. \
         filter(observer=observer).all()
     years = queryset.aggregate(Min('date'), Max('date'))
-    min_year = years["date__min"].year
-    max_year = years["date__max"].year
-    workbook = None
-    for year in range(min_year, max_year + 1):
-        queryset_tmp = queryset.filter(date__year=year)
-        workbook = as_workbook(queryset_tmp, columns,
-                               workbook=workbook, sheet_name=str(year))
+    if years['date__min'] and years['date__max']:
+        min_year = years["date__min"].year
+        max_year = years["date__max"].year
+        for year in range(min_year, max_year + 1):
+            queryset_tmp = queryset.filter(date__year=year)
+            workbook = as_workbook(queryset_tmp, columns,
+                                   workbook=workbook, sheet_name=str(year))
+    else:
+        workbook = as_workbook(queryset, columns,workbook=workbook, sheet_name=str(datetime.date.today().year))
     response = HttpResponse(mimetype='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="export.xls"'
     workbook.save(response)
