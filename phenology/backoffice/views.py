@@ -378,10 +378,9 @@ def export_surveys(request):
         max_year = years["date__max"].year
         for year in range(min_year, max_year + 1):
             queryset_tmp = queryset.filter(date__year=year)
-            workbook = as_workbook(queryset_tmp, columns,
-                                   workbook=workbook, sheet_name=str(year))
+            workbook = as_workbook(queryset_tmp, columns, workbook=workbook, sheet_name=str(year))
     else:
-        workbook = as_workbook(queryset, columns,workbook=workbook, sheet_name=str(datetime.date.today().year))
+        workbook = as_workbook(queryset, columns, workbook=workbook, sheet_name=str(datetime.date.today().year))
     response = HttpResponse(mimetype='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="export.xls"'
     workbook.save(response)
@@ -406,10 +405,9 @@ def export_snowings(request):
         max_year = years["date__max"].year
         for year in range(min_year, max_year + 1):
             queryset_tmp = queryset.filter(date__year=year)
-            workbook = as_workbook(queryset_tmp, columns,
-                                   workbook=workbook, sheet_name=str(year))
+            workbook = as_workbook(queryset_tmp, columns, workbook=workbook, sheet_name=str(year))
     else:
-        workbook = as_workbook(queryset, columns,workbook=workbook, sheet_name=str(datetime.date.today().year))
+        workbook = as_workbook(queryset, columns, workbook=workbook, sheet_name=str(datetime.date.today().year))
     response = HttpResponse(mimetype='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="export.xls"'
     workbook.save(response)

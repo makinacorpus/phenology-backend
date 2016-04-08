@@ -61,7 +61,7 @@ def get_column_head(obj, name):
 def get_column_cell(obj, name):
     try:
         attr = multi_getattr(obj, name)
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         return None
     if hasattr(attr, '_meta'):
         # A Django Model (related object)
