@@ -363,7 +363,7 @@ def search_snowings(request):
 
 
 def export_surveys(request):
-    columns = ['stage', 'date', 'individual.species', 'individual.area',
+    columns = ['stage', 'date', 'individual.species', 'individual', 'individual.area',
                'individual.area.commune', 'answer', 'observer.user.id']
     workbook = None
     if(request.GET.get("id")):
